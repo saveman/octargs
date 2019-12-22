@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# Development directories & files
+build
+install
