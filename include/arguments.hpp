@@ -1,8 +1,10 @@
 #ifndef OCTARGS_ARGUMENTS_HPP_
 #define OCTARGS_ARGUMENTS_HPP_
 
-namespace oct {
-namespace args {
+namespace oct
+{
+namespace args
+{
 
 } // namespace args
 } // namespace oct

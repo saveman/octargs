@@ -34,3 +34,6 @@
 # Development directories & files
 build
 install
+.cproject
+.project
+.settings
