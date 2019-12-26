@@ -1,12 +1,20 @@
 language: cpp
 
+os:
+  - linux
+
+dist:
+  - bionic
+
 compiler:
   - gcc
   - clang
 
-#ibefore_install:
-#  - sudo apt-get update
-#  - sudo apt-get install -y libusb-1.0-0-dev
+before_install:
+  - wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
+  - sudo apt-add-repository "deb https://apt.kitware.com/ubuntu/ bionic main"
+  - sudo apt-get update
+  - sudo apt-get install cmake
 
 before_script:
   - mkdir build
@@ -18,4 +26,3 @@ script:
   - make
   - make install
   - ctest
-
