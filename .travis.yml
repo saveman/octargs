@@ -13,19 +13,19 @@ compiler:
 before_install:
   - wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
   - sudo apt-add-repository "deb https://apt.kitware.com/ubuntu/ bionic main"
-  - sudo apt-get update
-  - sudo apt-get install cmake
+  - sudo apt-get -y update
+  - sudo apt-get -y install cmake libcppunit-dev
 
 before_script:
-  - mkdir build
+  - rm -rf build
+  - rm -rf install
+  - mkdir -p build
   - cd build
-  - which cmake
-  - cmake --version
   - /usr/bin/cmake --version
   - /usr/bin/cmake -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/../install -DCMAKE_BUILD_TYPE=Debug ..
 
 script:
   - cd build
-  - cmake --build .
-  - cmake --build . -- install
-  - cmake --build . -- test
+  - /usr/bin/cmake --build .
+  - /usr/bin/cmake --build . -- install
+  - /usr/bin/cmake --build . -- test
