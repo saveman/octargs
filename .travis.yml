@@ -20,12 +20,14 @@ before_script:
   - rm -rf build
   - rm -rf install
   - mkdir -p build
-  - cd build
+  - pushd build
   - /usr/bin/cmake --version
   - /usr/bin/cmake -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/../install -DCMAKE_BUILD_TYPE=Debug ..
+  - popd
 
 script:
-  - cd build
+  - pushd build
   - /usr/bin/cmake --build .
   - /usr/bin/cmake --build . -- install
   - /usr/bin/cmake --build . -- test
+  - popd
