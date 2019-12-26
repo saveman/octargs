@@ -1,0 +1,21 @@
+language: cpp
+
+compiler:
+  - gcc
+  - clang
+
+#ibefore_install:
+#  - sudo apt-get update
+#  - sudo apt-get install -y libusb-1.0-0-dev
+
+before_script:
+  - mkdir build
+  - cd build
+  - cmake -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/../install -DCMAKE_BUILD_TYPE=Debug ..
+
+script:
+  - cd build
+  - make
+  - make install
+  - ctest
+
