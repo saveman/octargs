@@ -15,16 +15,17 @@ before_install:
   - sudo apt-add-repository "deb https://apt.kitware.com/ubuntu/ bionic main"
   - sudo apt-get update
   - sudo apt-get install cmake
-  - sudo dpkg -L cmake
-  - sudo cmake --version
 
 before_script:
   - mkdir build
   - cd build
-  - cmake -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/../install -DCMAKE_BUILD_TYPE=Debug ..
+  - which cmake
+  - cmake --version
+  - /usr/bin/cmake --version
+  - /usr/bin/cmake -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/../install -DCMAKE_BUILD_TYPE=Debug ..
 
 script:
   - cd build
-  - make
-  - make install
-  - ctest
+  - cmake --build .
+  - cmake --build . -- install
+  - cmake --build . -- test
