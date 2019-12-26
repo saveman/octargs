@@ -10,6 +10,25 @@ compiler:
   - gcc
   - clang
 
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "kHw8HB6evVlz4MeAWqiKSLNp5TIP4Ur6nNCBM4SfRMUp2OxvOr6qQ8+eVJdeK5OICYWXO1cYBuwHdWbfeL2J1+DuZsVCa9be+zzYK/fyhCBgNQDU6JKd3rugfYiKl8a0LTSAnRAGj2jefpFbHmMWBeN0LH/Qhs3JRaXoERApNz9jIpX3uZwQYypoy5xn0kUZd7+wAXE7IjT3ZrA+6RUmTADUC8S94p3CpNfGi5sZSIYblvu+J29wXq/7Pa/qvaycuVBrU9QxUdi0Q9jYzD0T8Dy6l2MyuPd0bK78utRJVGiS/L42iRA8eCic4ztU5i/GZVcbFdW5ar2j1Gdciz5RJDBjpVvOgrpz9yS4fh+4GO1Iwh9BsC1JrTa2h3L9WVOOV5kpVoKmnCAVKfpxNLTf3q/pm5fg87grzpOyafL0Tkkw/Y5wVqo7RKpNqZQRrug4tsB+BaxI+GeGit7ewvLyHZAvK1IHchh0tnu3NYBKhseS2N6Yfh+2O8l2nyk6TqAAG2HfMNyWzUna6yAm9tDyve61IBJvlA/wY1gZLd0qUWgmTRn5uxDyXpAuBj1u5i54OkM/vrDXd5R3Pdm8suHQ2pJ0Sv/f4jh2UhtchICOHkuc76kwcBcwuB31xz+KpyAFq4fEFNfBtakrVnG5ZvbmzTos/rJy2c2h7NLMMwVG/68="
+
+before_install:
+  - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+
+addons:
+  coverity_scan:
+    project:
+      name: "saveman/octargs"
+      description: "C++ command line argument parsing library"
+    notification_email: k.kapuscik@gmail.com
+    build_command_prepend: "/usr/bin/cmake -DCMAKE_BUILD_TYPE=Release ."
+    build_command: "/usr/bin/cmake --build ."
+    branch_pattern: coverity_scan
+
 before_install:
   - wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
   - sudo apt-add-repository "deb https://apt.kitware.com/ubuntu/ bionic main"
