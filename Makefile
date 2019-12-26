@@ -9,7 +9,8 @@ all:
 	(cd $(BUILD_DIR) && cmake -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=Debug $(SOURCE_DIR) )
 	(cd $(BUILD_DIR) && cmake --build .)
 	(cd $(BUILD_DIR) && cmake --build . -- install)
-	(cd $(BUILD_DIR) && ctest --progress)
+	(cd $(BUILD_DIR) && ctest --output-on-failure)
+	ls -lR $(INSTALL_DIR)
 
 clean:
 	rm -rf $(BUILD_DIR)

@@ -17,6 +17,7 @@ target_include_directories(${PROJECT_NAME}
 
 set(${PROJECT_NAME}_HEADERS
     include/arguments.hpp
+    include/exception.hpp
 )
 
 install(FILES ${${PROJECT_NAME}_HEADERS}

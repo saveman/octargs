@@ -27,10 +27,17 @@ function(add_test_helper)
             CppUnit::CppUnit
             octargs::octargs
     )
+    target_compile_features(${ADD_TEST_ARGS_NAME} PUBLIC cxx_std_11)
+
     add_test(NAME ${ADD_TEST_ARGS_NAME} COMMAND $<TARGET_FILE:${ADD_TEST_ARGS_NAME}>)
 endfunction()
 
 add_test_helper(NAME exception_test
     SOURCES
         exception_test.cpp
+)
+
+add_test_helper(NAME arguments_test
+    SOURCES
+        arguments_test.cpp
 )
