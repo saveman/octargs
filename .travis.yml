@@ -12,12 +12,9 @@ compiler:
 
 env:
   global:
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "travis encrypt" command using the project repo's public key
-   - secure: "kHw8HB6evVlz4MeAWqiKSLNp5TIP4Ur6nNCBM4SfRMUp2OxvOr6qQ8+eVJdeK5OICYWXO1cYBuwHdWbfeL2J1+DuZsVCa9be+zzYK/fyhCBgNQDU6JKd3rugfYiKl8a0LTSAnRAGj2jefpFbHmMWBeN0LH/Qhs3JRaXoERApNz9jIpX3uZwQYypoy5xn0kUZd7+wAXE7IjT3ZrA+6RUmTADUC8S94p3CpNfGi5sZSIYblvu+J29wXq/7Pa/qvaycuVBrU9QxUdi0Q9jYzD0T8Dy6l2MyuPd0bK78utRJVGiS/L42iRA8eCic4ztU5i/GZVcbFdW5ar2j1Gdciz5RJDBjpVvOgrpz9yS4fh+4GO1Iwh9BsC1JrTa2h3L9WVOOV5kpVoKmnCAVKfpxNLTf3q/pm5fg87grzpOyafL0Tkkw/Y5wVqo7RKpNqZQRrug4tsB+BaxI+GeGit7ewvLyHZAvK1IHchh0tnu3NYBKhseS2N6Yfh+2O8l2nyk6TqAAG2HfMNyWzUna6yAm9tDyve61IBJvlA/wY1gZLd0qUWgmTRn5uxDyXpAuBj1u5i54OkM/vrDXd5R3Pdm8suHQ2pJ0Sv/f4jh2UhtchICOHkuc76kwcBcwuB31xz+KpyAFq4fEFNfBtakrVnG5ZvbmzTos/rJy2c2h7NLMMwVG/68="
-
-before_install:
-  - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+    #   via the "travis encrypt" command using the project repo's public key
+    - secure: "iM6IP3NULytwcnb4oLbBW7eJfykKs5NOYAjtOZQRjuIYp3RT/RShX+AWeilGmAZFiyWbgOXI0zY2AZ6VpTLncQaj/p0FhOeoWS2Y+di9/HU4/cYWPg8whukq6Kv6wlV33079RI/8XPvh/ukDld6MM6LTjfPbR0YT8Eag5kNb6LXOvYZOG7NL3qZdj/TBN1PXW4Dd712oEUFarGrYOG7ICJW/z90lF/SHzZ+KveN1OHu0tI2Uo8vGU/phLEKP+vGtPn5Pa5XJ6/bkkK0wY53aYjnU11lAi0cNrOutpwUFWxFBY4z0YgZa0WyB/eJlt49XnSJv3w9k4e0YZtF2KvISLzqWHc5SefOTNTlZoiX5cz2w3nhxQ5KI2dKrel3zi5hit0W+Bo5uJH9NnVr/Hw9t7TcHz0QxV9hW6OGN/5ScZSJZcGSqiTrW5v05qeW1NJHKPAc4Tg/PuoA7k75JLf9Jz25QcbGepAbIziP4toJmnUTKlOPdS+twMA1IFW4DIOPspiN2oLNbMjZPP7sDOeNVWB/9+MtxpoGgkfNNxu6Prl0eKHdkZLudkyRbh3Mnv2ndy/ec48P7rlb9bzYRmAEnPh+IRYl+79xNgUF5KCu36iO23pPYC/Z0yVYooSZtYAdnYegeKN2cCT4Iw+6c33xb4ZXJ8vaOPEihSwzTfngU7a8="
 
 addons:
   coverity_scan:
@@ -30,15 +27,24 @@ addons:
     branch_pattern: coverity_scan
 
 before_install:
+  # For Coverity
+  - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+  # Repository for new CMake
   - wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
   - sudo apt-add-repository "deb https://apt.kitware.com/ubuntu/ bionic main"
   - sudo apt-get -y update
+  # Install
+  # - New CMake
+  # - CppUnit library
   - sudo apt-get -y install cmake libcppunit-dev
 
 before_script:
+  # Make sure everything is clean
   - rm -rf build
   - rm -rf install
+  # Create build directory
   - mkdir -p build
+  # Prepare build environment (cmake)
   - pushd build
   - /usr/bin/cmake --version
   - /usr/bin/cmake -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/../install -DCMAKE_BUILD_TYPE=Debug ..
@@ -46,7 +52,10 @@ before_script:
 
 script:
   - pushd build
+  # Run build
   - /usr/bin/cmake --build .
+  # Test installation
   - /usr/bin/cmake --build . -- install
+  # Run tests
   - /usr/bin/cmake --build . -- test
   - popd
