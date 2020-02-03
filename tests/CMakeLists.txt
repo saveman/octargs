@@ -32,12 +32,22 @@ function(add_test_helper)
     add_test(NAME ${ADD_TEST_ARGS_NAME} COMMAND $<TARGET_FILE:${ADD_TEST_ARGS_NAME}>)
 endfunction()
 
+add_test_helper(NAME positional_args_test
+    SOURCES
+        positional_args_test.cpp
+)
+
 add_test_helper(NAME exception_test
     SOURCES
         exception_test.cpp
 )
 
-add_test_helper(NAME arguments_test
+add_test_helper(NAME argument_table_test
     SOURCES
-        arguments_test.cpp
+        argument_table_test.cpp
+)
+
+add_test_helper(NAME wchar_test
+    SOURCES
+        wchar_test.cpp
 )

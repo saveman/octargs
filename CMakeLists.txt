@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
+option(BUILD_EXAMPLES "Build the examples" ON)
+
 project(octargs)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -16,7 +18,7 @@ target_include_directories(${PROJECT_NAME}
 )
 
 set(${PROJECT_NAME}_HEADERS
-    include/arguments.hpp
+    include/argument_table.hpp
     include/exception.hpp
 )
 
@@ -24,6 +26,10 @@ install(FILES ${${PROJECT_NAME}_HEADERS}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-if (BUILD_TESTING)
+if (BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
+
+if (BUILD_TESTS)
     add_subdirectory(tests)
 endif()

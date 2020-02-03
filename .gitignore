@@ -32,8 +32,8 @@
 *.app
 
 # Development directories & files
-build
-install
+_build
+_install
 .cproject
 .project
 .settings

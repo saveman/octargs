@@ -1,5 +1,5 @@
-#ifndef OCTARGS_EXCEPTION_HPP
-#define OCTARGS_EXCEPTION_HPP
+#ifndef OCTARGS_EXCEPTION_HPP_
+#define OCTARGS_EXCEPTION_HPP_
 
 #include <exception>
 #include <string>
@@ -35,4 +35,4 @@ namespace args
 } // namespace args
 } // namespace oct
 
-#endif /*OCTARGS_EXCEPTION_HPP*/
+#endif /*OCTARGS_EXCEPTION_HPP_*/
