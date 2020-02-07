@@ -21,6 +21,12 @@ public:
     using char_type = char;
     using string_type = std::string;
     using string_vector_type = std::vector<string_type>;
+
+    static const string_type& get_true_literal()
+    {
+        static const string_type true_literal("true");
+        return true_literal;
+    }
 };
 
 template <>
@@ -30,6 +36,12 @@ public:
     using char_type = wchar_t;
     using string_type = std::wstring;
     using string_vector_type = std::vector<string_type>;
+
+    static const string_type& get_true_literal()
+    {
+        static const string_type true_literal(L"true");
+        return true_literal;
+    }
 };
 
 } // namespace args

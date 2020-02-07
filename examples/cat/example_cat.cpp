@@ -53,14 +53,14 @@ public:
             oct::args::parser arg_parser;
 
             arg_parser.set_positional_arguments_enabled(true);
-            arg_parser.add_switch({ "-E" }); // TODO: .set_description("display $ at end of each line");
-            arg_parser.add_switch({ "-n" }); // TODO: .set_description("number all output lines");
+            arg_parser.add_switch({ "-E", "--show-ends" }); // TODO: .set_description("display $ at end of each line");
+            arg_parser.add_switch({ "-n", "--number" }); // TODO: .set_description("number all output lines");
 
             auto results = arg_parser.parse(argc, argv);
 
             // TODO: refactor when 'value storage API is ready'
-            m_print_line_ends = results.has_value("-E");
-            m_print_line_numbers = results.has_value("-n");
+            m_print_line_ends = results.has_value("--show-ends");
+            m_print_line_numbers = results.has_value("--number");
 
             if (results.get_positional_arguments().size() == 0)
             {

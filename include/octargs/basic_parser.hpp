@@ -135,7 +135,7 @@ private:
                 throw parse_exception("Duplicated argument found");
             }
 
-            results_data_ptr->append_value(arg_object_ptr, string_type());
+            results_data_ptr->append_value(arg_object_ptr, TRAITS::get_true_literal());
         }
 
         return true;
@@ -170,12 +170,6 @@ private:
         if (name_count < 1)
         {
             throw configuration_exception("No switch names given");
-        }
-
-        // TODO: (planned) support for multiple names to be added later
-        if (name_count > 1)
-        {
-            throw configuration_exception("Too many switch names given");
         }
 
         ensure_names_characters_valid(names);

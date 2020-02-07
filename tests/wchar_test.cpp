@@ -17,6 +17,7 @@ private:
     {
         const wchar_t* test_argv[] = {
             L"appname",
+            L"-v",
             L"param1",
             L"param2",
             L"param3",
@@ -24,13 +25,15 @@ private:
         int test_argc = sizeof(test_argv) / sizeof(test_argv[0]);
 
         wparser parser;
+        parser.add_switch({ L"-v", L"--version" });
         parser.set_positional_arguments_enabled(true);
 
         auto results = parser.parse(test_argc, test_argv);
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), results.get_positional_arguments().size());
-        CPPUNIT_ASSERT(results.get_positional_arguments()[0] == test_argv[1]);
-        CPPUNIT_ASSERT(results.get_positional_arguments()[1] == test_argv[2]);
-        CPPUNIT_ASSERT(results.get_positional_arguments()[2] == test_argv[3]);
+        CPPUNIT_ASSERT(results.get_positional_arguments()[0] == test_argv[2]);
+        CPPUNIT_ASSERT(results.get_positional_arguments()[1] == test_argv[3]);
+        CPPUNIT_ASSERT(results.get_positional_arguments()[2] == test_argv[4]);
+        CPPUNIT_ASSERT(results.has_value(L"--version"));
     }
 
     CPPUNIT_TEST_SUITE(wchar_test);

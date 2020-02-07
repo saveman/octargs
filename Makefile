@@ -47,7 +47,8 @@ examples: all
 	@echo "CAT TEST 4"
 	@echo "----------------------------"
 	@(cd ${INSTALL_DIR}/bin && cat -n -E ${SOURCE_DIR}/LICENSE ${SOURCE_DIR}/README.md)
-	@(cd ${INSTALL_DIR}/bin && ./octargs_cat -n -E ${SOURCE_DIR}/LICENSE ${SOURCE_DIR}/README.md)
+	@echo "----------------------------"
+	@(cd ${INSTALL_DIR}/bin && ./octargs_cat -n --show-ends ${SOURCE_DIR}/LICENSE ${SOURCE_DIR}/README.md)
 	@echo "----------------------------"
 
 ctest_coverage: dobuild
