@@ -36,26 +36,33 @@ before_install:
   # Install
   # - New CMake
   # - CppUnit library
-  - sudo apt-get -y install cmake libcppunit-dev
+  # - Coverage tools: GCOVR
+  - sudo apt-get -y install cmake libcppunit-dev gcovr
 
 before_script:
   # Make sure everything is clean
   - rm -rf build
   - rm -rf install
-  # Create build directory
-  - mkdir -p build
+  # Create build directories
+  - mkdir -p build/debug
+  - mkdir -p build/release
   # Prepare build environment (cmake)
-  - pushd build
   - /usr/bin/cmake --version
-  - /usr/bin/cmake -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/../install -DCMAKE_BUILD_TYPE=Debug ..
+  - pushd build/debug
+  - /usr/bin/cmake -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/../../install/debug -DCMAKE_BUILD_TYPE=Debug ..
+  - popd
+  - pushd build/release
+  - /usr/bin/cmake -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/../../install/release -DCMAKE_BUILD_TYPE=Release ..
   - popd
 
 script:
-  - pushd build
-  # Run build
+  - pushd build/debug
   - /usr/bin/cmake --build .
-  # Test installation
   - /usr/bin/cmake --build . -- install
-  # Run tests
+  - /usr/bin/cmake --build . -- test
+  - popd
+  - pushd build/release
+  - /usr/bin/cmake --build .
+  - /usr/bin/cmake --build . -- install
   - /usr/bin/cmake --build . -- test
   - popd
