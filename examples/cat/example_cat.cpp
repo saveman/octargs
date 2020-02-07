@@ -99,7 +99,7 @@ public:
 private:
     static const int LINE_NUMBER_LENGTH = 6;
 
-    void print_usage(std::ostream& os)
+    void print_usage(std::ostream& /*os*/)
     {
         // TODO
     }

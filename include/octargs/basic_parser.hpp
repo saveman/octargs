@@ -79,7 +79,7 @@ public:
         results_data_ptr->set_input(arg_table);
         results_data_ptr->set_app_name(arg_table.get_app_name());
 
-        input_argument_iterator input_iterator(arg_table);
+        argument_table_iterator input_iterator(arg_table);
 
         // parse named arguments
         while (input_iterator.has_more())
@@ -100,55 +100,14 @@ public:
     }
 
 private:
+    using argument_table_iterator = basic_argument_table_iterator<TRAITS>;
     using argument_ptr_type = std::shared_ptr<argument_type>;
     using parser_data_type = internal::basic_parser_data<TRAITS>;
     using parser_data_ptr_type = std::shared_ptr<parser_data_type>;
     using results_data_type = internal::basic_results_data<TRAITS>;
     using results_data_ptr_type = std::shared_ptr<results_data_type>;
 
-    class input_argument_iterator
-    {
-    public:
-        input_argument_iterator(const argument_table_type& arg_table)
-            : m_arg_table(arg_table)
-            , m_arg_count(arg_table.get_argument_count())
-            , m_arg_index(0)
-        {
-            // noop
-        }
-
-        bool has_more() const
-        {
-            return m_arg_index < m_arg_count;
-        }
-
-        const string_type& peek_next() const
-        {
-            if (!has_more())
-            {
-                throw logic_error_exception();
-            }
-
-            return m_arg_table.get_argument(m_arg_index);
-        }
-
-        const string_type& take_next()
-        {
-            if (!has_more())
-            {
-                throw logic_error_exception();
-            }
-
-            return m_arg_table.get_argument(m_arg_index++);
-        }
-
-    private:
-        const argument_table_type& m_arg_table;
-        const std::size_t m_arg_count;
-        std::size_t m_arg_index;
-    };
-
-    bool parse_named_argument(input_argument_iterator& input_iterator, const results_data_ptr_type& results_data_ptr)
+    bool parse_named_argument(argument_table_iterator& input_iterator, const results_data_ptr_type& results_data_ptr)
     {
         auto& input_value = input_iterator.peek_next();
 
@@ -162,7 +121,7 @@ private:
 
         auto& arg_object_ptr = arg_iter->second;
 
-        if (arg_object_ptr->has_value())
+        if (arg_object_ptr->is_value_required())
         {
             // TODO: (planned) values parsing not implemented
             throw parse_exception("Not implemented");
@@ -183,7 +142,7 @@ private:
     }
 
     void parse_positional_argument(
-        input_argument_iterator& input_iterator, const results_data_ptr_type& results_data_ptr)
+        argument_table_iterator& input_iterator, const results_data_ptr_type& results_data_ptr)
     {
         if (!m_data_ptr->m_positional_arguments_enabled)
         {

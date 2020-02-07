@@ -14,6 +14,9 @@ namespace args
 using argument_table = basic_argument_table<traits<char>>;
 using wargument_table = basic_argument_table<traits<wchar_t>>;
 
+using argument_table_iterator = basic_argument_table_iterator<traits<char>>;
+using wargument_table_iterator = basic_argument_table_iterator<traits<wchar_t>>;
+
 using results = basic_results<traits<char>>;
 using wresults = basic_results<traits<wchar_t>>;
 

@@ -4,6 +4,8 @@
 
 int main(int argc, char* argv[])
 {
+    std::string testPath = (argc > 1) ? std::string(argv[1]) : "";
+
     CppUnit::Test* suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
 
     // Adds the test to the list of test to run
@@ -13,7 +15,7 @@ int main(int argc, char* argv[])
     // Change the default outputter to a compiler error format outputter
     runner.setOutputter(new CppUnit::CompilerOutputter(&runner.result(), std::cerr));
     // Run the tests.
-    bool wasSucessful = runner.run();
+    bool wasSucessful = runner.run(testPath);
 
     // Return error code 1 if the one of test failed.
     return wasSucessful ? 0 : 1;

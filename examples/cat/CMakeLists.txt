@@ -11,6 +11,10 @@ target_sources(${PROJECT_NAME}
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)
 
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic -Werror)
+endif()
+
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         octargs::octargs

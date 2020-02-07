@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "exception.hpp"
+
 namespace oct
 {
 namespace args
@@ -63,6 +65,52 @@ public:
 private:
     string_type m_app_name;
     string_vector_type m_arguments;
+};
+
+template <class TRAITS>
+class basic_argument_table_iterator
+{
+public:
+    using argument_table_type = basic_argument_table<TRAITS>;
+    using string_type = typename TRAITS::string_type;
+
+    basic_argument_table_iterator(const argument_table_type& arg_table)
+        : m_arg_table(arg_table)
+        , m_arg_count(arg_table.get_argument_count())
+        , m_arg_index(0)
+    {
+        // noop
+    }
+
+    bool has_more() const
+    {
+        return m_arg_index < m_arg_count;
+    }
+
+    const string_type& peek_next() const
+    {
+        if (!has_more())
+        {
+            throw logic_error_exception();
+        }
+
+        return m_arg_table.get_argument(m_arg_index);
+    }
+
+    const string_type& take_next()
+    {
+        if (!has_more())
+        {
+            throw logic_error_exception();
+        }
+
+        return m_arg_table.get_argument(m_arg_index++);
+    }
+
+private:
+    const argument_table_type& m_arg_table;
+    const std::size_t m_arg_count;
+    std::size_t m_arg_index;
 };
 
 } // namespace args
