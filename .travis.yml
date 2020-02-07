@@ -49,10 +49,10 @@ before_script:
   # Prepare build environment (cmake)
   - /usr/bin/cmake --version
   - pushd build/debug
-  - /usr/bin/cmake -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/../../install/debug -DCMAKE_BUILD_TYPE=Debug ..
+  - /usr/bin/cmake -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/../../install/debug -DCMAKE_BUILD_TYPE=Debug ../..
   - popd
   - pushd build/release
-  - /usr/bin/cmake -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/../../install/release -DCMAKE_BUILD_TYPE=Release ..
+  - /usr/bin/cmake -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/../../install/release -DCMAKE_BUILD_TYPE=Release ../..
   - popd
 
 script:
