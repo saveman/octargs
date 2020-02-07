@@ -4,7 +4,7 @@ project(octargs-tests)
 
 find_package(CppUnit REQUIRED)
 
-function(add_test_helper)
+function(add_cppunit_test)
     cmake_parse_arguments(PARSE_ARGV 0
         ADD_TEST_ARGS
         ""
@@ -25,29 +25,28 @@ function(add_test_helper)
     target_link_libraries(${ADD_TEST_ARGS_NAME}
         PRIVATE
             CppUnit::CppUnit
-            octargs::octargs
+            # octargs::octargs
     )
     target_compile_features(${ADD_TEST_ARGS_NAME} PUBLIC cxx_std_11)
 
     add_test(NAME ${ADD_TEST_ARGS_NAME} COMMAND $<TARGET_FILE:${ADD_TEST_ARGS_NAME}>)
 endfunction()
 
-add_test_helper(NAME positional_args_test
-    SOURCES
-        positional_args_test.cpp
-)
+function(add_cppunit_test_basic)
+    cmake_parse_arguments(PARSE_ARGV 0
+        ADD_TEST_ARGS
+        ""
+        "NAME"
+        ""
+    )
 
-add_test_helper(NAME exception_test
-    SOURCES
-        exception_test.cpp
-)
+    add_cppunit_test(NAME "${ADD_TEST_ARGS_NAME}" SOURCES "${ADD_TEST_ARGS_NAME}.cpp")
+endfunction()
 
-add_test_helper(NAME argument_table_test
-    SOURCES
-        argument_table_test.cpp
-)
-
-add_test_helper(NAME wchar_test
-    SOURCES
-        wchar_test.cpp
-)
+add_cppunit_test_basic(NAME argument_table_test)
+add_cppunit_test_basic(NAME argument_test)
+add_cppunit_test_basic(NAME char_utils_test)
+add_cppunit_test_basic(NAME exception_test)
+add_cppunit_test_basic(NAME positional_args_test)
+add_cppunit_test_basic(NAME string_utils_test)
+add_cppunit_test_basic(NAME wchar_test)

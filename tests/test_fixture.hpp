@@ -9,29 +9,29 @@ namespace oct
 namespace args
 {
 
-    class test_fixture : public CppUnit::TestFixture
+class test_fixture : public CppUnit::TestFixture
+{
+public:
+    void setUp() override
     {
-    public:
-        void setUp() override
-        {
-            set_up();
-        }
+        set_up();
+    }
 
-        void tearDown() override
-        {
-            tear_down();
-        }
+    void tearDown() override
+    {
+        tear_down();
+    }
 
-        virtual void set_up()
-        {
-            // noop
-        }
+    virtual void set_up()
+    {
+        // noop
+    }
 
-        virtual void tear_down()
-        {
-            // noop
-        }
-    };
+    virtual void tear_down()
+    {
+        // noop
+    }
+};
 
 } // namespace args
 } // namespace oct

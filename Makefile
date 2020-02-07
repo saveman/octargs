@@ -8,15 +8,21 @@ CMAKE_OPTS=\
 	-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
 	-DCMAKE_BUILD_TYPE=Debug \
 	-DBUILD_TESTS=True \
-	-DBUILD_EXAMPLES=True
+	-DBUILD_EXAMPLES=True \
+	-DENABLE_COVERAGE=True
 
-all:
+all: doinstall runctest
+
+dobuild:
 	mkdir -p $(BUILD_DIR)
 	(cd $(BUILD_DIR) && cmake $(CMAKE_OPTS) $(SOURCE_DIR) )
 	(cd $(BUILD_DIR) && cmake --build .)
+
+doinstall: dobuild
 	(cd $(BUILD_DIR) && cmake --build . -- install)
+
+runctest: dobuild
 	(cd $(BUILD_DIR) && ctest --output-on-failure)
-#	ls -lR $(INSTALL_DIR
 
 examples: all
 	@echo "----------------------------"
@@ -36,6 +42,20 @@ examples: all
 	@echo "----------------------------"
 	@(cd ${INSTALL_DIR}/bin && ./octargs_cat - < ${SOURCE_DIR}/LICENSE)
 	@echo "----------------------------"
+
+	@echo "----------------------------"
+	@echo "CAT TEST 4"
+	@echo "----------------------------"
+	@(cd ${INSTALL_DIR}/bin && cat -n -E ${SOURCE_DIR}/LICENSE ${SOURCE_DIR}/README.md)
+	@(cd ${INSTALL_DIR}/bin && ./octargs_cat -n -E ${SOURCE_DIR}/LICENSE ${SOURCE_DIR}/README.md)
+	@echo "----------------------------"
+
+ctest_coverage: dobuild
+	(cd $(BUILD_DIR) && find . -name "*.gcda" -exec rm -f {} \; )
+	(cd $(BUILD_DIR) && cmake --build . -- ctest_coverage)
+
+ctest_coverage_open: ctest_coverage
+	(cd $(BUILD_DIR) && pdetach xdg-open ./ctest_coverage/index.html)
 
 clean:
 	rm -rf $(BUILD_DIR)
