@@ -40,26 +40,17 @@ public:
 
     void set_positional_arguments_enabled(bool enabled)
     {
-        ensure_not_locked();
         m_data_ptr->m_positional_arguments_enabled = enabled;
     }
 
     argument_type& add_switch(const string_vector_type& names)
     {
-        ensure_not_locked();
-        check_names(names);
-
-        auto new_argument = std::make_shared<argument_type>(names);
-
-        m_data_ptr->m_arguments.emplace_back(new_argument);
-        add_to_names_repository(new_argument);
-
-        return *new_argument;
+        return add_argument(names, false);
     }
 
-    void lock()
+    argument_type& add_valarg(const string_vector_type& names)
     {
-        m_data_ptr->m_locked = true;
+        return add_argument(names, true);
     }
 
     results_type parse(int argc, char_type* argv[])
@@ -74,8 +65,6 @@ public:
 
     results_type parse(const argument_table_type& arg_table)
     {
-        lock();
-
         auto results_data_ptr = std::make_shared<results_data_type>(m_data_ptr);
 
         results_data_ptr->set_input(arg_table);
@@ -108,6 +97,18 @@ private:
     using parser_data_ptr_type = std::shared_ptr<parser_data_type>;
     using results_data_type = internal::basic_results_data<TRAITS>;
     using results_data_ptr_type = std::shared_ptr<results_data_type>;
+
+    argument_type& add_argument(const string_vector_type& names, bool is_value_required)
+    {
+        check_names(names);
+
+        auto new_argument = std::make_shared<argument_type>(names, is_value_required);
+
+        m_data_ptr->m_arguments.emplace_back(new_argument);
+        add_to_names_repository(new_argument);
+
+        return *new_argument;
+    }
 
     bool parse_named_argument(argument_table_iterator& input_iterator, const results_data_ptr_type& results_data_ptr)
     {
@@ -164,14 +165,6 @@ private:
         const auto& input_value = input_iterator.take_next();
 
         results_data_ptr->append_positional_argument(input_value);
-    }
-
-    void ensure_not_locked()
-    {
-        if (m_data_ptr->m_locked)
-        {
-            throw parser_state_exception("Parsed is locked");
-        }
     }
 
     void check_names(const string_vector_type& names)

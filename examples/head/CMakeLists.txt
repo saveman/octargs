@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(octargs_cat)
+project(octargs_head)
 
 add_executable(${PROJECT_NAME})
 
 target_sources(${PROJECT_NAME}
     PRIVATE
-        cat.cpp
+        head.cpp
 )
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)

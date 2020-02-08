@@ -71,22 +71,11 @@ private:
         CPPUNIT_ASSERT_THROW(parser.parse(args), parse_exception);
     }
 
-    void test_modify_locked_parser()
-    {
-        argument_table args("appname", { "-v" });
-
-        parser parser;
-        parser.add_switch({ "-v" });
-        parser.parse(args);
-        CPPUNIT_ASSERT_THROW(parser.add_switch({ "-a" }), parser_state_exception);
-    }
-
     CPPUNIT_TEST_SUITE(basic_parse_test);
     CPPUNIT_TEST(test_argc_argv_parse);
     CPPUNIT_TEST(test_argument_table_parse);
     CPPUNIT_TEST(test_invalid_results_arg);
     CPPUNIT_TEST(test_unknown_argument);
-    CPPUNIT_TEST(test_modify_locked_parser);
     CPPUNIT_TEST_SUITE_END();
 };
 

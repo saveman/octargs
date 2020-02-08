@@ -24,8 +24,8 @@ public:
 
     static const string_type& get_true_literal()
     {
-        static const string_type true_literal("true");
-        return true_literal;
+        static const string_type TRUE_LITERAL("true");
+        return TRUE_LITERAL;
     }
 };
 

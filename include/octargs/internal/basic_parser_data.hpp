@@ -28,15 +28,12 @@ struct basic_parser_data
     using argument_ptr_type = std::shared_ptr<argument_type>;
 
     basic_parser_data()
-        : m_locked(false)
-        , m_positional_arguments_enabled(false)
+        : m_positional_arguments_enabled(false)
         , m_arguments()
         , m_names_repository()
     {
         // noop
     }
-
-    bool m_locked;
 
     bool m_positional_arguments_enabled;
 

@@ -24,38 +24,63 @@ install: build
 runctest: build
 	(cd $(BUILD_DIR) && ctest --output-on-failure)
 
-examples: install
+run_examples_cat:
 	@echo "----------------------------"
 	@echo "CAT TEST 1"
 	@echo "----------------------------"
-	@(cd ${INSTALL_DIR}/bin && ./octargs_cat ${SOURCE_DIR}/LICENSE)
+	@(cd $(EXEDIR) && ./$(EXENAME) $(SOURCE_DIR)/LICENSE)
 	@echo "----------------------------"
 
 	@echo "----------------------------"
 	@echo "CAT TEST 2"
 	@echo "----------------------------"
-	@(cd ${INSTALL_DIR}/bin && ./octargs_cat < ${SOURCE_DIR}/LICENSE)
+	@(cd $(EXEDIR) && ./$(EXENAME) < $(SOURCE_DIR)/LICENSE)
 	@echo "----------------------------"
 
 	@echo "----------------------------"
 	@echo "CAT TEST 3"
 	@echo "----------------------------"
-	@(cd ${INSTALL_DIR}/bin && ./octargs_cat - < ${SOURCE_DIR}/LICENSE)
+	@(cd $(EXEDIR) && ./$(EXENAME) - < $(SOURCE_DIR)/LICENSE)
 	@echo "----------------------------"
 
 	@echo "----------------------------"
 	@echo "CAT TEST 4"
 	@echo "----------------------------"
-	@(cd ${INSTALL_DIR}/bin && cat -n -E ${SOURCE_DIR}/LICENSE ${SOURCE_DIR}/README.md)
+	@cat -n -E $(SOURCE_DIR)/LICENSE $(SOURCE_DIR)/README.md
 	@echo "----------------------------"
-	@(cd ${INSTALL_DIR}/bin && ./octargs_cat -n --show-ends ${SOURCE_DIR}/LICENSE ${SOURCE_DIR}/README.md)
+	@(cd $(EXEDIR) && ./$(EXENAME) -n --show-ends $(SOURCE_DIR)/LICENSE $(SOURCE_DIR)/README.md)
 	@echo "----------------------------"
 
-ctest_coverage: build
+examples_cat: install
+	$(MAKE) run_examples_cat EXEDIR=$(INSTALL_DIR)/bin EXENAME=octargs_cat
+
+run_examples_head:
+	@echo "----------------------------"
+	@echo "HEAD TEST 1"
+	@echo "----------------------------"
+	@head -n 5 -v $(SOURCE_DIR)/LICENSE $(SOURCE_DIR)/README.md - - < $(SOURCE_DIR)/LICENSE
+	@echo "----------------------------"
+	@(cd $(EXEDIR) && ./$(EXENAME) -n 5 -h $(SOURCE_DIR)/LICENSE $(SOURCE_DIR)/README.md - - < $(SOURCE_DIR)/LICENSE)
+	@echo "----------------------------"
+
+examples_head: install
+	$(MAKE) run_examples_head EXEDIR=$(INSTALL_DIR)/bin EXENAME=octargs_head
+
+coverage_prepare: build
 	(cd $(BUILD_DIR) && find . -name "*.gcda" -exec rm -f {} \; )
+
+ctest_coverage: coverage_prepare
 	(cd $(BUILD_DIR) && cmake --build . -- ctest_coverage)
 
-ctest_coverage_open: ctest_coverage
+ctest_coverage_open: ctest_coverage examples_cat examples_head
+	(cd $(BUILD_DIR) && pdetach xdg-open ./ctest_coverage/index.html)
+
+total_coverage: coverage_prepare
+	$(MAKE) run_examples_cat  EXEDIR=$(BUILD_DIR)/examples/cat  EXENAME=octargs_cat
+	$(MAKE) run_examples_head EXEDIR=$(BUILD_DIR)/examples/head EXENAME=octargs_head
+	(cd $(BUILD_DIR) && cmake --build . -- ctest_coverage)
+
+total_coverage_open: total_coverage
 	(cd $(BUILD_DIR) && pdetach xdg-open ./ctest_coverage/index.html)
 
 clean:

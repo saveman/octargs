@@ -56,25 +56,6 @@ public:
 };
 
 /**
- * Exception: parser is in invalid state.
- */
-class parser_state_exception : public exception
-{
-public:
-    parser_state_exception()
-        : exception()
-    {
-        // noop
-    }
-
-    parser_state_exception(const std::string& message)
-        : exception(message)
-    {
-        // noop
-    }
-};
-
-/**
  * Exception: invalid input data given to parser.
  */
 class parse_exception : public exception

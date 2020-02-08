@@ -65,7 +65,27 @@ public:
         }
     }
 
+    const string_vector_type& values(const string_type& arg_name) const
+    {
+        auto name_arg_iter = m_results_data_ptr->find_argument(arg_name);
+        auto values_iter = m_results_data_ptr->m_argument_values.find(name_arg_iter);
+        if (values_iter != m_results_data_ptr->m_argument_values.end())
+        {
+            return values_iter->second;
+        }
+        else
+        {
+            return get_empty_values();
+        }
+    }
+
 private:
+    const string_vector_type& get_empty_values() const
+    {
+        static const string_vector_type EMPTY_VALUES;
+        return EMPTY_VALUES;
+    }
+
     results_data_ptr_type m_results_data_ptr;
 };
 

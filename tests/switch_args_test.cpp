@@ -21,8 +21,13 @@ private:
 
         auto results = parser.parse(args);
         CPPUNIT_ASSERT(results.has_value("-a"));
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), results.values("-a").size());
+        CPPUNIT_ASSERT_EQUAL(traits<char>::get_true_literal(), results.values("-a")[0]);
         CPPUNIT_ASSERT(!results.has_value("-b"));
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), results.values("-b").size());
         CPPUNIT_ASSERT(results.has_value("-c"));
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), results.values("-c").size());
+        CPPUNIT_ASSERT_EQUAL(traits<char>::get_true_literal(), results.values("-c")[0]);
     }
 
     void test_no_names()

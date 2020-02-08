@@ -18,7 +18,7 @@ private:
     void test_single_name()
     {
         argument::string_vector names = { "a" };
-        argument arg(names);
+        argument arg(names, false);
         CPPUNIT_ASSERT_EQUAL(false, arg.is_value_required());
         CPPUNIT_ASSERT_EQUAL(names.size(), arg.get_names().size());
         for (std::size_t i = 0; i < names.size(); ++i)
@@ -30,7 +30,7 @@ private:
     void test_multi_name()
     {
         argument::string_vector names = { "a", "bbb", "cc" };
-        argument arg(names);
+        argument arg(names, false);
         CPPUNIT_ASSERT_EQUAL(false, arg.is_value_required());
         CPPUNIT_ASSERT_EQUAL(names.size(), arg.get_names().size());
         for (std::size_t i = 0; i < names.size(); ++i)
@@ -43,12 +43,11 @@ private:
     {
         argument::string_vector names = { "a" };
 
-        argument arg1(names);
+        argument arg1(names, false);
         CPPUNIT_ASSERT_EQUAL(false, arg1.is_value_required());
 
-        // TODO: enabled when ready
-        // argument arg2(names);
-        // CPPUNIT_ASSERT_EQUAL(true, arg2.is_value_required());
+        argument arg2(names, true);
+        CPPUNIT_ASSERT_EQUAL(true, arg2.is_value_required());
     }
 
     CPPUNIT_TEST_SUITE(argument_test);

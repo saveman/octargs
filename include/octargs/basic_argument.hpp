@@ -14,9 +14,9 @@ class basic_argument
 public:
     using string_vector = typename TRAITS::string_vector_type;
 
-    basic_argument(const string_vector& names)
+    basic_argument(const string_vector& names, bool is_value_required)
         : m_names(names)
-        , m_is_value_required(false)
+        , m_is_value_required(is_value_required)
         , m_max_count(1)
     {
         // noop

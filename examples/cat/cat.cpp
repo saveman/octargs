@@ -8,6 +8,13 @@
 namespace oct_args_examples
 {
 
+namespace
+{
+
+static const std::string STANDARD_INPUT_NAME("-");
+
+}
+
 class execution_error : public std::exception
 {
 public:
@@ -64,21 +71,12 @@ public:
 
             if (results.get_positional_arguments().size() == 0)
             {
-                cat_contents("standard input", std::cin);
+                process_inputs({ STANDARD_INPUT_NAME });
+                cat_stream_contents("standard input", std::cin);
             }
             else
             {
-                for (const auto& argument : results.get_positional_arguments())
-                {
-                    if (argument == "-")
-                    {
-                        cat_contents("standard input", std::cin);
-                    }
-                    else
-                    {
-                        cat_file(argument);
-                    }
-                }
+                process_inputs(results.get_positional_arguments());
             }
         }
         catch (const oct::args::parse_exception& exc)
@@ -99,6 +97,21 @@ public:
 private:
     static const int LINE_NUMBER_LENGTH = 6;
 
+    void process_inputs(const std::vector<std::string>& input_names)
+    {
+        for (const auto& input_name : input_names)
+        {
+            if (input_name == STANDARD_INPUT_NAME)
+            {
+                cat_stream_contents("standard input", std::cin);
+            }
+            else
+            {
+                cat_file(input_name);
+            }
+        }
+    }
+
     void print_usage(std::ostream& /*os*/)
     {
         // TODO
@@ -112,10 +125,10 @@ private:
             throw execution_error(std::string("Cannot open file: ") + file_name);
         }
 
-        cat_contents(file_name, input_file);
+        cat_stream_contents(file_name, input_file);
     }
 
-    void cat_contents(const std::string& name, std::istream& input_stream)
+    void cat_stream_contents(const std::string& name, std::istream& input_stream)
     {
         std::string line;
 
@@ -130,7 +143,7 @@ private:
             cat_line(line);
         }
 
-        if (!input_stream.fail())
+        if (!input_stream.eof())
         {
             throw execution_error(std::string("Cannot print contents of: ") + name);
         }
