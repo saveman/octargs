@@ -44,15 +44,17 @@ public:
         m_data_ptr->m_positional_arguments_enabled = enabled;
     }
 
-    void add_switch(const string_vector_type& names)
+    argument_type& add_switch(const string_vector_type& names)
     {
         ensure_not_locked();
         check_names(names);
 
-        auto new_argument = std::make_shared<argument_type>(names, false);
+        auto new_argument = std::make_shared<argument_type>(names);
 
         m_data_ptr->m_arguments.emplace_back(new_argument);
         add_to_names_repository(new_argument);
+
+        return *new_argument;
     }
 
     void lock()
@@ -117,26 +119,36 @@ private:
             return false;
         }
 
+        // argument found, so remove element from input
         input_iterator.take_next();
 
         auto& arg_object_ptr = arg_iter->second;
 
+        string_type value_str;
+
         if (arg_object_ptr->is_value_required())
         {
-            // TODO: (planned) values parsing not implemented
-            throw parse_exception("Not implemented");
-        }
-        // TODO: (planned) check if multivalue
-        else
-        {
-            // check if already given
-            if (results_data_ptr->has_value(arg_object_ptr))
+            if (!input_iterator.has_more())
             {
-                throw parse_exception("Duplicated argument found");
+                throw parse_exception("Value missing in input");
             }
 
-            results_data_ptr->append_value(arg_object_ptr, TRAITS::get_true_literal());
+            value_str = input_iterator.take_next();
         }
+        else
+        {
+            value_str = TRAITS::get_true_literal();
+        }
+
+        // TODO: value checking (planned)
+
+        auto count = results_data_ptr->value_count(arg_object_ptr);
+        if (count >= arg_object_ptr->get_max_count())
+        {
+            throw parse_exception("Argument specified too many times");
+        }
+
+        results_data_ptr->append_value(arg_object_ptr, value_str);
 
         return true;
     }

@@ -60,6 +60,19 @@ struct basic_results_data
         return this->m_argument_values.find(arg_ptr) != this->m_argument_values.end();
     }
 
+    std::size_t value_count(const argument_ptr_type& arg_ptr) const
+    {
+        auto arg_values_iter = this->m_argument_values.find(arg_ptr);
+        if (arg_values_iter != this->m_argument_values.end())
+        {
+            return arg_values_iter->second.size();
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
     void append_value(const argument_ptr_type& arg_ptr, const string_type& value)
     {
         auto arg_values_iter = this->m_argument_values.find(arg_ptr);

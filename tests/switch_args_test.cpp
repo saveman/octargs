@@ -87,6 +87,49 @@ private:
         CPPUNIT_ASSERT_THROW(parser.parse(args), parse_exception);
     }
 
+    void test_multiple_values()
+    {
+        argument_table args1("appname", { "-v" });
+        argument_table args2("appname", { "-v", "-v", "-a" });
+        argument_table args4("appname", { "-v", "-v", "-v", "-v" });
+
+        parser parser;
+        parser.add_switch({ "-v" }).set_max_count(4);
+        parser.add_switch({ "-a" }).set_max_count(2);
+
+        auto results1 = parser.parse(args1);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), results1.count("-v"));
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), results1.count("-a"));
+        auto results2 = parser.parse(args2);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), results2.count("-v"));
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), results2.count("-a"));
+        auto results4 = parser.parse(args4);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4), results4.count("-v"));
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), results4.count("-a"));
+    }
+
+    void test_more_values_than_count()
+    {
+        argument_table args("appname", { "-v", "-v", "-v" });
+
+        parser parser;
+        parser.add_switch({ "-v" }).set_max_count(2);
+
+        CPPUNIT_ASSERT_THROW(parser.parse(args), parse_exception);
+    }
+
+    void test_unlimited_values()
+    {
+        const std::size_t COUNT = 543;
+        argument_table args("appname", std::vector<std::string>(COUNT, "--arg"));
+
+        parser parser;
+        parser.add_switch({ "--arg" }).set_unlimited_count();
+
+        auto results = parser.parse(args);
+        CPPUNIT_ASSERT_EQUAL(COUNT, results.count("--arg"));
+    }
+
     CPPUNIT_TEST_SUITE(switch_args_test);
     CPPUNIT_TEST(test_happy_hapth);
     CPPUNIT_TEST(test_no_names);
@@ -95,6 +138,8 @@ private:
     CPPUNIT_TEST(test_duplicated_names);
     CPPUNIT_TEST(test_conflicting_names);
     CPPUNIT_TEST(test_duplicated_value);
+    CPPUNIT_TEST(test_multiple_values);
+    CPPUNIT_TEST(test_more_values_than_count);
     CPPUNIT_TEST_SUITE_END();
 };
 

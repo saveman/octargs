@@ -11,20 +11,20 @@ CMAKE_OPTS=\
 	-DBUILD_EXAMPLES=True \
 	-DENABLE_COVERAGE=True
 
-all: doinstall runctest
+all: install runctest
 
-dobuild:
+build:
 	mkdir -p $(BUILD_DIR)
 	(cd $(BUILD_DIR) && cmake $(CMAKE_OPTS) $(SOURCE_DIR) )
 	(cd $(BUILD_DIR) && cmake --build .)
 
-doinstall: dobuild
+install: build
 	(cd $(BUILD_DIR) && cmake --build . -- install)
 
-runctest: dobuild
+runctest: build
 	(cd $(BUILD_DIR) && ctest --output-on-failure)
 
-examples: all
+examples: install
 	@echo "----------------------------"
 	@echo "CAT TEST 1"
 	@echo "----------------------------"
@@ -51,7 +51,7 @@ examples: all
 	@(cd ${INSTALL_DIR}/bin && ./octargs_cat -n --show-ends ${SOURCE_DIR}/LICENSE ${SOURCE_DIR}/README.md)
 	@echo "----------------------------"
 
-ctest_coverage: dobuild
+ctest_coverage: build
 	(cd $(BUILD_DIR) && find . -name "*.gcda" -exec rm -f {} \; )
 	(cd $(BUILD_DIR) && cmake --build . -- ctest_coverage)
 
