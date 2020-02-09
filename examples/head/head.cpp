@@ -86,7 +86,6 @@ public:
             if (results.get_positional_arguments().size() == 0)
             {
                 process_inputs({ STANDARD_INPUT_NAME });
-                head_istream("standard input", std::cin);
             }
             else
             {
@@ -164,6 +163,7 @@ private:
         m_print_header = false;
         m_bytes_limit = -1;
         m_lines_limit = -1;
+        m_first_input = true;
     }
 
     void process_inputs(const std::vector<std::string>& input_names)
@@ -178,6 +178,8 @@ private:
             {
                 head_file(input_name);
             }
+
+            m_first_input = false;
         }
     }
 
@@ -203,6 +205,10 @@ private:
 
         if (m_print_header)
         {
+            if (!m_first_input)
+            {
+                std::cout << "\n";
+            }
             std::cout << "==> " << name << " <==\n";
         }
 
@@ -216,18 +222,18 @@ private:
         long long bytes_count = 0;
         long long lines_count = 0;
 
-        char c;
         while (((m_bytes_limit < 0) || (bytes_count < m_bytes_limit))
             && ((m_lines_limit < 0) || (lines_count < m_lines_limit)))
         {
-            c = input_stream.get();
-            if (input_stream.eof())
+            char c = 0;
+
+            if (!input_stream.get(c))
             {
+                if (!input_stream.eof())
+                {
+                    throw execution_error(std::string("Cannot print contents of: ") + name);
+                }
                 break;
-            }
-            else if (input_stream.fail())
-            {
-                throw execution_error(std::string("Cannot print contents of: ") + name);
             }
 
             ++bytes_count;
@@ -242,17 +248,13 @@ private:
 
             std::cout << c;
         }
-
-        if (m_print_header)
-        {
-            std::cout << "\n";
-        }
     }
 
     bool m_print_header;
     char m_line_terminator;
     long long m_bytes_limit;
     long long m_lines_limit;
+    bool m_first_input;
 };
 
 } // namespace oct_args_examples
