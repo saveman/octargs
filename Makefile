@@ -71,6 +71,8 @@ run_examples_head:
 	@echo "----------------------------"
 	@(cd $(EXEDIR) && ./$(EXENAME) -n 5 -h $(SOURCE_DIR)/LICENSE $(SOURCE_DIR)/README.md - - < $(SOURCE_DIR)/LICENSE)
 	@echo "----------------------------"
+	@(cd $(EXEDIR) && ./$(EXENAME) -n=5 -h $(SOURCE_DIR)/LICENSE $(SOURCE_DIR)/README.md - - < $(SOURCE_DIR)/LICENSE)
+	@echo "----------------------------"
 
 examples_head: install
 	$(MAKE) run_examples_head EXEDIR=$(INSTALL_DIR)/bin EXENAME=octargs_head
@@ -81,7 +83,7 @@ coverage_prepare: build
 ctest_coverage: coverage_prepare
 	(cd $(BUILD_DIR) && cmake --build . -- ctest_coverage)
 
-ctest_coverage_open: ctest_coverage examples_cat examples_head
+ctest_coverage_open: ctest_coverage
 	(cd $(BUILD_DIR) && pdetach xdg-open ./ctest_coverage/index.html)
 
 total_coverage: coverage_prepare

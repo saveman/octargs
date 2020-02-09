@@ -19,13 +19,15 @@ template <>
 class char_utils<char>
 {
 public:
-    static bool is_space(char c)
+    using char_type = char;
+
+    static bool is_space(char_type c)
     {
         return std::isspace(cast(c));
     }
 
 private:
-    static int cast(char c)
+    static int cast(char_type c)
     {
         return static_cast<unsigned char>(c);
     }
@@ -35,13 +37,15 @@ template <>
 class char_utils<wchar_t>
 {
 public:
-    static bool is_space(wchar_t c)
+    using char_type = wchar_t;
+
+    static bool is_space(char_type c)
     {
         return std::iswspace(cast(c));
     }
 
 private:
-    static wint_t cast(wchar_t c)
+    static wint_t cast(char_type c)
     {
         return static_cast<wint_t>(c);
     }

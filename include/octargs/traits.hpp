@@ -27,6 +27,11 @@ public:
         static const string_type TRUE_LITERAL("true");
         return TRUE_LITERAL;
     }
+
+    static char_type get_equal_literal()
+    {
+        return '=';
+    }
 };
 
 template <>
@@ -41,6 +46,11 @@ public:
     {
         static const string_type true_literal(L"true");
         return true_literal;
+    }
+
+    static char_type get_equal_literal()
+    {
+        return L'=';
     }
 };
 

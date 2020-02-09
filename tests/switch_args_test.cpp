@@ -66,6 +66,10 @@ private:
         CPPUNIT_ASSERT_THROW(parser.add_switch({ "a " }), configuration_exception);
         CPPUNIT_ASSERT_THROW(parser.add_switch({ " b" }), configuration_exception);
         CPPUNIT_ASSERT_THROW(parser.add_switch({ " c " }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({ "=c" }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({ "c=" }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({ "c==c" }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({ "=" }), configuration_exception);
     }
 
     void test_duplicated_names()

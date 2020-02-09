@@ -12,7 +12,7 @@ namespace args
 class char_utils_test : public test_fixture
 {
 private:
-    void test_char_isspace()
+    void test_char_is_space()
     {
         using utils = internal::char_utils<char>;
 
@@ -25,7 +25,7 @@ private:
         CPPUNIT_ASSERT(!utils::is_space('#'));
     }
 
-    void test_wchar_isspace()
+    void test_wchar_is_space()
     {
         using utils = internal::char_utils<wchar_t>;
 
@@ -39,8 +39,8 @@ private:
     }
 
     CPPUNIT_TEST_SUITE(char_utils_test);
-    CPPUNIT_TEST(test_wchar_isspace);
-    CPPUNIT_TEST(test_char_isspace);
+    CPPUNIT_TEST(test_char_is_space);
+    CPPUNIT_TEST(test_wchar_is_space);
     CPPUNIT_TEST_SUITE_END();
 };
 

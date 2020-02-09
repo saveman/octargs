@@ -182,6 +182,81 @@ private:
         CPPUNIT_ASSERT_THROW(parser.add_switch({ "--value" }), configuration_exception);
     }
 
+    void test_equal_mode_value_valid()
+    {
+        argument_table args1("appname", { "-v=0" });
+        argument_table args2("appname", { "-v=value" });
+
+        parser parser;
+        parser.add_valarg({ "-v" });
+
+        auto results1 = parser.parse(args1);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), results1.count("-v"));
+        CPPUNIT_ASSERT_EQUAL(std::string("0"), results1.values("-v")[0]);
+
+        auto results2 = parser.parse(args2);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), results2.count("-v"));
+        CPPUNIT_ASSERT_EQUAL(std::string("value"), results2.values("-v")[0]);
+    }
+
+    void test_equal_mode_value_mixed()
+    {
+        argument_table args1("appname", { "-v=0", "-v", "1" });
+        argument_table args2("appname", { "-v=value1", "-a", "-v", "value2", "-v=value3" });
+
+        parser parser;
+        parser.add_valarg({ "-v" }).set_unlimited_count();
+        parser.add_switch({ "-a" });
+
+        auto results1 = parser.parse(args1);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), results1.count("-v"));
+        CPPUNIT_ASSERT_EQUAL(std::string("0"), results1.values("-v")[0]);
+        CPPUNIT_ASSERT_EQUAL(std::string("1"), results1.values("-v")[1]);
+
+        auto results2 = parser.parse(args2);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(3), results2.count("-v"));
+        CPPUNIT_ASSERT_EQUAL(std::string("value1"), results2.values("-v")[0]);
+        CPPUNIT_ASSERT_EQUAL(std::string("value2"), results2.values("-v")[1]);
+        CPPUNIT_ASSERT_EQUAL(std::string("value3"), results2.values("-v")[2]);
+    }
+
+    void test_equal_value_invalid()
+    {
+        argument_table args1("appname", { "=0" });
+        argument_table args2("appname", { "-a=1" });
+        argument_table args3("appname", { "-s=xyz" });
+
+        parser parser;
+        parser.add_valarg({ "-v" });
+        parser.add_switch({ "-s" });
+
+        CPPUNIT_ASSERT_THROW(parser.parse(args1), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args2), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args3), parse_exception);
+    }
+
+    void test_equal_value_with_equal()
+    {
+        argument_table args1("appname", { "-v==0" });
+        argument_table args2("appname", { "-v", "=value" });
+        argument_table args3("appname", { "-v=a==b" });
+
+        parser parser;
+        parser.add_valarg({ "-v" });
+
+        auto results1 = parser.parse(args1);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), results1.count("-v"));
+        CPPUNIT_ASSERT_EQUAL(std::string("=0"), results1.values("-v")[0]);
+
+        auto results2 = parser.parse(args2);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), results2.count("-v"));
+        CPPUNIT_ASSERT_EQUAL(std::string("=value"), results2.values("-v")[0]);
+
+        auto results3 = parser.parse(args3);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), results3.count("-v"));
+        CPPUNIT_ASSERT_EQUAL(std::string("a==b"), results3.values("-v")[0]);
+    }
+
     CPPUNIT_TEST_SUITE(valarg_args_test);
     CPPUNIT_TEST(test_happy_hapth);
     CPPUNIT_TEST(test_no_names);
@@ -195,6 +270,10 @@ private:
     CPPUNIT_TEST(test_missing_value);
     CPPUNIT_TEST(test_value_is_arg_name);
     CPPUNIT_TEST(test_switch_valarg_name_conflict);
+    CPPUNIT_TEST(test_equal_mode_value_valid);
+    CPPUNIT_TEST(test_equal_mode_value_mixed);
+    CPPUNIT_TEST(test_equal_value_invalid);
+    CPPUNIT_TEST(test_equal_value_with_equal);
     CPPUNIT_TEST_SUITE_END();
 };
 

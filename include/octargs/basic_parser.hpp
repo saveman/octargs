@@ -75,7 +75,7 @@ public:
         // parse named arguments
         while (input_iterator.has_more())
         {
-            if (!parse_named_argument(input_iterator, results_data_ptr))
+            if (!parse_named_argument(results_data_ptr, input_iterator))
             {
                 break;
             }
@@ -110,48 +110,81 @@ private:
         return *new_argument;
     }
 
-    bool parse_named_argument(argument_table_iterator& input_iterator, const results_data_ptr_type& results_data_ptr)
+    bool parse_argument_value(
+        const results_data_ptr_type& results_data_ptr, const argument_ptr_type& argument, const string_type& value_str)
     {
-        auto& input_value = input_iterator.peek_next();
-
-        auto arg_iter = m_data_ptr->m_names_repository.find(input_value);
-        if (arg_iter == m_data_ptr->m_names_repository.end())
-        {
-            return false;
-        }
-
-        // argument found, so remove element from input
-        input_iterator.take_next();
-
-        auto& arg_object_ptr = arg_iter->second;
-
-        string_type value_str;
-
-        if (arg_object_ptr->is_value_required())
-        {
-            if (!input_iterator.has_more())
-            {
-                throw parse_exception("Value missing in input");
-            }
-
-            value_str = input_iterator.take_next();
-        }
-        else
-        {
-            value_str = TRAITS::get_true_literal();
-        }
-
         // TODO: value checking (planned)
 
-        auto count = results_data_ptr->value_count(arg_object_ptr);
-        if (count >= arg_object_ptr->get_max_count())
+        auto count = results_data_ptr->value_count(argument);
+        if (count >= argument->get_max_count())
         {
             throw parse_exception("Argument specified too many times");
         }
 
-        results_data_ptr->append_value(arg_object_ptr, value_str);
+        results_data_ptr->append_value(argument, value_str);
 
         return true;
+    }
+
+    bool parse_named_argument(const results_data_ptr_type& results_data_ptr, argument_table_iterator& input_iterator)
+    {
+        auto& input_value = input_iterator.peek_next();
+
+        auto equal_char_pos = input_value.find(TRAITS::get_equal_literal());
+        if (equal_char_pos == string_type::npos)
+        {
+            auto arg_iter = m_data_ptr->m_names_repository.find(input_value);
+            if (arg_iter == m_data_ptr->m_names_repository.end())
+            {
+                return false;
+            }
+
+            // argument found, so remove element from input
+            input_iterator.take_next();
+
+            auto& arg_object_ptr = arg_iter->second;
+
+            string_type value_str;
+            if (arg_object_ptr->is_value_required())
+            {
+                if (!input_iterator.has_more())
+                {
+                    throw parse_exception("Value missing in input");
+                }
+
+                value_str = input_iterator.take_next();
+            }
+            else
+            {
+                value_str = TRAITS::get_true_literal();
+            }
+
+            return parse_argument_value(results_data_ptr, arg_object_ptr, value_str);
+        }
+        else
+        {
+            auto name_str = input_value.substr(0, equal_char_pos);
+
+            auto arg_iter = m_data_ptr->m_names_repository.find(name_str);
+            if (arg_iter == m_data_ptr->m_names_repository.end())
+            {
+                return false;
+            }
+
+            auto value_str = input_value.substr(equal_char_pos + 1);
+
+            // argument found, so remove element from input
+            input_iterator.take_next();
+
+            auto& arg_object_ptr = arg_iter->second;
+
+            if (!arg_object_ptr->is_value_required())
+            {
+                throw parse_exception("Value specified for switch argument");
+            }
+
+            return parse_argument_value(results_data_ptr, arg_object_ptr, value_str);
+        }
     }
 
     void parse_positional_argument(
@@ -238,6 +271,10 @@ private:
             if (char_utils_type::is_space(c))
             {
                 throw configuration_exception("Argument name must not contain whitespace characters");
+            }
+            if (c == TRAITS::get_equal_literal())
+            {
+                throw configuration_exception("Argument name must not contain equal characters");
             }
         }
     }
