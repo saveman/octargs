@@ -3,26 +3,35 @@ CURRENT_DIR:=$(PWD)
 SOURCE_DIR:=$(CURRENT_DIR)
 BUILD_DIR:=$(CURRENT_DIR)/_build
 INSTALL_DIR:=$(CURRENT_DIR)/_install
+PACKAGE_DIR:=$(CURRENT_DIR)/_package
+
+CPUCOUNT=$(shell nproc)
 
 CMAKE_OPTS=\
+	-DRELEASE_VERSION=${RELEASE_VERSION} \
 	-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
+	-DCPACK_PACKAGE_DIRECTORY=$(PACKAGE_DIR) \
 	-DCMAKE_BUILD_TYPE=Debug \
 	-DBUILD_TESTS=True \
 	-DBUILD_EXAMPLES=True \
 	-DENABLE_COVERAGE=True
 
-all: install runctest
+all: install test
 
 build:
 	mkdir -p $(BUILD_DIR)
+	mkdir -p ${PACKAGE_DIR}
 	(cd $(BUILD_DIR) && cmake $(CMAKE_OPTS) $(SOURCE_DIR) )
-	(cd $(BUILD_DIR) && cmake --build .)
+	(cd $(BUILD_DIR) && cmake --build . -j $(CPUCOUNT))
 
 install: build
 	(cd $(BUILD_DIR) && cmake --build . -- install)
 
-runctest: build
+test: build
 	(cd $(BUILD_DIR) && ctest --output-on-failure)
+
+package: install
+	(cd $(BUILD_DIR) && cmake --build . -- package)
 
 run_examples_cat:
 	@echo "----------------------------"

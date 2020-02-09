@@ -24,4 +24,5 @@ include(GNUInstallDirs)
 
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT examples
 )
