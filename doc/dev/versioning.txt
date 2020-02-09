@@ -1,0 +1,30 @@
+Versioning scheme:
+
+1. The version consist of elements:
+major.minor.patch
+
+2. Major version is changed when there are (breaking) design changes.
+Examples:
+- Required C++ version (e.g. C++11 changed to C++17).
+
+3. Minor version is changed when there are feature changes.
+Example:
+- New value type handling added.
+- New auto-documentation feature added.
+- New auto-documentation formatter introduced.
+If possible the API backward compatibility should be kept.
+
+4. Patch version is used for bugfix related changes.
+There should be no API changes unless it is crucial to fix the bug.
+
+-------------
+
+Branching & tagging:
+
+1. For each major.minor version a branch is created.
+
+2. For each release a tag is set on a proper branch.
+
+3. Branch name must be: octargs-<major>.<minor>
+
+4. Tag name must be: v<major>.<minor>.<patch>
