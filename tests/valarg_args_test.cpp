@@ -15,9 +15,9 @@ private:
         argument_table args("appname", { "-a", "valuea", "-c", "valuec", "-a", "valueb" });
 
         parser parser;
-        parser.add_valarg({ "-a" }).set_unlimited_count();
-        parser.add_valarg({ "-b" });
-        parser.add_valarg({ "-c" });
+        parser.add_valued({ "-a" }).set_unlimited_count();
+        parser.add_valued({ "-b" });
+        parser.add_valued({ "-c" });
 
         auto results = parser.parse(args);
 
@@ -37,7 +37,7 @@ private:
     void test_no_names()
     {
         parser parser;
-        CPPUNIT_ASSERT_THROW(parser.add_valarg({}), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({}), configuration_exception);
     }
 
     void test_multiple_names()
@@ -45,10 +45,10 @@ private:
         argument_table args("appname", { "-a", "val1", "-d", "val2", "--beta", "val3" });
 
         parser parser;
-        parser.add_valarg({ "-a", "--alpha" });
-        parser.add_valarg({ "-b", "--beta", "beatrice" });
-        parser.add_valarg({ "-c", "--charlie" });
-        parser.add_valarg({ "-d", "--delta" });
+        parser.add_valued({ "-a", "--alpha" });
+        parser.add_valued({ "-b", "--beta", "beatrice" });
+        parser.add_valued({ "-c", "--charlie" });
+        parser.add_valued({ "-d", "--delta" });
 
         auto results = parser.parse(args);
         CPPUNIT_ASSERT(results.has_value("-a"));
@@ -65,25 +65,25 @@ private:
     void test_invalid_name()
     {
         parser parser;
-        CPPUNIT_ASSERT_THROW(parser.add_valarg({ "" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_valarg({ "\t\n\r" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_valarg({ "a " }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_valarg({ " b" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_valarg({ " c " }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ "" }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ "\t\n\r" }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ "a " }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ " b" }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ " c " }), configuration_exception);
     }
 
     void test_duplicated_names()
     {
         parser parser;
-        CPPUNIT_ASSERT_THROW(parser.add_valarg({ "-h", "-h" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_valarg({ "-v", "--version", "-v" }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ "-h", "-h" }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ "-v", "--version", "-v" }), configuration_exception);
     }
 
     void test_conflicting_names()
     {
         parser parser;
-        parser.add_valarg({ "-h" });
-        CPPUNIT_ASSERT_THROW(parser.add_valarg({ "-h" }), configuration_exception);
+        parser.add_valued({ "-h" });
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ "-h" }), configuration_exception);
     }
 
     void test_duplicated_value()
@@ -91,7 +91,7 @@ private:
         argument_table args("appname", { "-v", "0", "-v", "1" });
 
         parser parser;
-        parser.add_valarg({ "-v" });
+        parser.add_valued({ "-v" });
 
         CPPUNIT_ASSERT_THROW(parser.parse(args), parse_exception);
     }
@@ -103,8 +103,8 @@ private:
         argument_table args4("appname", { "-v", "0", "-v", "2", "-v", "0", "-v", "1" });
 
         parser parser;
-        parser.add_valarg({ "-v" }).set_max_count(4);
-        parser.add_valarg({ "-a" }).set_max_count(2);
+        parser.add_valued({ "-v" }).set_max_count(4);
+        parser.add_valued({ "-a" }).set_max_count(2);
 
         auto results1 = parser.parse(args1);
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), results1.count("-v"));
@@ -122,7 +122,7 @@ private:
         argument_table args("appname", { "-v", "1", "-v", "2", "-v", "3" });
 
         parser parser;
-        parser.add_valarg({ "-v" }).set_max_count(2);
+        parser.add_valued({ "-v" }).set_max_count(2);
 
         CPPUNIT_ASSERT_THROW(parser.parse(args), parse_exception);
     }
@@ -133,7 +133,7 @@ private:
         argument_table args("appname", std::vector<std::string>(COUNT, "--arg"));
 
         parser parser;
-        parser.add_valarg({ "--arg" }).set_unlimited_count();
+        parser.add_valued({ "--arg" }).set_unlimited_count();
 
         auto results = parser.parse(args);
         CPPUNIT_ASSERT_EQUAL(COUNT, results.count("--arg"));
@@ -145,8 +145,8 @@ private:
         argument_table args2("appname", { "-a", "1", "-v" });
 
         parser parser;
-        parser.add_valarg({ "-a" });
-        parser.add_valarg({ "-v" });
+        parser.add_valued({ "-a" });
+        parser.add_valued({ "-v" });
 
         CPPUNIT_ASSERT_THROW(parser.parse(args1), parse_exception);
         CPPUNIT_ASSERT_THROW(parser.parse(args2), parse_exception);
@@ -157,8 +157,8 @@ private:
         argument_table args("appname", { "-v", "-a", "-a", "-v" });
 
         parser parser;
-        parser.add_valarg({ "-a" });
-        parser.add_valarg({ "-v" });
+        parser.add_valued({ "-a" });
+        parser.add_valued({ "-v" });
 
         auto results = parser.parse(args);
 
@@ -175,9 +175,9 @@ private:
     {
         parser parser;
         parser.add_switch({ "-s", "--switch" });
-        parser.add_valarg({ "-v", "--value" });
-        CPPUNIT_ASSERT_THROW(parser.add_valarg({ "-s" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_valarg({ "--switch" }), configuration_exception);
+        parser.add_valued({ "-v", "--value" });
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ "-s" }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ "--switch" }), configuration_exception);
         CPPUNIT_ASSERT_THROW(parser.add_switch({ "-v" }), configuration_exception);
         CPPUNIT_ASSERT_THROW(parser.add_switch({ "--value" }), configuration_exception);
     }
@@ -188,7 +188,7 @@ private:
         argument_table args2("appname", { "-v=value" });
 
         parser parser;
-        parser.add_valarg({ "-v" });
+        parser.add_valued({ "-v" });
 
         auto results1 = parser.parse(args1);
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), results1.count("-v"));
@@ -205,7 +205,7 @@ private:
         argument_table args2("appname", { "-v=value1", "-a", "-v", "value2", "-v=value3" });
 
         parser parser;
-        parser.add_valarg({ "-v" }).set_unlimited_count();
+        parser.add_valued({ "-v" }).set_unlimited_count();
         parser.add_switch({ "-a" });
 
         auto results1 = parser.parse(args1);
@@ -227,7 +227,7 @@ private:
         argument_table args3("appname", { "-s=xyz" });
 
         parser parser;
-        parser.add_valarg({ "-v" });
+        parser.add_valued({ "-v" });
         parser.add_switch({ "-s" });
 
         CPPUNIT_ASSERT_THROW(parser.parse(args1), parse_exception);
@@ -242,7 +242,7 @@ private:
         argument_table args3("appname", { "-v=a==b" });
 
         parser parser;
-        parser.add_valarg({ "-v" });
+        parser.add_valued({ "-v" });
 
         auto results1 = parser.parse(args1);
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), results1.count("-v"));

@@ -22,14 +22,14 @@ private:
         parser parser;
         parser.add_switch({ "-v" });
         parser.add_switch({ "--help" });
-        parser.set_positional_arguments_enabled(true);
+        parser.add_positional("values", false, true);
 
         auto results = parser.parse(argc, argv);
         CPPUNIT_ASSERT(results.has_value("-v"));
         CPPUNIT_ASSERT(!results.has_value("--help"));
-        CPPUNIT_ASSERT_EQUAL(std::size_t(2), results.get_positional_arguments().size());
-        CPPUNIT_ASSERT_EQUAL(std::string("argument1"), results.get_positional_arguments()[0]);
-        CPPUNIT_ASSERT_EQUAL(std::string("argument2"), results.get_positional_arguments()[1]);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), results.count("values"));
+        CPPUNIT_ASSERT_EQUAL(std::string("argument1"), results.values("values")[0]);
+        CPPUNIT_ASSERT_EQUAL(std::string("argument2"), results.values("values")[1]);
     }
 
     void test_argument_table_parse()
@@ -39,14 +39,14 @@ private:
         parser parser;
         parser.add_switch({ "-v" });
         parser.add_switch({ "--help" });
-        parser.set_positional_arguments_enabled(true);
+        parser.add_positional("values", false, true);
 
         auto results = parser.parse(args);
         CPPUNIT_ASSERT(results.has_value("-v"));
         CPPUNIT_ASSERT(!results.has_value("--help"));
-        CPPUNIT_ASSERT_EQUAL(std::size_t(2), results.get_positional_arguments().size());
-        CPPUNIT_ASSERT_EQUAL(std::string("argument1"), results.get_positional_arguments()[0]);
-        CPPUNIT_ASSERT_EQUAL(std::string("argument2"), results.get_positional_arguments()[1]);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), results.count("values"));
+        CPPUNIT_ASSERT_EQUAL(std::string("argument1"), results.values("values")[0]);
+        CPPUNIT_ASSERT_EQUAL(std::string("argument2"), results.values("values")[1]);
     }
 
     void test_invalid_results_arg()

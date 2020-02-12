@@ -50,6 +50,7 @@ set(${PROJECT_NAME}_HEADERS
     include/octargs/internal/basic_parser_data.hpp
     include/octargs/internal/basic_results_data.hpp
     include/octargs/internal/char_utils.hpp
+    include/octargs/internal/misc.hpp
     include/octargs/internal/string_utils.hpp
     include/octargs/basic_argument.hpp
     include/octargs/basic_argument_table.hpp

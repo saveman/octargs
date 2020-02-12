@@ -34,7 +34,6 @@ struct basic_results_data
         : m_parser_data_ptr(parser_data_ptr)
         , m_input_table()
         , m_app_name()
-        , m_positional_arguments()
         , m_argument_values()
     {
         // noop
@@ -48,11 +47,6 @@ struct basic_results_data
     void set_app_name(const string_type& app_name)
     {
         this->m_app_name = app_name;
-    }
-
-    void append_positional_argument(const string_type& arg_value)
-    {
-        this->m_positional_arguments.push_back(arg_value);
     }
 
     bool has_value(const argument_ptr_type& arg_ptr) const
@@ -101,7 +95,6 @@ struct basic_results_data
 
     argument_table_type m_input_table;
     string_type m_app_name;
-    string_vector_type m_positional_arguments;
     std::map<argument_ptr_type, string_vector_type> m_argument_values;
 };
 

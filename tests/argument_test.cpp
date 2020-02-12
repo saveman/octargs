@@ -18,8 +18,9 @@ private:
     void test_single_name()
     {
         argument::string_vector names = { "a" };
-        argument arg(names, false);
-        CPPUNIT_ASSERT_EQUAL(false, arg.is_value_required());
+        argument arg(argument_kind::VALUED, names, true);
+        CPPUNIT_ASSERT_EQUAL(argument_kind::VALUED, arg.get_kind());
+        CPPUNIT_ASSERT_EQUAL(true, arg.is_required());
         CPPUNIT_ASSERT_EQUAL(names.size(), arg.get_names().size());
         for (std::size_t i = 0; i < names.size(); ++i)
         {
@@ -30,8 +31,9 @@ private:
     void test_multi_name()
     {
         argument::string_vector names = { "a", "bbb", "cc" };
-        argument arg(names, false);
-        CPPUNIT_ASSERT_EQUAL(false, arg.is_value_required());
+        argument arg(argument_kind::VALUED, names, true);
+        CPPUNIT_ASSERT_EQUAL(argument_kind::VALUED, arg.get_kind());
+        CPPUNIT_ASSERT_EQUAL(true, arg.is_required());
         CPPUNIT_ASSERT_EQUAL(names.size(), arg.get_names().size());
         for (std::size_t i = 0; i < names.size(); ++i)
         {
@@ -39,21 +41,27 @@ private:
         }
     }
 
-    void test_has_value()
+    void test_kind()
     {
         argument::string_vector names = { "a" };
 
-        argument arg1(names, false);
-        CPPUNIT_ASSERT_EQUAL(false, arg1.is_value_required());
+        argument arg1(argument_kind::SWITCH, names, false);
+        CPPUNIT_ASSERT_EQUAL(argument_kind::SWITCH, arg1.get_kind());
+        CPPUNIT_ASSERT_EQUAL(false, arg1.is_required());
 
-        argument arg2(names, true);
-        CPPUNIT_ASSERT_EQUAL(true, arg2.is_value_required());
+        argument arg2(argument_kind::VALUED, names, false);
+        CPPUNIT_ASSERT_EQUAL(argument_kind::VALUED, arg2.get_kind());
+        CPPUNIT_ASSERT_EQUAL(false, arg2.is_required());
+
+        argument arg3(argument_kind::POSITIONAL, names, true);
+        CPPUNIT_ASSERT_EQUAL(argument_kind::POSITIONAL, arg3.get_kind());
+        CPPUNIT_ASSERT_EQUAL(true, arg3.is_required());
     }
 
     CPPUNIT_TEST_SUITE(argument_test);
     CPPUNIT_TEST(test_single_name);
     CPPUNIT_TEST(test_multi_name);
-    CPPUNIT_TEST(test_has_value);
+    CPPUNIT_TEST(test_kind);
     CPPUNIT_TEST_SUITE_END();
 }; // namespace args
 

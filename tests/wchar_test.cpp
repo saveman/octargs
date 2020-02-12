@@ -26,13 +26,13 @@ private:
 
         wparser parser;
         parser.add_switch({ L"-v", L"--version" });
-        parser.set_positional_arguments_enabled(true);
+        parser.add_positional(L"values", false, true);
 
         auto results = parser.parse(test_argc, test_argv);
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), results.get_positional_arguments().size());
-        CPPUNIT_ASSERT(results.get_positional_arguments()[0] == test_argv[2]);
-        CPPUNIT_ASSERT(results.get_positional_arguments()[1] == test_argv[3]);
-        CPPUNIT_ASSERT(results.get_positional_arguments()[2] == test_argv[4]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), results.count(L"values"));
+        CPPUNIT_ASSERT(results.values(L"values")[0] == test_argv[2]);
+        CPPUNIT_ASSERT(results.values(L"values")[1] == test_argv[3]);
+        CPPUNIT_ASSERT(results.values(L"values")[2] == test_argv[4]);
         CPPUNIT_ASSERT(results.has_value(L"--version"));
     }
 

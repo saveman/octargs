@@ -41,11 +41,6 @@ public:
         return m_results_data_ptr->m_app_name;
     }
 
-    const string_vector_type& get_positional_arguments() const
-    {
-        return m_results_data_ptr->m_positional_arguments;
-    }
-
     bool has_value(const string_type& arg_name) const
     {
         return count(arg_name) > 0;

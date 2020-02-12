@@ -55,12 +55,12 @@ public:
 
             oct::args::parser arg_parser;
 
-            arg_parser.set_positional_arguments_enabled(true);
-            arg_parser.add_valarg({ "-b", "--bytes" }); // TODO: .set_description("number of bytes to print");
-            arg_parser.add_valarg({ "-n", "--lines" }); // TODO: .set_description("number of lines to print");
+            arg_parser.add_valued({ "-b", "--bytes" }); // TODO: .set_description("number of bytes to print");
+            arg_parser.add_valued({ "-n", "--lines" }); // TODO: .set_description("number of lines to print");
             arg_parser.add_switch({ "-h", "--header" }); // TODO: .set_description("print header with input name");
             arg_parser.add_switch(
                 { "-z", "--zero-terminated" }); // TODO: .set_description("line delimiter is NUL, not newline");
+            arg_parser.add_positional("FILES", false, true);
 
             auto results = arg_parser.parse(argc, argv);
 
@@ -83,13 +83,13 @@ public:
                 m_lines_limit = DEFAULT_LINES_LIMIT;
             }
 
-            if (results.get_positional_arguments().size() == 0)
+            if (results.count("FILES") == 0)
             {
                 process_inputs({ STANDARD_INPUT_NAME });
             }
             else
             {
-                process_inputs(results.get_positional_arguments());
+                process_inputs(results.values("FILES"));
             }
         }
         catch (const oct::args::parse_exception& exc)

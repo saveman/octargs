@@ -59,9 +59,9 @@ public:
 
             oct::args::parser arg_parser;
 
-            arg_parser.set_positional_arguments_enabled(true);
             arg_parser.add_switch({ "-E", "--show-ends" }); // TODO: .set_description("display $ at end of each line");
             arg_parser.add_switch({ "-n", "--number" }); // TODO: .set_description("number all output lines");
+            arg_parser.add_positional("FILES", false, true);
 
             auto results = arg_parser.parse(argc, argv);
 
@@ -69,14 +69,13 @@ public:
             m_print_line_ends = results.has_value("--show-ends");
             m_print_line_numbers = results.has_value("--number");
 
-            if (results.get_positional_arguments().size() == 0)
+            if (results.count("FILES") > 0)
             {
-                process_inputs({ STANDARD_INPUT_NAME });
-                cat_stream_contents("standard input", std::cin);
+                process_inputs(results.values("FILES"));
             }
             else
             {
-                process_inputs(results.get_positional_arguments());
+                process_inputs({ STANDARD_INPUT_NAME });
             }
         }
         catch (const oct::args::parse_exception& exc)
