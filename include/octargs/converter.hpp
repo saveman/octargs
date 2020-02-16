@@ -13,27 +13,6 @@ namespace oct
 namespace args
 {
 
-template <typename STRING, typename DATA>
-inline DATA stox(const STRING& value_str, std::size_t* end_ptr, int base = 0)
-{
-    using data_type = DATA;
-    using limits_type = std::numeric_limits<data_type>;
-
-    static_assert(sizeof(data_type) < sizeof(long long), "Unsupported data type");
-
-    auto result = std::stoll(value_str, end_ptr, base);
-
-    if (result < limits_type::min())
-    {
-        throw std::out_of_range("Value lower than allowed minimum");
-    }
-    if (result > limits_type::max())
-    {
-        throw std::out_of_range("Value higher than allowed maximum");
-    }
-    return static_cast<data_type>(result);
-}
-
 template <typename TRAITS, typename DATA>
 class basic_converter
 {
@@ -157,13 +136,13 @@ class basic_converter<TRAITS, long double> : public basic_floating_point_convert
 
 template <typename TRAITS>
 class basic_converter<TRAITS, short>
-    : public basic_integer_converter<TRAITS, short, stox<typename TRAITS::string_type, short>>
+    : public basic_integer_converter<TRAITS, short, internal::stox<typename TRAITS::string_type, short>>
 {
 };
 
 template <typename TRAITS>
-class basic_converter<TRAITS, unsigned short>
-    : public basic_integer_converter<TRAITS, unsigned short, stox<typename TRAITS::string_type, unsigned short>>
+class basic_converter<TRAITS, unsigned short> : public basic_integer_converter<TRAITS, unsigned short,
+                                                    internal::stox<typename TRAITS::string_type, unsigned short>>
 {
 };
 
@@ -174,7 +153,7 @@ class basic_converter<TRAITS, int> : public basic_integer_converter<TRAITS, int,
 
 template <typename TRAITS>
 class basic_converter<TRAITS, unsigned int>
-    : public basic_integer_converter<TRAITS, unsigned int, stox<typename TRAITS::string_type, unsigned int>>
+    : public basic_integer_converter<TRAITS, unsigned int, internal::stox<typename TRAITS::string_type, unsigned int>>
 {
 };
 
@@ -202,4 +181,4 @@ class basic_converter<TRAITS, unsigned long long>
 } // namespace args
 } // namespace oct
 
-#endif /*OCTARGS_CONVERTER_HPP_*/
+#endif // OCTARGS_CONVERTER_HPP_

@@ -36,4 +36,4 @@ public:
 } // namespace args
 } // namespace oct
 
-#endif /*OCTARGS_TESTS_TEST_FIXTURE_HPP_*/
+#endif // OCTARGS_TESTS_TEST_FIXTURE_HPP_

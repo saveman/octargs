@@ -116,4 +116,4 @@ private:
 } // namespace args
 } // namespace oct
 
-#endif /*OCTARGS_ARGUMENT_TABLE_HPP_*/
+#endif // OCTARGS_ARGUMENT_TABLE_HPP_

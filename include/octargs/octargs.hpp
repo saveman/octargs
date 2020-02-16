@@ -33,4 +33,4 @@ using wparser = storing_parser<>;
 } // namespace args
 } // namespace oct
 
-#endif /*OCTARGS_OCTARGS_HPP_*/
+#endif // OCTARGS_OCTARGS_HPP_

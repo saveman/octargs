@@ -25,6 +25,7 @@ private:
         parser.add_positional("values", false, true);
 
         auto results = parser.parse(argc, argv);
+        CPPUNIT_ASSERT_EQUAL(std::string("appname"), results.get_app_name());
         CPPUNIT_ASSERT(results.has_value("-v"));
         CPPUNIT_ASSERT(!results.has_value("--help"));
         CPPUNIT_ASSERT_EQUAL(std::size_t(2), results.count("values"));

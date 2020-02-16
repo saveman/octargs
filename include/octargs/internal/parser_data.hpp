@@ -66,4 +66,4 @@ struct basic_parser_data : public basic_parser_data_iface<TRAITS>
 } // namespace args
 } // namespace oct
 
-#endif /*OCTARGS_PARSER_DATA_HPP_*/
+#endif // OCTARGS_PARSER_DATA_HPP_

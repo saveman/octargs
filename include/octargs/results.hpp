@@ -33,7 +33,7 @@ public:
 
     const string_type& get_app_name() const
     {
-        return m_results_data_ptr->m_app_name;
+        return m_results_data_ptr->get_app_name();
     }
 
     bool has_value(const string_type& arg_name) const
@@ -61,4 +61,4 @@ using wresults = basic_results<traits<wchar_t>>;
 } // namespace args
 } // namespace oct
 
-#endif /*OCTARGS_RESULTS_HPP_*/
+#endif // OCTARGS_RESULTS_HPP_

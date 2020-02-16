@@ -25,4 +25,4 @@ inline bool is_space(wchar_t c)
 } // namespace args
 } // namespace oct
 
-#endif /*OCTARGS_CHAR_UTILS_HPP_*/
+#endif // OCTARGS_CHAR_UTILS_HPP_

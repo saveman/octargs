@@ -28,9 +28,9 @@ public:
     using values_storage_type = VALUES_STORAGE;
 
     using argument_type = basic_argument<TRAITS, VALUES_STORAGE>;
-    using switch_argument_type = switch_argument<TRAITS, VALUES_STORAGE>;
-    using valued_argument_type = valued_argument<TRAITS, VALUES_STORAGE>;
-    using positional_argument_type = positional_argument<TRAITS, VALUES_STORAGE>;
+    using switch_argument_type = basic_switch_argument<TRAITS, VALUES_STORAGE>;
+    using valued_argument_type = basic_valued_argument<TRAITS, VALUES_STORAGE>;
+    using positional_argument_type = basic_positional_argument<TRAITS, VALUES_STORAGE>;
 
     using char_type = typename TRAITS::char_type;
     using string_type = typename TRAITS::string_type;
@@ -135,21 +135,21 @@ private:
     void parse_argument_value(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
         const argument_ptr_type& argument, const string_type& value_str)
     {
-        // TODO: value checking (planned)
-
         auto count = results_data_ptr->value_count(argument);
         if (count >= argument->get_max_count())
         {
             throw parse_exception("Argument specified too many times");
         }
 
-        results_data_ptr->append_value(argument, value_str);
-
-        auto storage_handler = argument->get_storage_handler();
-        if (storage_handler)
+        // if there is a handler call it first, to make sure the value
+        // is only stored if handler accepted it.
+        auto handler = argument->get_handler();
+        if (handler)
         {
-            storage_handler->store(values_storage, value_str);
+            handler->parse(values_storage, value_str);
         }
+
+        results_data_ptr->append_value(argument, value_str);
     }
 
     bool parse_named_argument(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
@@ -173,7 +173,7 @@ private:
 
             switch (arg_object_ptr->get_kind())
             {
-            case argument_kind::VALUED:
+            case internal::argument_kind::VALUED:
                 // argument found, so remove element from input
                 input_iterator.take_next();
 
@@ -185,7 +185,7 @@ private:
                 value_str = input_iterator.take_next();
                 break;
 
-            case argument_kind::SWITCH:
+            case internal::argument_kind::SWITCH:
                 // argument found, so remove element from input
                 input_iterator.take_next();
 
@@ -216,14 +216,14 @@ private:
 
             switch (arg_object_ptr->get_kind())
             {
-            case argument_kind::VALUED:
+            case internal::argument_kind::VALUED:
                 // argument found, so remove element from input
                 input_iterator.take_next();
 
                 parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, value_str);
                 return true;
 
-            case argument_kind::SWITCH:
+            case internal::argument_kind::SWITCH:
                 // argument found, so remove element from input
                 input_iterator.take_next();
 
@@ -293,10 +293,9 @@ private:
     {
         auto name_count = names.size();
 
-        /* check number of names */
         if (name_count < 1)
         {
-            throw configuration_exception("No switch names given");
+            throw configuration_exception("No names given");
         }
 
         ensure_names_characters_valid(names);
@@ -306,7 +305,6 @@ private:
 
     void ensure_names_not_registered(const string_vector_type& names)
     {
-        /* check if names are not already registered */
         for (const auto& name : names)
         {
             if (m_data_ptr->m_names_repository.find(name) != m_data_ptr->m_names_repository.end())
@@ -381,4 +379,4 @@ private:
 } // namespace args
 } // namespace oct
 
-#endif /*OCTARGS_PARSER_HPP_*/
+#endif // OCTARGS_PARSER_HPP_

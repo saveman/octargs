@@ -33,4 +33,4 @@ class basic_argument_tag
 } // namespace args
 } // namespace oct
 
-#endif /*OCTARGS_MISC_HPP_*/
+#endif // OCTARGS_MISC_HPP_

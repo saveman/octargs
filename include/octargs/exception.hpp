@@ -8,9 +8,8 @@ namespace oct
 {
 namespace args
 {
-/**
- * Exception: base class for all exceptions.
- */
+
+/// Exception: base class for all exceptions.
 class exception : public std::exception
 {
 public:
@@ -36,9 +35,7 @@ private:
     std::string m_message;
 };
 
-/**
- * Exception: invalid parser configuration requested.
- */
+/// Exception: invalid parser configuration requested.
 class configuration_exception : public exception
 {
 public:
@@ -55,9 +52,7 @@ public:
     }
 };
 
-/**
- * Exception: invalid input data given to parser.
- */
+/// Exception: invalid input data given to parser.
 class parse_exception : public exception
 {
 public:
@@ -74,9 +69,7 @@ public:
     }
 };
 
-/**
- * Exception: logic error occurred (e.g. non-existing argument requested).
- */
+/// Exception: logic error occurred (e.g. non-existing argument requested).
 class logic_error_exception : public exception
 {
 public:
@@ -96,4 +89,4 @@ public:
 } // namespace args
 } // namespace oct
 
-#endif /*OCTARGS_EXCEPTION_HPP_*/
+#endif // OCTARGS_EXCEPTION_HPP_

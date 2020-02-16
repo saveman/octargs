@@ -58,8 +58,29 @@ inline STRING trim_copy(STRING s)
     return s;
 }
 
+template <typename STRING, typename DATA>
+inline DATA stox(const STRING& value_str, std::size_t* end_ptr, int base = 0)
+{
+    using data_type = DATA;
+    using limits_type = std::numeric_limits<data_type>;
+
+    static_assert(sizeof(data_type) < sizeof(long long), "Unsupported data type");
+
+    auto result = std::stoll(value_str, end_ptr, base);
+
+    if (result < limits_type::min())
+    {
+        throw std::out_of_range("Value lower than allowed minimum");
+    }
+    if (result > limits_type::max())
+    {
+        throw std::out_of_range("Value higher than allowed maximum");
+    }
+    return static_cast<data_type>(result);
+}
+
 } // namespace internal
 } // namespace args
 } // namespace oct
 
-#endif /*OCTARGS_STRING_UTILS_HPP_*/
+#endif // OCTARGS_STRING_UTILS_HPP_

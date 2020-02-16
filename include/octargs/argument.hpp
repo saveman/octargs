@@ -6,53 +6,55 @@
 #include <string>
 #include <vector>
 
+#include "argument_type_handler.hpp"
 #include "exception.hpp"
+#include "internal/argument_handler.hpp"
+#include "internal/argument_kind.hpp"
 #include "internal/misc.hpp"
-#include "storage_handler.hpp"
 
 namespace oct
 {
 namespace args
 {
 
-enum class argument_kind
-{
-    SWITCH,
-    VALUED,
-    POSITIONAL
-};
+// TODO: replace KIND with "is_accepting_equal_value" "is_accepting_separate_value", "is_positional"
 
-template <typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
+template <typename TRAITS, typename VALUES_STORAGE>
 class basic_argument : public internal::basic_argument_tag
 {
 public:
     using traits_type = TRAITS;
     using values_storage_type = VALUES_STORAGE;
     using string_vector_type = typename TRAITS::string_vector_type;
-    using storage_handler_type = storage_handler<TRAITS, VALUES_STORAGE>;
-    using storage_handler_ptr_type = std::shared_ptr<const storage_handler_type>;
+    using handler_type = internal::basic_argument_handler<TRAITS, VALUES_STORAGE>;
+    using handler_ptr_type = std::shared_ptr<const handler_type>;
 
-    template <typename VALUE>
-    void set_storage_location(VALUE values_storage_type::*member_ptr)
+    template <typename DATA>
+    using type_handler_type = basic_argument_type_handler<DATA, TRAITS, VALUES_STORAGE>;
+
+    template <typename DATA>
+    type_handler_type<DATA>& set_type()
     {
-        using value_type = VALUE;
-        using handler_type = member_storage_handler<traits_type, values_storage_type, value_type>;
+        auto handler_ptr = std::make_shared<type_handler_type<DATA>>();
 
-        set_storage_handler(std::make_shared<handler_type>(member_ptr));
+        set_handler(handler_ptr);
+
+        return *handler_ptr;
     }
 
-    template <typename VALUE>
-    void set_storage_location(std::vector<VALUE> values_storage_type::*member_ptr)
+    template <typename DATA>
+    type_handler_type<DATA>& set_type_and_storage(DATA values_storage_type::*member_ptr)
     {
-        using value_type = VALUE;
-        using container_type = std::vector<VALUE>;
-        using handler_type
-            = member_container_storage_handler<traits_type, values_storage_type, container_type, value_type>;
-
-        set_storage_handler(std::make_shared<handler_type>(member_ptr));
+        return set_type<DATA>().set_storage(member_ptr);
     }
 
-    argument_kind get_kind() const
+    template <typename DATA>
+    type_handler_type<DATA>& set_type_and_storage(std::vector<DATA> values_storage_type::*member_ptr)
+    {
+        return set_type<DATA>().set_storage(member_ptr);
+    }
+
+    internal::argument_kind get_kind() const
     {
         return m_kind;
     }
@@ -72,18 +74,13 @@ public:
         return m_max_count;
     }
 
-    storage_handler_ptr_type get_storage_handler() const
+    handler_ptr_type get_handler() const
     {
-        return m_storage;
-    }
-
-    void set_storage_handler(storage_handler_ptr_type storage)
-    {
-        m_storage = storage;
+        return m_handler_ptr;
     }
 
 protected:
-    basic_argument(argument_kind kind, const string_vector_type& names)
+    basic_argument(internal::argument_kind kind, const string_vector_type& names)
         : m_kind(kind)
         , m_names(names)
         , m_is_required(false)
@@ -108,38 +105,43 @@ protected:
     }
 
 private:
-    /** Argument kind (type). */
-    argument_kind m_kind;
-    /** Argument names. */
+    void set_handler(handler_ptr_type handler_ptr)
+    {
+        m_handler_ptr = handler_ptr;
+    }
+
+    /// Argument kind (type).
+    internal::argument_kind m_kind;
+    /// Argument names.
     const string_vector_type m_names;
-    /** Flag: is argument required. */
+    /// Flag: is argument required.
     bool m_is_required;
-    /** Maximum number of occurrences in input. */
+    /// Maximum number of occurrences in input.
     std::size_t m_max_count;
-    /** Values storage handler. */
-    storage_handler_ptr_type m_storage;
+    /// Values storage handler.
+    handler_ptr_type m_handler_ptr;
 };
 
 template <typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
-class switch_argument : public basic_argument<TRAITS, VALUES_STORAGE>
+class basic_switch_argument : public basic_argument<TRAITS, VALUES_STORAGE>
 {
 public:
     using base_type = basic_argument<TRAITS, VALUES_STORAGE>;
     using string_vector_type = typename TRAITS::string_vector_type;
 
-    switch_argument(const string_vector_type& names)
-        : base_type(argument_kind::SWITCH, names)
+    basic_switch_argument(const string_vector_type& names)
+        : base_type(internal::argument_kind::SWITCH, names)
     {
         // noop
     }
 
-    switch_argument& set_max_count(std::size_t count)
+    basic_switch_argument& set_max_count(std::size_t count)
     {
         base_type::set_max_count(count);
         return *this;
     }
 
-    switch_argument& set_unlimited_count()
+    basic_switch_argument& set_unlimited_count()
     {
         base_type::set_unlimited_count();
         return *this;
@@ -147,25 +149,25 @@ public:
 };
 
 template <typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
-class valued_argument : public basic_argument<TRAITS, VALUES_STORAGE>
+class basic_valued_argument : public basic_argument<TRAITS, VALUES_STORAGE>
 {
 public:
     using base_type = basic_argument<TRAITS, VALUES_STORAGE>;
     using string_vector = typename TRAITS::string_vector_type;
 
-    valued_argument(const string_vector& names)
-        : base_type(argument_kind::VALUED, names)
+    basic_valued_argument(const string_vector& names)
+        : base_type(internal::argument_kind::VALUED, names)
     {
         // noop
     }
 
-    valued_argument& set_max_count(std::size_t count)
+    basic_valued_argument& set_max_count(std::size_t count)
     {
         base_type::set_max_count(count);
         return *this;
     }
 
-    valued_argument& set_unlimited_count()
+    basic_valued_argument& set_unlimited_count()
     {
         base_type::set_unlimited_count();
         return *this;
@@ -173,14 +175,14 @@ public:
 };
 
 template <typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
-class positional_argument : public basic_argument<TRAITS, VALUES_STORAGE>
+class basic_positional_argument : public basic_argument<TRAITS, VALUES_STORAGE>
 {
 public:
     using base_type = basic_argument<TRAITS, VALUES_STORAGE>;
     using string_vector = typename TRAITS::string_vector_type;
 
-    positional_argument(const string_vector& names, bool required, bool multivalue)
-        : base_type(argument_kind::POSITIONAL, names)
+    basic_positional_argument(const string_vector& names, bool required, bool multivalue)
+        : base_type(internal::argument_kind::POSITIONAL, names)
     {
         base_type::set_required(required);
         if (multivalue)
@@ -193,4 +195,4 @@ public:
 } // namespace args
 } // namespace oct
 
-#endif /*OCTARGS_ARGUMENT_HPP_*/
+#endif // OCTARGS_ARGUMENT_HPP_

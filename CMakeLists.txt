@@ -47,19 +47,21 @@ target_include_directories(${PROJECT_NAME}
 )
 
 set(${PROJECT_NAME}_HEADERS
-    include/octargs/internal/parser_data.hpp
-    include/octargs/internal/results_data.hpp
+    include/octargs/internal/argument_handler.hpp
+    include/octargs/internal/argument_kind.hpp
     include/octargs/internal/char_utils.hpp
     include/octargs/internal/misc.hpp
+    include/octargs/internal/parser_data.hpp
+    include/octargs/internal/results_data.hpp
     include/octargs/internal/string_utils.hpp
     include/octargs/argument_table.hpp
+    include/octargs/argument_type_handler.hpp
     include/octargs/argument.hpp
     include/octargs/converter.hpp
     include/octargs/exception.hpp
     include/octargs/octargs.hpp
     include/octargs/parser.hpp
     include/octargs/results.hpp
-    include/octargs/storage_handler.hpp
     include/octargs/traits.hpp
 )
 

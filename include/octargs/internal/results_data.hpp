@@ -36,6 +36,11 @@ public:
         // noop
     }
 
+    const string_type& get_app_name() const
+    {
+        return m_app_name;
+    }
+
     void set_app_name(const string_type& app_name)
     {
         this->m_app_name = app_name;
@@ -128,4 +133,4 @@ private:
 } // namespace args
 } // namespace oct
 
-#endif /*OCTARGS_RESULTS_DATA_HPP_*/
+#endif // OCTARGS_RESULTS_DATA_HPP_

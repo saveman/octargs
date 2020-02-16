@@ -97,4 +97,4 @@ public:
 } // namespace args
 } // namespace oct
 
-#endif /*OCTARGS_TRAITS_HPP_*/
+#endif // OCTARGS_TRAITS_HPP_

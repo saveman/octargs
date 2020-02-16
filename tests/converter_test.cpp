@@ -15,32 +15,6 @@ namespace args
 class converter_test : public test_fixture
 {
 private:
-    template <typename VALUE>
-    void test_stox()
-    {
-        using value_type = VALUE;
-        using string_type = std::string;
-        using limits_type = std::numeric_limits<value_type>;
-
-        long long min_value = limits_type::min();
-        long long max_value = limits_type::max();
-
-        CPPUNIT_ASSERT_EQUAL(value_type(0), (stox<string_type, value_type>(std::string("0"), nullptr, 0)));
-        CPPUNIT_ASSERT_EQUAL(
-            value_type(min_value), (stox<string_type, value_type>(std::to_string(min_value), nullptr, 0)));
-        CPPUNIT_ASSERT_EQUAL(
-            value_type(max_value), (stox<string_type, value_type>(std::to_string(max_value), nullptr, 0)));
-
-        CPPUNIT_ASSERT_THROW(
-            (stox<string_type, value_type>(std::to_string(min_value - 1), nullptr, 0)), std::out_of_range);
-        CPPUNIT_ASSERT_THROW(
-            (stox<string_type, value_type>(std::to_string(max_value + 1), nullptr, 0)), std::out_of_range);
-
-        std::size_t end_pos;
-        CPPUNIT_ASSERT_EQUAL(value_type(10), (stox<string_type, value_type>(std::string("10a"), &end_pos, 0)));
-        CPPUNIT_ASSERT_EQUAL(std::size_t(2), end_pos);
-    }
-
     void test_string_converter()
     {
         using traits_type = traits<char>;
@@ -171,9 +145,6 @@ private:
     }
 
     CPPUNIT_TEST_SUITE(converter_test);
-    CPPUNIT_TEST(test_stox<short>);
-    CPPUNIT_TEST(test_stox<unsigned short>);
-    CPPUNIT_TEST(test_stox<unsigned int>);
     CPPUNIT_TEST(test_string_converter);
     CPPUNIT_TEST(test_wstring_converter);
     CPPUNIT_TEST(test_bool_converter);

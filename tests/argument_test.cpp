@@ -15,16 +15,16 @@ class argument_test : public test_fixture
 {
 private:
     using string_vector_type = traits<char>::string_vector_type;
-    using basic_argument_type = basic_argument<traits<char>>;
-    using switch_argument_type = switch_argument<traits<char>>;
-    using valued_argument_type = valued_argument<traits<char>>;
-    using positional_argument_type = positional_argument<traits<char>>;
+    using basic_argument_type = basic_argument<traits<char>, internal::null_values_storage>;
+    using switch_argument_type = basic_switch_argument<traits<char>>;
+    using valued_argument_type = basic_valued_argument<traits<char>>;
+    using positional_argument_type = basic_positional_argument<traits<char>>;
 
     void test_single_name()
     {
         string_vector_type names = { "a" };
         switch_argument_type arg(names);
-        CPPUNIT_ASSERT_EQUAL(argument_kind::SWITCH, arg.get_kind());
+        CPPUNIT_ASSERT_EQUAL(internal::argument_kind::SWITCH, arg.get_kind());
         CPPUNIT_ASSERT_EQUAL(false, arg.is_required());
         CPPUNIT_ASSERT_EQUAL(names.size(), arg.get_names().size());
         for (std::size_t i = 0; i < names.size(); ++i)
@@ -37,7 +37,7 @@ private:
     {
         string_vector_type names = { "a", "bbb", "cc" };
         switch_argument_type arg(names);
-        CPPUNIT_ASSERT_EQUAL(argument_kind::SWITCH, arg.get_kind());
+        CPPUNIT_ASSERT_EQUAL(internal::argument_kind::SWITCH, arg.get_kind());
         CPPUNIT_ASSERT_EQUAL(false, arg.is_required());
         CPPUNIT_ASSERT_EQUAL(names.size(), arg.get_names().size());
         for (std::size_t i = 0; i < names.size(); ++i)
@@ -51,7 +51,7 @@ private:
         string_vector_type names = { "a" };
 
         switch_argument_type arg1(names);
-        CPPUNIT_ASSERT_EQUAL(argument_kind::SWITCH, arg1.get_kind());
+        CPPUNIT_ASSERT_EQUAL(internal::argument_kind::SWITCH, arg1.get_kind());
         CPPUNIT_ASSERT_EQUAL(false, arg1.is_required());
     }
 
@@ -60,7 +60,7 @@ private:
         string_vector_type names = { "a" };
 
         valued_argument_type arg1(names);
-        CPPUNIT_ASSERT_EQUAL(argument_kind::VALUED, arg1.get_kind());
+        CPPUNIT_ASSERT_EQUAL(internal::argument_kind::VALUED, arg1.get_kind());
         CPPUNIT_ASSERT_EQUAL(false, arg1.is_required());
     }
 
@@ -69,12 +69,12 @@ private:
         string_vector_type names = { "a" };
 
         positional_argument_type arg1(names, false, false);
-        CPPUNIT_ASSERT_EQUAL(argument_kind::POSITIONAL, arg1.get_kind());
+        CPPUNIT_ASSERT_EQUAL(internal::argument_kind::POSITIONAL, arg1.get_kind());
         CPPUNIT_ASSERT_EQUAL(false, arg1.is_required());
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), arg1.get_max_count());
 
         positional_argument_type arg2(names, true, true);
-        CPPUNIT_ASSERT_EQUAL(argument_kind::POSITIONAL, arg2.get_kind());
+        CPPUNIT_ASSERT_EQUAL(internal::argument_kind::POSITIONAL, arg2.get_kind());
         CPPUNIT_ASSERT_EQUAL(true, arg2.is_required());
         CPPUNIT_ASSERT_GREATER(static_cast<std::size_t>(1000), arg2.get_max_count());
     }

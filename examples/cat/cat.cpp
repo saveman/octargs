@@ -152,11 +152,11 @@ public:
 
             arg_parser.add_switch({ "--help" }); // TODO: remove
 
-            arg_parser.add_switch({ "-E", "--show-ends" }).set_storage_location(&cat_app_settings::m_print_line_ends);
+            arg_parser.add_switch({ "-E", "--show-ends" }).set_type_and_storage(&cat_app_settings::m_print_line_ends);
             // TODO: .set_description("display $ at end of each line");
-            arg_parser.add_switch({ "-n", "--number" }).set_storage_location(&cat_app_settings::m_print_line_numbers);
+            arg_parser.add_switch({ "-n", "--number" }).set_type_and_storage(&cat_app_settings::m_print_line_numbers);
             // TODO: .set_description("number all output lines");
-            arg_parser.add_positional("FILES", false, true).set_storage_location(&cat_app_settings::m_input_names);
+            arg_parser.add_positional("FILES", false, true).set_type_and_storage(&cat_app_settings::m_input_names);
 
             cat_app_settings settings;
 
