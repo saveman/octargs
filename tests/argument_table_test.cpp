@@ -1,8 +1,9 @@
+#include "../include/octargs/argument_table.hpp"
+
 #include <array>
 
 #include "test_fixture.hpp"
 
-#include "../include/octargs/basic_argument_table.hpp"
 #include "../include/octargs/traits.hpp"
 
 namespace oct

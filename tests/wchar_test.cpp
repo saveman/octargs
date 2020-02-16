@@ -1,6 +1,6 @@
+#include "../include/octargs/parser.hpp"
 #include "test_fixture.hpp"
 
-#include "../include/octargs/basic_parser.hpp"
 #include "../include/octargs/traits.hpp"
 
 namespace oct

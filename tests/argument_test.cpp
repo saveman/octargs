@@ -1,8 +1,9 @@
+#include "../include/octargs/argument.hpp"
+
 #include <array>
 
 #include "test_fixture.hpp"
 
-#include "../include/octargs/basic_argument.hpp"
 #include "../include/octargs/traits.hpp"
 
 namespace oct
@@ -13,14 +14,18 @@ namespace args
 class argument_test : public test_fixture
 {
 private:
-    using argument = basic_argument<traits<char>>;
+    using string_vector_type = traits<char>::string_vector_type;
+    using basic_argument_type = basic_argument<traits<char>>;
+    using switch_argument_type = switch_argument<traits<char>>;
+    using valued_argument_type = valued_argument<traits<char>>;
+    using positional_argument_type = positional_argument<traits<char>>;
 
     void test_single_name()
     {
-        argument::string_vector names = { "a" };
-        argument arg(argument_kind::VALUED, names, true);
-        CPPUNIT_ASSERT_EQUAL(argument_kind::VALUED, arg.get_kind());
-        CPPUNIT_ASSERT_EQUAL(true, arg.is_required());
+        string_vector_type names = { "a" };
+        switch_argument_type arg(names);
+        CPPUNIT_ASSERT_EQUAL(argument_kind::SWITCH, arg.get_kind());
+        CPPUNIT_ASSERT_EQUAL(false, arg.is_required());
         CPPUNIT_ASSERT_EQUAL(names.size(), arg.get_names().size());
         for (std::size_t i = 0; i < names.size(); ++i)
         {
@@ -30,10 +35,10 @@ private:
 
     void test_multi_name()
     {
-        argument::string_vector names = { "a", "bbb", "cc" };
-        argument arg(argument_kind::VALUED, names, true);
-        CPPUNIT_ASSERT_EQUAL(argument_kind::VALUED, arg.get_kind());
-        CPPUNIT_ASSERT_EQUAL(true, arg.is_required());
+        string_vector_type names = { "a", "bbb", "cc" };
+        switch_argument_type arg(names);
+        CPPUNIT_ASSERT_EQUAL(argument_kind::SWITCH, arg.get_kind());
+        CPPUNIT_ASSERT_EQUAL(false, arg.is_required());
         CPPUNIT_ASSERT_EQUAL(names.size(), arg.get_names().size());
         for (std::size_t i = 0; i < names.size(); ++i)
         {
@@ -41,27 +46,45 @@ private:
         }
     }
 
-    void test_kind()
+    void test_switch_type()
     {
-        argument::string_vector names = { "a" };
+        string_vector_type names = { "a" };
 
-        argument arg1(argument_kind::SWITCH, names, false);
+        switch_argument_type arg1(names);
         CPPUNIT_ASSERT_EQUAL(argument_kind::SWITCH, arg1.get_kind());
         CPPUNIT_ASSERT_EQUAL(false, arg1.is_required());
+    }
 
-        argument arg2(argument_kind::VALUED, names, false);
-        CPPUNIT_ASSERT_EQUAL(argument_kind::VALUED, arg2.get_kind());
-        CPPUNIT_ASSERT_EQUAL(false, arg2.is_required());
+    void test_valued_type()
+    {
+        string_vector_type names = { "a" };
 
-        argument arg3(argument_kind::POSITIONAL, names, true);
-        CPPUNIT_ASSERT_EQUAL(argument_kind::POSITIONAL, arg3.get_kind());
-        CPPUNIT_ASSERT_EQUAL(true, arg3.is_required());
+        valued_argument_type arg1(names);
+        CPPUNIT_ASSERT_EQUAL(argument_kind::VALUED, arg1.get_kind());
+        CPPUNIT_ASSERT_EQUAL(false, arg1.is_required());
+    }
+
+    void test_positional_type()
+    {
+        string_vector_type names = { "a" };
+
+        positional_argument_type arg1(names, false, false);
+        CPPUNIT_ASSERT_EQUAL(argument_kind::POSITIONAL, arg1.get_kind());
+        CPPUNIT_ASSERT_EQUAL(false, arg1.is_required());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), arg1.get_max_count());
+
+        positional_argument_type arg2(names, true, true);
+        CPPUNIT_ASSERT_EQUAL(argument_kind::POSITIONAL, arg2.get_kind());
+        CPPUNIT_ASSERT_EQUAL(true, arg2.is_required());
+        CPPUNIT_ASSERT_GREATER(static_cast<std::size_t>(1000), arg2.get_max_count());
     }
 
     CPPUNIT_TEST_SUITE(argument_test);
     CPPUNIT_TEST(test_single_name);
     CPPUNIT_TEST(test_multi_name);
-    CPPUNIT_TEST(test_kind);
+    CPPUNIT_TEST(test_switch_type);
+    CPPUNIT_TEST(test_valued_type);
+    CPPUNIT_TEST(test_positional_type);
     CPPUNIT_TEST_SUITE_END();
 }; // namespace args
 

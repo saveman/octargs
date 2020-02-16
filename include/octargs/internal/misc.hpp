@@ -13,4 +13,24 @@
 #define DEPRECATED
 #endif
 
+namespace oct
+{
+namespace args
+{
+namespace internal
+{
+
+struct null_values_storage
+{
+    // empty
+};
+
+class basic_argument_tag
+{
+};
+
+} // namespace internal
+} // namespace args
+} // namespace oct
+
 #endif /*OCTARGS_MISC_HPP_*/

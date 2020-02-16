@@ -15,7 +15,6 @@ class string_utils_test : public test_fixture
 private:
     void test_trim_char()
     {
-        using utils_type = internal::string_utils<traits<char>>;
         using string_type = std::string;
 
         const string_type TRIM_LEAD_INPUT(" \tAAA \n");
@@ -28,27 +27,26 @@ private:
         string_type tmp;
 
         tmp = TRIM_LEAD_INPUT;
-        CPPUNIT_ASSERT_EQUAL(TRIM_LEAD_OUTPUT, utils_type::trim_lead_copy(tmp));
+        CPPUNIT_ASSERT_EQUAL(TRIM_LEAD_OUTPUT, internal::trim_lead_copy(tmp));
         CPPUNIT_ASSERT_EQUAL(TRIM_LEAD_INPUT, tmp);
-        utils_type::trim_lead(tmp);
+        internal::trim_lead(tmp);
         CPPUNIT_ASSERT_EQUAL(TRIM_LEAD_OUTPUT, tmp);
 
         tmp = TRIM_TRAIL_INPUT;
-        CPPUNIT_ASSERT_EQUAL(TRIM_TRAIL_OUTPUT, utils_type::trim_trail_copy(tmp));
+        CPPUNIT_ASSERT_EQUAL(TRIM_TRAIL_OUTPUT, internal::trim_trail_copy(tmp));
         CPPUNIT_ASSERT_EQUAL(TRIM_TRAIL_INPUT, tmp);
-        utils_type::trim_trail(tmp);
+        internal::trim_trail(tmp);
         CPPUNIT_ASSERT_EQUAL(TRIM_TRAIL_OUTPUT, tmp);
 
         tmp = TRIM_INPUT;
-        CPPUNIT_ASSERT_EQUAL(TRIM_OUTPUT, utils_type::trim_copy(tmp));
+        CPPUNIT_ASSERT_EQUAL(TRIM_OUTPUT, internal::trim_copy(tmp));
         CPPUNIT_ASSERT_EQUAL(TRIM_INPUT, tmp);
-        utils_type::trim(tmp);
+        internal::trim(tmp);
         CPPUNIT_ASSERT_EQUAL(TRIM_OUTPUT, tmp);
     }
 
     void test_trim_wchar()
     {
-        using utils_type = internal::string_utils<traits<wchar_t>>;
         using string_type = std::wstring;
 
         const string_type TRIM_LEAD_INPUT(L" \tAAA \n");
@@ -61,21 +59,21 @@ private:
         string_type tmp;
 
         tmp = TRIM_LEAD_INPUT;
-        CPPUNIT_ASSERT(TRIM_LEAD_OUTPUT == utils_type::trim_lead_copy(tmp));
+        CPPUNIT_ASSERT(TRIM_LEAD_OUTPUT == internal::trim_lead_copy(tmp));
         CPPUNIT_ASSERT(TRIM_LEAD_INPUT == tmp);
-        utils_type::trim_lead(tmp);
+        internal::trim_lead(tmp);
         CPPUNIT_ASSERT(TRIM_LEAD_OUTPUT == tmp);
 
         tmp = TRIM_TRAIL_INPUT;
-        CPPUNIT_ASSERT(TRIM_TRAIL_OUTPUT == utils_type::trim_trail_copy(tmp));
+        CPPUNIT_ASSERT(TRIM_TRAIL_OUTPUT == internal::trim_trail_copy(tmp));
         CPPUNIT_ASSERT(TRIM_TRAIL_INPUT == tmp);
-        utils_type::trim_trail(tmp);
+        internal::trim_trail(tmp);
         CPPUNIT_ASSERT(TRIM_TRAIL_OUTPUT == tmp);
 
         tmp = TRIM_INPUT;
-        CPPUNIT_ASSERT(TRIM_OUTPUT == utils_type::trim_copy(tmp));
+        CPPUNIT_ASSERT(TRIM_OUTPUT == internal::trim_copy(tmp));
         CPPUNIT_ASSERT(TRIM_INPUT == tmp);
-        utils_type::trim(tmp);
+        internal::trim(tmp);
         CPPUNIT_ASSERT(TRIM_OUTPUT == tmp);
     }
 

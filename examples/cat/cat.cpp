@@ -33,72 +33,36 @@ private:
     std::string m_message;
 };
 
-class cat_app
+struct cat_app_settings
 {
-public:
-    cat_app()
-        : m_line_number(0)
-        , m_print_line_ends(false)
+    cat_app_settings()
+        : m_print_line_ends(false)
         , m_print_line_numbers(false)
+        , m_input_names()
     {
         // noop
     }
 
-    int run(int argc, char* argv[])
+    bool m_print_line_ends;
+    bool m_print_line_numbers;
+    std::vector<std::string> m_input_names;
+};
+
+class cat_app_engine
+{
+public:
+    cat_app_engine(const cat_app_settings& settings)
+        : m_settings(settings)
+        , m_line_number(0)
     {
-        m_line_number = 1;
-        m_print_line_ends = false;
-        m_print_line_numbers = false;
-
-        try
-        {
-            // cat [OPTION]... [FILE]...
-            //
-            // Concatenate FILE(s) to standard output.
-            // With no FILE, or when FILE is -, read standard input.
-
-            oct::args::parser arg_parser;
-
-            arg_parser.add_switch({ "-E", "--show-ends" }); // TODO: .set_description("display $ at end of each line");
-            arg_parser.add_switch({ "-n", "--number" }); // TODO: .set_description("number all output lines");
-            arg_parser.add_positional("FILES", false, true);
-
-            auto results = arg_parser.parse(argc, argv);
-
-            // TODO: refactor when 'value storage API is ready'
-            m_print_line_ends = results.has_value("--show-ends");
-            m_print_line_numbers = results.has_value("--number");
-
-            if (results.count("FILES") > 0)
-            {
-                process_inputs(results.values("FILES"));
-            }
-            else
-            {
-                process_inputs({ STANDARD_INPUT_NAME });
-            }
-        }
-        catch (const oct::args::parse_exception& exc)
-        {
-            std::cerr << "Invalid arguments: " << exc.what() << std::endl;
-            print_usage(std::cerr);
-            return EXIT_FAILURE;
-        }
-        catch (const std::exception& exc)
-        {
-            std::cerr << "FATAL ERROR: " << exc.what() << std::endl;
-            return EXIT_FAILURE;
-        }
-
-        return EXIT_SUCCESS;
+        // noop
     }
 
-private:
-    static const int LINE_NUMBER_LENGTH = 6;
-
-    void process_inputs(const std::vector<std::string>& input_names)
+    void execute()
     {
-        for (const auto& input_name : input_names)
+        m_line_number = 1;
+
+        for (const auto& input_name : m_settings.m_input_names)
         {
             if (input_name == STANDARD_INPUT_NAME)
             {
@@ -111,10 +75,8 @@ private:
         }
     }
 
-    void print_usage(std::ostream& /*os*/)
-    {
-        // TODO
-    }
+private:
+    static const int LINE_NUMBER_LENGTH = 6;
 
     void cat_file(const std::string& file_name)
     {
@@ -150,14 +112,14 @@ private:
 
     void cat_line(const std::string& line)
     {
-        if (m_print_line_numbers)
+        if (m_settings.m_print_line_numbers)
         {
             std::cout << std::setw(LINE_NUMBER_LENGTH) << (m_line_number++) << "  ";
         }
 
         std::cout << line;
 
-        if (m_print_line_ends)
+        if (m_settings.m_print_line_ends)
         {
             std::cout << '$';
         }
@@ -165,9 +127,69 @@ private:
         std::cout << "\n";
     }
 
+    cat_app_settings m_settings;
     int m_line_number;
-    bool m_print_line_ends;
-    bool m_print_line_numbers;
+};
+
+class cat_app
+{
+public:
+    cat_app()
+    {
+        // noop
+    }
+
+    int run(int argc, char* argv[])
+    {
+        try
+        {
+            // cat [OPTION]... [FILE]...
+            //
+            // Concatenate FILE(s) to standard output.
+            // With no FILE, or when FILE is -, read standard input.
+
+            oct::args::storing_parser<cat_app_settings> arg_parser;
+
+            arg_parser.add_switch({ "--help" }); // TODO: remove
+
+            arg_parser.add_switch({ "-E", "--show-ends" }).set_storage_location(&cat_app_settings::m_print_line_ends);
+            // TODO: .set_description("display $ at end of each line");
+            arg_parser.add_switch({ "-n", "--number" }).set_storage_location(&cat_app_settings::m_print_line_numbers);
+            // TODO: .set_description("number all output lines");
+            arg_parser.add_positional("FILES", false, true).set_storage_location(&cat_app_settings::m_input_names);
+
+            cat_app_settings settings;
+
+            arg_parser.parse(argc, argv, settings);
+
+            // TODO: (planned) - change when defaults values support is ready
+            if (settings.m_input_names.empty())
+            {
+                settings.m_input_names.push_back(STANDARD_INPUT_NAME);
+            }
+
+            cat_app_engine(settings).execute();
+        }
+        catch (const oct::args::parse_exception& exc)
+        {
+            std::cerr << "Invalid arguments: " << exc.what() << std::endl;
+            print_usage(std::cerr);
+            return EXIT_FAILURE;
+        }
+        catch (const std::exception& exc)
+        {
+            std::cerr << "FATAL ERROR: " << exc.what() << std::endl;
+            return EXIT_FAILURE;
+        }
+
+        return EXIT_SUCCESS;
+    }
+
+private:
+    void print_usage(std::ostream& /*os*/)
+    {
+        // TODO
+    }
 };
 
 } // namespace oct_args_examples

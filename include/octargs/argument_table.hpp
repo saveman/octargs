@@ -1,5 +1,5 @@
-#ifndef OCTARGS_BASIC_ARGUMENT_TABLE_HPP_
-#define OCTARGS_BASIC_ARGUMENT_TABLE_HPP_
+#ifndef OCTARGS_ARGUMENT_TABLE_HPP_
+#define OCTARGS_ARGUMENT_TABLE_HPP_
 
 #include <string>
 #include <vector>
@@ -11,7 +11,7 @@ namespace oct
 namespace args
 {
 
-template <class TRAITS>
+template <typename TRAITS>
 class basic_argument_table
 {
 public:
@@ -67,7 +67,7 @@ private:
     string_vector_type m_arguments;
 };
 
-template <class TRAITS>
+template <typename TRAITS>
 class basic_argument_table_iterator
 {
 public:
@@ -116,4 +116,4 @@ private:
 } // namespace args
 } // namespace oct
 
-#endif /*OCTARGS_BASIC_ARGUMENT_TABLE_HPP_*/
+#endif /*OCTARGS_ARGUMENT_TABLE_HPP_*/

@@ -10,46 +10,16 @@ namespace args
 {
 namespace internal
 {
-template <class CHAR_TYPE>
-class char_utils
+
+inline bool is_space(char c)
 {
-};
+    return std::isspace(static_cast<unsigned char>(c));
+}
 
-template <>
-class char_utils<char>
+inline bool is_space(wchar_t c)
 {
-public:
-    using char_type = char;
-
-    static bool is_space(char_type c)
-    {
-        return std::isspace(cast(c));
-    }
-
-private:
-    static int cast(char_type c)
-    {
-        return static_cast<unsigned char>(c);
-    }
-};
-
-template <>
-class char_utils<wchar_t>
-{
-public:
-    using char_type = wchar_t;
-
-    static bool is_space(char_type c)
-    {
-        return std::iswspace(cast(c));
-    }
-
-private:
-    static wint_t cast(char_type c)
-    {
-        return static_cast<wint_t>(c);
-    }
-};
+    return std::iswspace(static_cast<wint_t>(c));
+}
 
 } // namespace internal
 } // namespace args

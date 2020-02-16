@@ -1,5 +1,5 @@
-#ifndef OCTARGS_BASIC_PARSER_HPP_
-#define OCTARGS_BASIC_PARSER_HPP_
+#ifndef OCTARGS_PARSER_HPP_
+#define OCTARGS_PARSER_HPP_
 
 #include <list>
 #include <map>
@@ -7,31 +7,37 @@
 #include <string>
 #include <vector>
 
-#include "basic_argument.hpp"
-#include "basic_argument_table.hpp"
-#include "basic_results.hpp"
+#include "argument.hpp"
+#include "argument_table.hpp"
 #include "exception.hpp"
-#include "internal/basic_parser_data.hpp"
-#include "internal/basic_results_data.hpp"
 #include "internal/char_utils.hpp"
 #include "internal/misc.hpp"
+#include "internal/parser_data.hpp"
+#include "internal/results_data.hpp"
+#include "results.hpp"
 
 namespace oct
 {
 namespace args
 {
-template <class TRAITS>
+
+template <typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
 class basic_parser
 {
 public:
+    using values_storage_type = VALUES_STORAGE;
+
+    using argument_type = basic_argument<TRAITS, VALUES_STORAGE>;
+    using switch_argument_type = switch_argument<TRAITS, VALUES_STORAGE>;
+    using valued_argument_type = valued_argument<TRAITS, VALUES_STORAGE>;
+    using positional_argument_type = positional_argument<TRAITS, VALUES_STORAGE>;
+
     using char_type = typename TRAITS::char_type;
     using string_type = typename TRAITS::string_type;
     using string_vector_type = typename TRAITS::string_vector_type;
 
-    using argument_type = basic_argument<TRAITS>;
     using argument_table_type = basic_argument_table<TRAITS>;
     using results_type = basic_results<TRAITS>;
-    using char_utils_type = internal::char_utils<char_type>;
 
     basic_parser()
         : m_data_ptr(std::make_shared<parser_data_type>())
@@ -44,18 +50,34 @@ public:
         return add_valued(names);
     }
 
-    argument_type& add_switch(const string_vector_type& names)
+    switch_argument_type& add_switch(const string_vector_type& names)
     {
-        return *add_argument(argument_kind::SWITCH, names, false);
+        check_names(names);
+
+        auto new_argument = std::make_shared<switch_argument_type>(names);
+
+        add_to_names_repository(new_argument);
+
+        return *new_argument;
     }
 
-    argument_type& add_valued(const string_vector_type& names)
+    valued_argument_type& add_valued(const string_vector_type& names)
     {
-        return *add_argument(argument_kind::VALUED, names, false);
+        check_names(names);
+
+        auto new_argument = std::make_shared<valued_argument_type>(names);
+
+        add_to_names_repository(new_argument);
+
+        return *new_argument;
     }
 
-    void add_positional(const string_type& name, bool required, bool multivalue)
+    argument_type& add_positional(const string_type& name, bool required, bool multivalue)
     {
+        auto names = { name };
+
+        check_names(names);
+
         if (!m_data_ptr->m_positional_arguments.empty())
         {
             auto& last_positional_argument = m_data_ptr->m_positional_arguments.back();
@@ -69,44 +91,35 @@ public:
             }
         }
 
-        auto new_argument = add_argument(argument_kind::POSITIONAL, { name }, required);
+        auto new_argument = std::make_shared<positional_argument_type>(names, required, multivalue);
+
+        add_to_names_repository(new_argument);
+
         m_data_ptr->m_positional_arguments.emplace_back(new_argument);
 
-        if (multivalue)
-        {
-            new_argument->set_unlimited_count();
-        }
+        return *new_argument;
     }
 
-    results_type parse(int argc, char_type* argv[])
+    results_type parse(int argc, char_type* argv[], values_storage_type& values_storage = get_null_storage())
     {
-        return parse(argument_table_type(argc, argv));
+        return parse(argument_table_type(argc, argv), values_storage);
     }
 
-    results_type parse(int argc, const char_type* argv[])
+    results_type parse(int argc, const char_type* argv[], values_storage_type& values_storage = get_null_storage())
     {
-        return parse(argument_table_type(argc, argv));
+        return parse(argument_table_type(argc, argv), values_storage);
     }
 
-    results_type parse(const argument_table_type& arg_table)
+    results_type parse(const argument_table_type& arg_table, values_storage_type& values_storage = get_null_storage())
     {
         auto results_data_ptr = std::make_shared<results_data_type>(m_data_ptr);
 
-        results_data_ptr->set_input(arg_table);
         results_data_ptr->set_app_name(arg_table.get_app_name());
 
         argument_table_iterator input_iterator(arg_table);
 
-        // parse named arguments
-        while (input_iterator.has_more())
-        {
-            if (!parse_named_argument(results_data_ptr, input_iterator))
-            {
-                break;
-            }
-        }
-
-        parse_positional_arguments(input_iterator, results_data_ptr);
+        parse_named_arguments(input_iterator, values_storage, results_data_ptr);
+        parse_positional_arguments(input_iterator, values_storage, results_data_ptr);
 
         return results_type(results_data_ptr);
     }
@@ -114,24 +127,13 @@ public:
 private:
     using argument_table_iterator = basic_argument_table_iterator<TRAITS>;
     using argument_ptr_type = std::shared_ptr<argument_type>;
-    using parser_data_type = internal::basic_parser_data<TRAITS>;
+    using parser_data_type = internal::basic_parser_data<TRAITS, VALUES_STORAGE>;
     using parser_data_ptr_type = std::shared_ptr<parser_data_type>;
     using results_data_type = internal::basic_results_data<TRAITS>;
     using results_data_ptr_type = std::shared_ptr<results_data_type>;
 
-    argument_ptr_type add_argument(argument_kind kind, const string_vector_type& names, bool is_required)
-    {
-        check_names(names);
-
-        auto new_argument = std::make_shared<argument_type>(kind, names, is_required);
-
-        add_to_names_repository(new_argument);
-
-        return new_argument;
-    }
-
-    void parse_argument_value(
-        const results_data_ptr_type& results_data_ptr, const argument_ptr_type& argument, const string_type& value_str)
+    void parse_argument_value(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+        const argument_ptr_type& argument, const string_type& value_str)
     {
         // TODO: value checking (planned)
 
@@ -142,9 +144,16 @@ private:
         }
 
         results_data_ptr->append_value(argument, value_str);
+
+        auto storage_handler = argument->get_storage_handler();
+        if (storage_handler)
+        {
+            storage_handler->store(values_storage, value_str);
+        }
     }
 
-    bool parse_named_argument(const results_data_ptr_type& results_data_ptr, argument_table_iterator& input_iterator)
+    bool parse_named_argument(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+        argument_table_iterator& input_iterator)
     {
         auto& input_value = input_iterator.peek_next();
 
@@ -180,7 +189,7 @@ private:
                 // argument found, so remove element from input
                 input_iterator.take_next();
 
-                value_str = TRAITS::get_true_literal();
+                value_str = TRAITS::get_switch_enabled_literal();
                 break;
 
             default:
@@ -188,7 +197,7 @@ private:
                 return false;
             }
 
-            parse_argument_value(results_data_ptr, arg_object_ptr, value_str);
+            parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, value_str);
             return true;
         }
         else
@@ -211,7 +220,7 @@ private:
                 // argument found, so remove element from input
                 input_iterator.take_next();
 
-                parse_argument_value(results_data_ptr, arg_object_ptr, value_str);
+                parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, value_str);
                 return true;
 
             case argument_kind::SWITCH:
@@ -227,8 +236,20 @@ private:
         }
     }
 
-    void parse_positional_arguments(
-        argument_table_iterator& input_iterator, const results_data_ptr_type& results_data_ptr)
+    void parse_named_arguments(argument_table_iterator& input_iterator, values_storage_type& values_storage,
+        const results_data_ptr_type& results_data_ptr)
+    {
+        while (input_iterator.has_more())
+        {
+            if (!parse_named_argument(results_data_ptr, values_storage, input_iterator))
+            {
+                break;
+            }
+        }
+    }
+
+    void parse_positional_arguments(argument_table_iterator& input_iterator, values_storage_type& values_storage,
+        const results_data_ptr_type& results_data_ptr)
     {
         auto arg_iter = m_data_ptr->m_positional_arguments.begin();
         auto arg_end_iter = m_data_ptr->m_positional_arguments.end();
@@ -244,7 +265,7 @@ private:
 
             auto& arg_object_ptr = *arg_iter;
 
-            parse_argument_value(results_data_ptr, arg_object_ptr, value_str);
+            parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, value_str);
 
             if (arg_object_ptr->get_max_count() == 1)
             {
@@ -336,7 +357,7 @@ private:
 
         for (auto c : name)
         {
-            if (char_utils_type::is_space(c))
+            if (internal::is_space(c))
             {
                 throw configuration_exception("Argument name must not contain whitespace characters");
             }
@@ -347,10 +368,17 @@ private:
         }
     }
 
+    // TODO: try to refactor the way null storage is provided
+    static values_storage_type& get_null_storage()
+    {
+        static values_storage_type null_storage;
+        return null_storage;
+    }
+
     const parser_data_ptr_type m_data_ptr;
 };
 
 } // namespace args
 } // namespace oct
 
-#endif /*OCTARGS_BASIC_PARSER_HPP_*/
+#endif /*OCTARGS_PARSER_HPP_*/

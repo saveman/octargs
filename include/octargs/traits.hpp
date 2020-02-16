@@ -8,7 +8,7 @@ namespace oct
 {
 namespace args
 {
-template <class CHAR_TYPE>
+template <typename CHAR_TYPE>
 class traits
 {
     // nothing
@@ -22,10 +22,30 @@ public:
     using string_type = std::string;
     using string_vector_type = std::vector<string_type>;
 
-    static const string_type& get_true_literal()
+    static const string_type& get_switch_enabled_literal()
     {
-        static const string_type TRUE_LITERAL("true");
+        static const string_type TRUE_LITERAL { "true" };
         return TRUE_LITERAL;
+    }
+
+    static const string_vector_type& get_true_literals()
+    {
+        static const string_vector_type TRUE_LITERALS {
+            "true",
+            "1",
+            "yes",
+        };
+        return TRUE_LITERALS;
+    }
+
+    static const string_vector_type& get_false_literals()
+    {
+        static const string_vector_type TRUE_LITERALS {
+            "false",
+            "0",
+            "no",
+        };
+        return TRUE_LITERALS;
     }
 
     static char_type get_equal_literal()
@@ -42,10 +62,30 @@ public:
     using string_type = std::wstring;
     using string_vector_type = std::vector<string_type>;
 
-    static const string_type& get_true_literal()
+    static const string_type& get_switch_enabled_literal()
     {
-        static const string_type true_literal(L"true");
-        return true_literal;
+        static const string_type TRUE_LITERAL { L"true" };
+        return TRUE_LITERAL;
+    }
+
+    static const string_vector_type& get_true_literals()
+    {
+        static const string_vector_type TRUE_LITERALS {
+            L"true",
+            L"1",
+            L"yes",
+        };
+        return TRUE_LITERALS;
+    }
+
+    static const string_vector_type& get_false_literals()
+    {
+        static const string_vector_type TRUE_LITERALS {
+            L"false",
+            L"0",
+            L"no",
+        };
+        return TRUE_LITERALS;
     }
 
     static char_type get_equal_literal()
