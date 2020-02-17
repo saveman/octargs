@@ -4,6 +4,7 @@ SOURCE_DIR:=$(CURRENT_DIR)
 BUILD_DIR:=$(CURRENT_DIR)/_build
 INSTALL_DIR:=$(CURRENT_DIR)/_install
 PACKAGE_DIR:=$(CURRENT_DIR)/_package
+CPPCHECK_DIR:=$(BUILD_DIR)/cppcheck
 
 CPUCOUNT=$(shell nproc)
 
@@ -14,7 +15,15 @@ CMAKE_OPTS=\
 	-DCMAKE_BUILD_TYPE=Debug \
 	-DBUILD_TESTS=True \
 	-DBUILD_EXAMPLES=True \
-	-DENABLE_COVERAGE=True
+	-DENABLE_COVERAGE=True \
+	-DCMAKE_EXPORT_COMPILE_COMMANDS=True
+
+CPPCHECK_OPTS=\
+	--enable=all \
+	--std=c++11 \
+	--inconclusive \
+	--force \
+	--inline-suppr
 
 all: install test
 
@@ -32,6 +41,12 @@ test: build
 
 package: install
 	(cd $(BUILD_DIR) && cmake --build . -- package)
+
+cppcheck: test
+	mkdir -p $(CPPCHECK_DIR)
+	(cd $(BUILD_DIR) && cppcheck --project=compile_commands.json $(CPPCHECK_OPTS) --xml 2> cppcheck-report.xml)
+	(cd $(BUILD_DIR) && cppcheck-htmlreport --file=cppcheck-report.xml --report-dir=$(CPPCHECK_DIR) --source-dir=$(SOURCE_DIR))
+	(cd $(BUILD_DIR) && pdetach xdg-open $(CPPCHECK_DIR)/index.html)
 
 run_examples_cat:
 	@echo "----------------------------"

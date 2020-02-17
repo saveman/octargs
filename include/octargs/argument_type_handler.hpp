@@ -32,25 +32,25 @@ public:
         // noop
     }
 
-    basic_argument_type_handler& set_convert_function(convert_function_type convert_func)
+    basic_argument_type_handler& set_convert_function(const convert_function_type& convert_func)
     {
         m_convert_function = convert_func;
         return *this;
     }
 
-    basic_argument_type_handler& set_check_function(check_function_type check_func)
+    basic_argument_type_handler& set_check_function(const check_function_type& check_func)
     {
         m_check_function = check_func;
         return *this;
     }
 
-    basic_argument_type_handler& set_store_function(store_function_type store_func)
+    basic_argument_type_handler& set_store_function(const store_function_type& store_func)
     {
         m_store_function = store_func;
         return *this;
     }
 
-    basic_argument_type_handler& set_store_function(direct_store_function_type store_func)
+    basic_argument_type_handler& set_store_function(const direct_store_function_type& store_func)
     {
         m_store_function = [store_func](values_storage_type& /*storage*/, const data_type& data) { store_func(data); };
         return *this;

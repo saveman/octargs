@@ -135,6 +135,26 @@ private:
     using results_data_type = internal::basic_results_data<TRAITS>;
     using results_data_ptr_type = std::shared_ptr<results_data_type>;
 
+    static void parse_argument_value(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+        const argument_ptr_type& argument, const string_type& value_str)
+    {
+        auto count = results_data_ptr->value_count(argument);
+        if (count >= argument->get_max_count())
+        {
+            throw parse_exception("Argument specified too many times");
+        }
+
+        // if there is a handler call it first, to make sure the value
+        // is only stored if handler accepted it.
+        auto handler = argument->get_handler();
+        if (handler)
+        {
+            handler->parse(values_storage, value_str);
+        }
+
+        results_data_ptr->append_value(argument, value_str);
+    }
+
     void parse_default_values(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage) const
     {
         // iterating over arguments using all names is not optimal but safe
@@ -162,26 +182,6 @@ private:
                 parse_argument_value(results_data_ptr, values_storage, argument, value);
             }
         }
-    }
-
-    void parse_argument_value(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
-        const argument_ptr_type& argument, const string_type& value_str) const
-    {
-        auto count = results_data_ptr->value_count(argument);
-        if (count >= argument->get_max_count())
-        {
-            throw parse_exception("Argument specified too many times");
-        }
-
-        // if there is a handler call it first, to make sure the value
-        // is only stored if handler accepted it.
-        auto handler = argument->get_handler();
-        if (handler)
-        {
-            handler->parse(values_storage, value_str);
-        }
-
-        results_data_ptr->append_value(argument, value_str);
     }
 
     bool parse_named_argument(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
@@ -351,7 +351,7 @@ private:
         }
     }
 
-    void ensure_no_duplicated_names(const string_vector_type& names)
+    static void ensure_no_duplicated_names(const string_vector_type& names)
     {
         auto name_count = names.size();
 
@@ -375,7 +375,7 @@ private:
         }
     }
 
-    void ensure_names_characters_valid(const string_vector_type& names)
+    static void ensure_names_characters_valid(const string_vector_type& names)
     {
         for (const auto& name : names)
         {
@@ -383,7 +383,7 @@ private:
         }
     }
 
-    void ensure_name_characters_valid(const string_type& name)
+    static void ensure_name_characters_valid(const string_type& name)
     {
         if (name.empty())
         {

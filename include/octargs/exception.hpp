@@ -19,13 +19,13 @@ public:
     }
 
 protected:
-    exception()
+    explicit exception()
         : m_message()
     {
         // noop
     }
 
-    exception(const std::string& message)
+    explicit exception(const std::string& message)
         : m_message(message)
     {
         // noop
@@ -39,13 +39,13 @@ private:
 class configuration_exception : public exception
 {
 public:
-    configuration_exception()
+    explicit configuration_exception()
         : exception()
     {
         // noop
     }
 
-    configuration_exception(const std::string& message)
+    explicit configuration_exception(const std::string& message)
         : exception(message)
     {
         // noop
@@ -56,13 +56,13 @@ public:
 class parse_exception : public exception
 {
 public:
-    parse_exception()
+    explicit parse_exception()
         : exception()
     {
         // noop
     }
 
-    parse_exception(const std::string& message)
+    explicit parse_exception(const std::string& message)
         : exception(message)
     {
         // noop
@@ -73,13 +73,13 @@ public:
 class logic_error_exception : public exception
 {
 public:
-    logic_error_exception()
+    explicit logic_error_exception()
         : exception()
     {
         // noop
     }
 
-    logic_error_exception(const std::string& message)
+    explicit logic_error_exception(const std::string& message)
         : exception(message)
     {
         // noop

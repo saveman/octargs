@@ -52,10 +52,12 @@ private:
         const string_type TRIM_OUTPUT("CCCC");
 
         string_type tmp;
+        string_type tmp_copy;
 
         tmp = TRIM_LEAD_INPUT;
+        tmp_copy = TRIM_LEAD_INPUT;
         CPPUNIT_ASSERT_EQUAL(TRIM_LEAD_OUTPUT, internal::trim_lead_copy(tmp));
-        CPPUNIT_ASSERT_EQUAL(TRIM_LEAD_INPUT, tmp);
+        CPPUNIT_ASSERT_EQUAL(tmp_copy, tmp);
         internal::trim_lead(tmp);
         CPPUNIT_ASSERT_EQUAL(TRIM_LEAD_OUTPUT, tmp);
 
@@ -84,10 +86,12 @@ private:
         const string_type TRIM_OUTPUT(L"CCCC");
 
         string_type tmp;
+        string_type tmp_copy;
 
         tmp = TRIM_LEAD_INPUT;
+        tmp_copy = TRIM_LEAD_INPUT;
         CPPUNIT_ASSERT(TRIM_LEAD_OUTPUT == internal::trim_lead_copy(tmp));
-        CPPUNIT_ASSERT(TRIM_LEAD_INPUT == tmp);
+        CPPUNIT_ASSERT(tmp_copy == tmp);
         internal::trim_lead(tmp);
         CPPUNIT_ASSERT(TRIM_LEAD_OUTPUT == tmp);
 

@@ -86,7 +86,7 @@ public:
     virtual bool is_accepting_separate_value() const = 0;
 
 protected:
-    basic_argument(const string_vector_type& names)
+    explicit basic_argument(const string_vector_type& names)
         : m_names(names)
         , m_is_required(false)
         , m_max_count(1)
@@ -115,7 +115,7 @@ protected:
     }
 
 private:
-    void set_handler(handler_ptr_type handler_ptr)
+    void set_handler(const handler_ptr_type& handler_ptr)
     {
         m_handler_ptr = handler_ptr;
     }
@@ -140,7 +140,7 @@ public:
     using base_type = basic_argument<TRAITS, VALUES_STORAGE>;
     using string_vector_type = typename TRAITS::string_vector_type;
 
-    basic_switch_argument(const string_vector_type& names)
+    explicit basic_switch_argument(const string_vector_type& names)
         : base_type(names)
     {
         // noop
@@ -188,7 +188,7 @@ public:
     using string_type = typename TRAITS::string_type;
     using string_vector_type = typename TRAITS::string_vector_type;
 
-    basic_valued_argument(const string_vector_type& names)
+    explicit basic_valued_argument(const string_vector_type& names)
         : base_type(names)
     {
         // noop
@@ -242,7 +242,7 @@ public:
     using string_type = typename TRAITS::string_type;
     using string_vector_type = typename TRAITS::string_vector_type;
 
-    basic_positional_argument(const string_vector_type& names, bool required, bool multivalue)
+    explicit basic_positional_argument(const string_vector_type& names, bool required, bool multivalue)
         : base_type(names)
     {
         base_type::set_required(required);

@@ -19,7 +19,7 @@ static const std::string STANDARD_INPUT_NAME("-");
 class execution_error : public std::exception
 {
 public:
-    execution_error(const std::string& message)
+    explicit execution_error(const std::string& message)
         : m_message(message)
     {
         // noop
@@ -95,7 +95,7 @@ public:
         catch (const oct::args::parse_exception& exc)
         {
             std::cerr << "Invalid arguments: " << exc.what() << std::endl;
-            print_usage(std::cerr);
+            // print_usage(std::cerr);
             return EXIT_FAILURE;
         }
         catch (const std::exception& exc)
@@ -112,7 +112,7 @@ private:
 
     static const int LINE_NUMBER_LENGTH = 6;
 
-    long long parse_limit(const std::string& value_str)
+    static long long parse_limit(const std::string& value_str)
     {
         long long limit = -1;
 
@@ -183,12 +183,7 @@ private:
         }
     }
 
-    void print_usage(std::ostream& /*os*/)
-    {
-        // TODO
-    }
-
-    void head_file(const std::string& file_name)
+    void head_file(const std::string& file_name) const
     {
         std::ifstream input_file(file_name, std::ifstream::binary);
         if (!input_file.is_open())
@@ -199,10 +194,8 @@ private:
         head_istream(file_name, input_file);
     }
 
-    void head_istream(const std::string& name, std::istream& input_stream)
+    void head_istream(const std::string& name, std::istream& input_stream) const
     {
-        std::string line;
-
         if (m_print_header)
         {
             if (!m_first_input)

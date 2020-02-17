@@ -19,28 +19,28 @@ public:
     using string_type = typename TRAITS::string_type;
     using string_vector_type = typename TRAITS::string_vector_type;
 
-    basic_argument_table()
+    explicit basic_argument_table()
         : m_app_name()
         , m_arguments()
     {
         // noop
     }
 
-    basic_argument_table(int argc, const char_type* argv[])
+    explicit basic_argument_table(int argc, const char_type* argv[])
         : m_app_name(argv[0])
         , m_arguments(&argv[1], &argv[argc])
     {
         // noop
     }
 
-    basic_argument_table(int argc, char_type* argv[])
+    explicit basic_argument_table(int argc, char_type* argv[])
         : m_app_name(argv[0])
         , m_arguments(&argv[1], &argv[argc])
     {
         // noop
     }
 
-    basic_argument_table(const string_type& app_name, const string_vector_type& arguments)
+    explicit basic_argument_table(const string_type& app_name, const string_vector_type& arguments)
         : m_app_name(app_name)
         , m_arguments(arguments)
     {
@@ -74,7 +74,7 @@ public:
     using argument_table_type = basic_argument_table<TRAITS>;
     using string_type = typename TRAITS::string_type;
 
-    basic_argument_table_iterator(const argument_table_type& arg_table)
+    explicit basic_argument_table_iterator(const argument_table_type& arg_table)
         : m_arg_table(arg_table)
         , m_arg_count(arg_table.get_argument_count())
         , m_arg_index(0)

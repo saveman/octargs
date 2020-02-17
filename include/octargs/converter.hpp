@@ -19,7 +19,7 @@ class basic_converter
 private:
     using string_type = typename TRAITS::string_type;
 
-    void operator()(const string_type& /*value_str*/);
+    void operator()(const string_type& /*value_str*/) const;
 };
 
 template <typename TRAITS>
@@ -28,7 +28,7 @@ class basic_converter<TRAITS, typename TRAITS::string_type>
 public:
     using string_type = typename TRAITS::string_type;
 
-    string_type operator()(const string_type& value_str)
+    string_type operator()(const string_type& value_str) const
     {
         return value_str;
     }
@@ -41,22 +41,20 @@ public:
     using traits_type = TRAITS;
     using string_type = typename traits_type::string_type;
 
-    bool operator()(const string_type& value_str)
+    bool operator()(const string_type& value_str) const
     {
-        for (const auto& true_value : traits_type::get_true_literals())
+        const auto& true_literals = traits_type::get_true_literals();
+        if (std::find(true_literals.begin(), true_literals.end(), value_str) != true_literals.end())
         {
-            if (true_value == value_str)
-            {
-                return true;
-            }
+            return true;
         }
-        for (const auto& false_value : traits_type::get_false_literals())
+
+        const auto& false_literals = traits_type::get_false_literals();
+        if (std::find(false_literals.begin(), false_literals.end(), value_str) != false_literals.end())
         {
-            if (false_value == value_str)
-            {
-                return false;
-            }
+            return false;
         }
+
         throw parse_exception("Invalid argument value");
     }
 };
@@ -69,7 +67,7 @@ public:
     using data_type = DATA_TYPE;
     using string_type = typename TRAITS::string_type;
 
-    data_type operator()(const string_type& value_str)
+    data_type operator()(const string_type& value_str) const
     {
         try
         {
@@ -98,7 +96,7 @@ public:
     using data_type = DATA_TYPE;
     using string_type = typename TRAITS::string_type;
 
-    data_type operator()(const string_type& value_str)
+    data_type operator()(const string_type& value_str) const
     {
         try
         {

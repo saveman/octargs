@@ -18,7 +18,7 @@ static const std::string STANDARD_INPUT_NAME("-");
 class execution_error : public std::exception
 {
 public:
-    execution_error(const std::string& message)
+    explicit execution_error(const std::string& message)
         : m_message(message)
     {
         // noop
@@ -35,7 +35,7 @@ private:
 
 struct cat_app_settings
 {
-    cat_app_settings()
+    explicit cat_app_settings()
         : m_print_line_ends(false)
         , m_print_line_numbers(false)
         , m_input_names()
@@ -51,7 +51,7 @@ struct cat_app_settings
 class cat_app_engine
 {
 public:
-    cat_app_engine(const cat_app_settings& settings)
+    explicit cat_app_engine(const cat_app_settings& settings)
         : m_settings(settings)
         , m_line_number(0)
     {
@@ -134,21 +134,22 @@ private:
 class cat_app
 {
 public:
-    cat_app()
+    cat_app(int argc, char* argv[])
+        : m_input_args(argc, argv)
     {
         // noop
     }
 
-    int run(int argc, char* argv[])
+    int run()
     {
+        oct::args::storing_parser<cat_app_settings> arg_parser;
+
         try
         {
             // cat [OPTION]... [FILE]...
             //
             // Concatenate FILE(s) to standard output.
             // With no FILE, or when FILE is -, read standard input.
-
-            oct::args::storing_parser<cat_app_settings> arg_parser;
 
             arg_parser.add_switch({ "--help" }); // TODO: remove
 
@@ -162,14 +163,14 @@ public:
 
             cat_app_settings settings;
 
-            arg_parser.parse(argc, argv, settings);
+            arg_parser.parse(m_input_args, settings);
 
             cat_app_engine(settings).execute();
         }
         catch (const oct::args::parse_exception& exc)
         {
             std::cerr << "Invalid arguments: " << exc.what() << std::endl;
-            print_usage(std::cerr);
+            // TODO: print_usage(std::cerr);
             return EXIT_FAILURE;
         }
         catch (const std::exception& exc)
@@ -182,15 +183,12 @@ public:
     }
 
 private:
-    void print_usage(std::ostream& /*os*/)
-    {
-        // TODO
-    }
+    oct::args::argument_table m_input_args;
 };
 
 } // namespace oct_args_examples
 
 int main(int argc, char* argv[])
 {
-    return oct_args_examples::cat_app().run(argc, argv);
+    return oct_args_examples::cat_app(argc, argv).run();
 }

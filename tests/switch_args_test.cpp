@@ -175,6 +175,7 @@ private:
     CPPUNIT_TEST(test_duplicated_value);
     CPPUNIT_TEST(test_multiple_values);
     CPPUNIT_TEST(test_more_values_than_count);
+    CPPUNIT_TEST(test_unlimited_values);
     CPPUNIT_TEST(test_default_values);
     CPPUNIT_TEST_SUITE_END();
 };
