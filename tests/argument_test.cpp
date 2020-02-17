@@ -24,7 +24,6 @@ private:
     {
         string_vector_type names = { "a" };
         switch_argument_type arg(names);
-        CPPUNIT_ASSERT_EQUAL(internal::argument_kind::SWITCH, arg.get_kind());
         CPPUNIT_ASSERT_EQUAL(false, arg.is_required());
         CPPUNIT_ASSERT_EQUAL(names.size(), arg.get_names().size());
         for (std::size_t i = 0; i < names.size(); ++i)
@@ -37,7 +36,6 @@ private:
     {
         string_vector_type names = { "a", "bbb", "cc" };
         switch_argument_type arg(names);
-        CPPUNIT_ASSERT_EQUAL(internal::argument_kind::SWITCH, arg.get_kind());
         CPPUNIT_ASSERT_EQUAL(false, arg.is_required());
         CPPUNIT_ASSERT_EQUAL(names.size(), arg.get_names().size());
         for (std::size_t i = 0; i < names.size(); ++i)
@@ -51,7 +49,9 @@ private:
         string_vector_type names = { "a" };
 
         switch_argument_type arg1(names);
-        CPPUNIT_ASSERT_EQUAL(internal::argument_kind::SWITCH, arg1.get_kind());
+        CPPUNIT_ASSERT_EQUAL(true, arg1.is_assignable_by_name());
+        CPPUNIT_ASSERT_EQUAL(false, arg1.is_accepting_immediate_value());
+        CPPUNIT_ASSERT_EQUAL(false, arg1.is_accepting_separate_value());
         CPPUNIT_ASSERT_EQUAL(false, arg1.is_required());
     }
 
@@ -60,7 +60,9 @@ private:
         string_vector_type names = { "a" };
 
         valued_argument_type arg1(names);
-        CPPUNIT_ASSERT_EQUAL(internal::argument_kind::VALUED, arg1.get_kind());
+        CPPUNIT_ASSERT_EQUAL(true, arg1.is_assignable_by_name());
+        CPPUNIT_ASSERT_EQUAL(true, arg1.is_accepting_immediate_value());
+        CPPUNIT_ASSERT_EQUAL(true, arg1.is_accepting_separate_value());
         CPPUNIT_ASSERT_EQUAL(false, arg1.is_required());
     }
 
@@ -69,12 +71,16 @@ private:
         string_vector_type names = { "a" };
 
         positional_argument_type arg1(names, false, false);
-        CPPUNIT_ASSERT_EQUAL(internal::argument_kind::POSITIONAL, arg1.get_kind());
+        CPPUNIT_ASSERT_EQUAL(false, arg1.is_assignable_by_name());
+        CPPUNIT_ASSERT_EQUAL(false, arg1.is_accepting_immediate_value());
+        CPPUNIT_ASSERT_EQUAL(false, arg1.is_accepting_separate_value());
         CPPUNIT_ASSERT_EQUAL(false, arg1.is_required());
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), arg1.get_max_count());
 
         positional_argument_type arg2(names, true, true);
-        CPPUNIT_ASSERT_EQUAL(internal::argument_kind::POSITIONAL, arg2.get_kind());
+        CPPUNIT_ASSERT_EQUAL(false, arg2.is_assignable_by_name());
+        CPPUNIT_ASSERT_EQUAL(false, arg2.is_accepting_immediate_value());
+        CPPUNIT_ASSERT_EQUAL(false, arg2.is_accepting_separate_value());
         CPPUNIT_ASSERT_EQUAL(true, arg2.is_required());
         CPPUNIT_ASSERT_GREATER(static_cast<std::size_t>(1000), arg2.get_max_count());
     }

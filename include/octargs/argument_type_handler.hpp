@@ -22,6 +22,7 @@ public:
 
     using convert_function_type = std::function<data_type(const string_type&)>;
     using check_function_type = std::function<void(const data_type& data)>;
+    using direct_store_function_type = std::function<void(const data_type& data)>;
     using store_function_type = std::function<void(values_storage_type& storage, const data_type& data)>;
 
     basic_argument_type_handler()
@@ -46,6 +47,12 @@ public:
     basic_argument_type_handler& set_store_function(store_function_type store_func)
     {
         m_store_function = store_func;
+        return *this;
+    }
+
+    basic_argument_type_handler& set_store_function(direct_store_function_type store_func)
+    {
+        m_store_function = [store_func](values_storage_type& /*storage*/, const data_type& data) { store_func(data); };
         return *this;
     }
 

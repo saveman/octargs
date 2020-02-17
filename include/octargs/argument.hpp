@@ -9,15 +9,12 @@
 #include "argument_type_handler.hpp"
 #include "exception.hpp"
 #include "internal/argument_handler.hpp"
-#include "internal/argument_kind.hpp"
 #include "internal/misc.hpp"
 
 namespace oct
 {
 namespace args
 {
-
-// TODO: replace KIND with "is_accepting_equal_value" "is_accepting_separate_value", "is_positional"
 
 template <typename TRAITS, typename VALUES_STORAGE>
 class basic_argument : public internal::basic_argument_tag
@@ -31,6 +28,8 @@ public:
 
     template <typename DATA>
     using type_handler_type = basic_argument_type_handler<DATA, TRAITS, VALUES_STORAGE>;
+
+    virtual ~basic_argument() = default;
 
     template <typename DATA>
     type_handler_type<DATA>& set_type()
@@ -54,11 +53,6 @@ public:
         return set_type<DATA>().set_storage(member_ptr);
     }
 
-    internal::argument_kind get_kind() const
-    {
-        return m_kind;
-    }
-
     const string_vector_type& get_names() const
     {
         return m_names;
@@ -79,10 +73,15 @@ public:
         return m_handler_ptr;
     }
 
+    virtual bool is_assignable_by_name() const = 0;
+
+    virtual bool is_accepting_immediate_value() const = 0;
+
+    virtual bool is_accepting_separate_value() const = 0;
+
 protected:
-    basic_argument(internal::argument_kind kind, const string_vector_type& names)
-        : m_kind(kind)
-        , m_names(names)
+    basic_argument(const string_vector_type& names)
+        : m_names(names)
         , m_is_required(false)
         , m_max_count(1)
     {
@@ -110,8 +109,6 @@ private:
         m_handler_ptr = handler_ptr;
     }
 
-    /// Argument kind (type).
-    internal::argument_kind m_kind;
     /// Argument names.
     const string_vector_type m_names;
     /// Flag: is argument required.
@@ -130,9 +127,24 @@ public:
     using string_vector_type = typename TRAITS::string_vector_type;
 
     basic_switch_argument(const string_vector_type& names)
-        : base_type(internal::argument_kind::SWITCH, names)
+        : base_type(names)
     {
         // noop
+    }
+
+    bool is_assignable_by_name() const override
+    {
+        return true;
+    }
+
+    bool is_accepting_immediate_value() const override
+    {
+        return false;
+    }
+
+    bool is_accepting_separate_value() const override
+    {
+        return false;
     }
 
     basic_switch_argument& set_max_count(std::size_t count)
@@ -156,9 +168,24 @@ public:
     using string_vector = typename TRAITS::string_vector_type;
 
     basic_valued_argument(const string_vector& names)
-        : base_type(internal::argument_kind::VALUED, names)
+        : base_type(names)
     {
         // noop
+    }
+
+    bool is_assignable_by_name() const override
+    {
+        return true;
+    }
+
+    bool is_accepting_immediate_value() const override
+    {
+        return true;
+    }
+
+    bool is_accepting_separate_value() const override
+    {
+        return true;
     }
 
     basic_valued_argument& set_max_count(std::size_t count)
@@ -182,13 +209,28 @@ public:
     using string_vector = typename TRAITS::string_vector_type;
 
     basic_positional_argument(const string_vector& names, bool required, bool multivalue)
-        : base_type(internal::argument_kind::POSITIONAL, names)
+        : base_type(names)
     {
         base_type::set_required(required);
         if (multivalue)
         {
             base_type::set_unlimited_count();
         }
+    }
+
+    bool is_assignable_by_name() const override
+    {
+        return false;
+    }
+
+    bool is_accepting_immediate_value() const override
+    {
+        return false;
+    }
+
+    bool is_accepting_separate_value() const override
+    {
+        return false;
     }
 };
 

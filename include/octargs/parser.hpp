@@ -153,6 +153,76 @@ private:
     }
 
     bool parse_named_argument(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+        argument_table_iterator& input_iterator, const string_type& arg_name)
+    {
+        auto arg_iter = m_data_ptr->m_names_repository.find(arg_name);
+        if (arg_iter == m_data_ptr->m_names_repository.end())
+        {
+            // not an argument name, goto positional arguments processing
+            return false;
+        }
+
+        auto& arg_object_ptr = arg_iter->second;
+
+        if (!arg_object_ptr->is_assignable_by_name())
+        {
+            // not an named argument, goto positional arguments processing
+            return false;
+        }
+
+        // argument found, so remove element from input
+        input_iterator.take_next();
+
+        string_type value_str;
+
+        if (arg_object_ptr->is_accepting_separate_value())
+        {
+            if (!input_iterator.has_more())
+            {
+                throw parse_exception("Value missing in input");
+            }
+
+            value_str = input_iterator.take_next();
+        }
+        else
+        {
+            value_str = TRAITS::get_switch_enabled_literal();
+        }
+
+        parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, value_str);
+        return true;
+    }
+
+    bool parse_named_argument(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+        argument_table_iterator& input_iterator, const string_type& arg_name, const string_type& arg_value)
+    {
+        auto arg_iter = m_data_ptr->m_names_repository.find(arg_name);
+        if (arg_iter == m_data_ptr->m_names_repository.end())
+        {
+            return false;
+        }
+
+        auto& arg_object_ptr = arg_iter->second;
+
+        if (!arg_object_ptr->is_assignable_by_name())
+        {
+            // not an named argument, goto positional arguments processing
+            return false;
+        }
+
+        // argument found, so remove element from input
+        input_iterator.take_next();
+
+        if (!arg_object_ptr->is_accepting_immediate_value())
+        {
+            throw parse_exception("Value specified but not expected");
+        }
+
+        parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, arg_value);
+        return true;
+    }
+
+    bool parse_named_argument(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
         argument_table_iterator& input_iterator)
     {
         auto& input_value = input_iterator.peek_next();
@@ -160,79 +230,14 @@ private:
         auto equal_char_pos = input_value.find(TRAITS::get_equal_literal());
         if (equal_char_pos == string_type::npos)
         {
-            auto arg_iter = m_data_ptr->m_names_repository.find(input_value);
-            if (arg_iter == m_data_ptr->m_names_repository.end())
-            {
-                // not an argument name, goto positional arguments processing
-                return false;
-            }
-
-            auto& arg_object_ptr = arg_iter->second;
-
-            string_type value_str;
-
-            switch (arg_object_ptr->get_kind())
-            {
-            case internal::argument_kind::VALUED:
-                // argument found, so remove element from input
-                input_iterator.take_next();
-
-                if (!input_iterator.has_more())
-                {
-                    throw parse_exception("Value missing in input");
-                }
-
-                value_str = input_iterator.take_next();
-                break;
-
-            case internal::argument_kind::SWITCH:
-                // argument found, so remove element from input
-                input_iterator.take_next();
-
-                value_str = TRAITS::get_switch_enabled_literal();
-                break;
-
-            default:
-                // not an option name, goto positional arguments processing
-                return false;
-            }
-
-            parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, value_str);
-            return true;
+            return parse_named_argument(results_data_ptr, values_storage, input_iterator, input_value);
         }
         else
         {
             auto name_str = input_value.substr(0, equal_char_pos);
-
-            auto arg_iter = m_data_ptr->m_names_repository.find(name_str);
-            if (arg_iter == m_data_ptr->m_names_repository.end())
-            {
-                return false;
-            }
-
             auto value_str = input_value.substr(equal_char_pos + 1);
 
-            auto& arg_object_ptr = arg_iter->second;
-
-            switch (arg_object_ptr->get_kind())
-            {
-            case internal::argument_kind::VALUED:
-                // argument found, so remove element from input
-                input_iterator.take_next();
-
-                parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, value_str);
-                return true;
-
-            case internal::argument_kind::SWITCH:
-                // argument found, so remove element from input
-                input_iterator.take_next();
-
-                throw parse_exception("Value specified for switch argument");
-
-            default:
-                // not an option name, goto positional arguments processing
-                return false;
-            }
+            return parse_named_argument(results_data_ptr, values_storage, input_iterator, name_str, value_str);
         }
     }
 

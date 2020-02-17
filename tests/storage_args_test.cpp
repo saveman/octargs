@@ -239,9 +239,9 @@ private:
         double my_double;
 
         storing_parser<settings> parser;
-        parser.add_valued({ "--double" })
-            .set_type<double>()
-            .set_store_function([&my_double](settings& /*settings*/, double value) { my_double = value; });
+        parser.add_valued({ "--double" }).set_type<double>().set_store_function([&my_double](double value) {
+            my_double = value;
+        });
 
         settings settings1;
         parser.parse(args1, settings1);
