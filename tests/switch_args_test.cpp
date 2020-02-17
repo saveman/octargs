@@ -139,6 +139,32 @@ private:
         CPPUNIT_ASSERT_EQUAL(COUNT, results.count("--arg"));
     }
 
+    void test_default_values()
+    {
+        argument_table args_empty("appname", {});
+        argument_table args_one("appname", { "-v" });
+
+        parser parser;
+        auto& arg = parser.add_switch({ "-v" }).set_max_count(3).set_default_values_count(2);
+
+        auto results_one = parser.parse(args_one);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), results_one.count("-v"));
+
+        auto results = parser.parse(args_empty);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), results.count("-v"));
+
+        arg.set_default_values_count(4);
+        CPPUNIT_ASSERT_THROW(parser.parse(args_empty), parse_exception);
+
+        arg.set_default_values_count(3);
+        results = parser.parse(args_empty);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), results.count("-v"));
+
+        arg.set_default_values_count(0);
+        results = parser.parse(args_empty);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("-v"));
+    }
+
     CPPUNIT_TEST_SUITE(switch_args_test);
     CPPUNIT_TEST(test_happy_hapth);
     CPPUNIT_TEST(test_no_names);
@@ -149,6 +175,7 @@ private:
     CPPUNIT_TEST(test_duplicated_value);
     CPPUNIT_TEST(test_multiple_values);
     CPPUNIT_TEST(test_more_values_than_count);
+    CPPUNIT_TEST(test_default_values);
     CPPUNIT_TEST_SUITE_END();
 };
 

@@ -72,7 +72,7 @@ public:
         return *new_argument;
     }
 
-    argument_type& add_positional(const string_type& name, bool required, bool multivalue)
+    positional_argument_type& add_positional(const string_type& name, bool required, bool multivalue)
     {
         auto names = { name };
 
@@ -100,17 +100,19 @@ public:
         return *new_argument;
     }
 
-    results_type parse(int argc, char_type* argv[], values_storage_type& values_storage = get_null_storage())
+    results_type parse(int argc, char_type* argv[], values_storage_type& values_storage = get_null_storage()) const
     {
         return parse(argument_table_type(argc, argv), values_storage);
     }
 
-    results_type parse(int argc, const char_type* argv[], values_storage_type& values_storage = get_null_storage())
+    results_type parse(
+        int argc, const char_type* argv[], values_storage_type& values_storage = get_null_storage()) const
     {
         return parse(argument_table_type(argc, argv), values_storage);
     }
 
-    results_type parse(const argument_table_type& arg_table, values_storage_type& values_storage = get_null_storage())
+    results_type parse(
+        const argument_table_type& arg_table, values_storage_type& values_storage = get_null_storage()) const
     {
         auto results_data_ptr = std::make_shared<results_data_type>(m_data_ptr);
 
@@ -120,6 +122,7 @@ public:
 
         parse_named_arguments(input_iterator, values_storage, results_data_ptr);
         parse_positional_arguments(input_iterator, values_storage, results_data_ptr);
+        parse_default_values(results_data_ptr, values_storage);
 
         return results_type(results_data_ptr);
     }
@@ -132,8 +135,37 @@ private:
     using results_data_type = internal::basic_results_data<TRAITS>;
     using results_data_ptr_type = std::shared_ptr<results_data_type>;
 
+    void parse_default_values(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage) const
+    {
+        // iterating over arguments using all names is not optimal but safe
+        // as if values will be added for first name then the second name
+        // would be skipped as there will be values already
+        auto cur_iter = m_data_ptr->m_names_repository.begin();
+        auto end_iter = m_data_ptr->m_names_repository.end();
+        for (; cur_iter != end_iter; ++cur_iter)
+        {
+            auto& argument = cur_iter->second;
+
+            if (results_data_ptr->value_count(argument) > 0)
+            {
+                continue;
+            }
+
+            auto& values = argument->get_default_values();
+            if (values.empty())
+            {
+                continue;
+            }
+
+            for (auto& value : values)
+            {
+                parse_argument_value(results_data_ptr, values_storage, argument, value);
+            }
+        }
+    }
+
     void parse_argument_value(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
-        const argument_ptr_type& argument, const string_type& value_str)
+        const argument_ptr_type& argument, const string_type& value_str) const
     {
         auto count = results_data_ptr->value_count(argument);
         if (count >= argument->get_max_count())
@@ -153,7 +185,7 @@ private:
     }
 
     bool parse_named_argument(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
-        argument_table_iterator& input_iterator, const string_type& arg_name)
+        argument_table_iterator& input_iterator, const string_type& arg_name) const
     {
         auto arg_iter = m_data_ptr->m_names_repository.find(arg_name);
         if (arg_iter == m_data_ptr->m_names_repository.end())
@@ -194,7 +226,7 @@ private:
     }
 
     bool parse_named_argument(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
-        argument_table_iterator& input_iterator, const string_type& arg_name, const string_type& arg_value)
+        argument_table_iterator& input_iterator, const string_type& arg_name, const string_type& arg_value) const
     {
         auto arg_iter = m_data_ptr->m_names_repository.find(arg_name);
         if (arg_iter == m_data_ptr->m_names_repository.end())
@@ -223,7 +255,7 @@ private:
     }
 
     bool parse_named_argument(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
-        argument_table_iterator& input_iterator)
+        argument_table_iterator& input_iterator) const
     {
         auto& input_value = input_iterator.peek_next();
 
@@ -242,7 +274,7 @@ private:
     }
 
     void parse_named_arguments(argument_table_iterator& input_iterator, values_storage_type& values_storage,
-        const results_data_ptr_type& results_data_ptr)
+        const results_data_ptr_type& results_data_ptr) const
     {
         while (input_iterator.has_more())
         {
@@ -254,7 +286,7 @@ private:
     }
 
     void parse_positional_arguments(argument_table_iterator& input_iterator, values_storage_type& values_storage,
-        const results_data_ptr_type& results_data_ptr)
+        const results_data_ptr_type& results_data_ptr) const
     {
         auto arg_iter = m_data_ptr->m_positional_arguments.begin();
         auto arg_end_iter = m_data_ptr->m_positional_arguments.end();

@@ -22,6 +22,7 @@ class basic_argument : public internal::basic_argument_tag
 public:
     using traits_type = TRAITS;
     using values_storage_type = VALUES_STORAGE;
+    using string_type = typename TRAITS::string_type;
     using string_vector_type = typename TRAITS::string_vector_type;
     using handler_type = internal::basic_argument_handler<TRAITS, VALUES_STORAGE>;
     using handler_ptr_type = std::shared_ptr<const handler_type>;
@@ -56,6 +57,11 @@ public:
     const string_vector_type& get_names() const
     {
         return m_names;
+    }
+
+    const string_vector_type& get_default_values() const
+    {
+        return m_default_values;
     }
 
     bool is_required() const
@@ -103,13 +109,18 @@ protected:
         m_is_required = required;
     }
 
+    void set_default_values_internal(const string_vector_type& values)
+    {
+        m_default_values = values;
+    }
+
 private:
     void set_handler(handler_ptr_type handler_ptr)
     {
         m_handler_ptr = handler_ptr;
     }
 
-    /// Argument names.
+    /// Names.
     const string_vector_type m_names;
     /// Flag: is argument required.
     bool m_is_required;
@@ -117,12 +128,15 @@ private:
     std::size_t m_max_count;
     /// Values storage handler.
     handler_ptr_type m_handler_ptr;
+    /// Defaults values.
+    string_vector_type m_default_values;
 };
 
 template <typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
 class basic_switch_argument : public basic_argument<TRAITS, VALUES_STORAGE>
 {
 public:
+    using traits_type = TRAITS;
     using base_type = basic_argument<TRAITS, VALUES_STORAGE>;
     using string_vector_type = typename TRAITS::string_vector_type;
 
@@ -158,6 +172,12 @@ public:
         base_type::set_unlimited_count();
         return *this;
     }
+
+    basic_switch_argument& set_default_values_count(std::size_t count)
+    {
+        this->set_default_values_internal(string_vector_type(count, traits_type::get_switch_enabled_literal()));
+        return *this;
+    }
 };
 
 template <typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
@@ -165,9 +185,10 @@ class basic_valued_argument : public basic_argument<TRAITS, VALUES_STORAGE>
 {
 public:
     using base_type = basic_argument<TRAITS, VALUES_STORAGE>;
-    using string_vector = typename TRAITS::string_vector_type;
+    using string_type = typename TRAITS::string_type;
+    using string_vector_type = typename TRAITS::string_vector_type;
 
-    basic_valued_argument(const string_vector& names)
+    basic_valued_argument(const string_vector_type& names)
         : base_type(names)
     {
         // noop
@@ -199,6 +220,18 @@ public:
         base_type::set_unlimited_count();
         return *this;
     }
+
+    basic_valued_argument& set_default_values(const string_vector_type& values)
+    {
+        this->set_default_values_internal(values);
+        return *this;
+    }
+
+    basic_valued_argument& set_default_value(const string_type& value)
+    {
+        this->set_default_values_internal({ value });
+        return *this;
+    }
 };
 
 template <typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
@@ -206,9 +239,10 @@ class basic_positional_argument : public basic_argument<TRAITS, VALUES_STORAGE>
 {
 public:
     using base_type = basic_argument<TRAITS, VALUES_STORAGE>;
-    using string_vector = typename TRAITS::string_vector_type;
+    using string_type = typename TRAITS::string_type;
+    using string_vector_type = typename TRAITS::string_vector_type;
 
-    basic_positional_argument(const string_vector& names, bool required, bool multivalue)
+    basic_positional_argument(const string_vector_type& names, bool required, bool multivalue)
         : base_type(names)
     {
         base_type::set_required(required);
@@ -216,6 +250,18 @@ public:
         {
             base_type::set_unlimited_count();
         }
+    }
+
+    basic_positional_argument& set_default_values(const string_vector_type& values)
+    {
+        this->set_default_values_internal(values);
+        return *this;
+    }
+
+    basic_positional_argument& set_default_value(const string_type& value)
+    {
+        this->set_default_values_internal({ value });
+        return *this;
     }
 
     bool is_assignable_by_name() const override

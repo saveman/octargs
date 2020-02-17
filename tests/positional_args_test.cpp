@@ -300,6 +300,45 @@ private:
         CPPUNIT_ASSERT_EQUAL(std::string("argument2"), results2.values("files")[2]);
     }
 
+    void test_default_values()
+    {
+        argument_table args_empty("appname", {});
+        argument_table args_given("appname", { "value1", "value2" });
+
+        parser parser1;
+        auto& arg = parser1.add_positional("files", false, true).set_default_values({ "one", "two" });
+
+        auto results_args_given = parser1.parse(args_given);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), results_args_given.count("files"));
+        CPPUNIT_ASSERT_EQUAL(std::string("value1"), results_args_given.values("files")[0]);
+        CPPUNIT_ASSERT_EQUAL(std::string("value2"), results_args_given.values("files")[1]);
+
+        auto results = parser1.parse(args_empty);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), results.count("files"));
+        CPPUNIT_ASSERT_EQUAL(std::string("one"), results.values("files")[0]);
+        CPPUNIT_ASSERT_EQUAL(std::string("two"), results.values("files")[1]);
+
+        arg.set_default_values({ "one", "two", "three" });
+        results = parser1.parse(args_empty);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), results.count("files"));
+        CPPUNIT_ASSERT_EQUAL(std::string("one"), results.values("files")[0]);
+        CPPUNIT_ASSERT_EQUAL(std::string("two"), results.values("files")[1]);
+        CPPUNIT_ASSERT_EQUAL(std::string("three"), results.values("files")[2]);
+
+        arg.set_default_value("oko");
+        results = parser1.parse(args_empty);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), results.count("files"));
+        CPPUNIT_ASSERT_EQUAL(std::string("oko"), results.values("files")[0]);
+
+        arg.set_default_values({});
+        results = parser1.parse(args_empty);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("files"));
+
+        parser parser_single;
+        parser_single.add_positional("files", false, false).set_default_values({ "one", "two" });
+        CPPUNIT_ASSERT_THROW(parser_single.parse(args_empty), parse_exception);
+    }
+
     CPPUNIT_TEST_SUITE(positional_args_test);
     CPPUNIT_TEST(test_no_positional_no_arguments);
     CPPUNIT_TEST(test_no_positional_extra_values);
@@ -316,6 +355,7 @@ private:
     CPPUNIT_TEST(test_multiple_required_last_required_multivalue);
     CPPUNIT_TEST(test_multiple_required_last_optional_multivalue);
     CPPUNIT_TEST(test_argument_match_positional_name);
+    CPPUNIT_TEST(test_default_values);
     CPPUNIT_TEST_SUITE_END();
 };
 

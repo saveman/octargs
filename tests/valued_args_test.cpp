@@ -7,7 +7,7 @@ namespace oct
 namespace args
 {
 
-class valarg_args_test : public test_fixture
+class valued_args_test : public test_fixture
 {
 private:
     void test_happy_hapth()
@@ -257,7 +257,44 @@ private:
         CPPUNIT_ASSERT_EQUAL(std::string("a==b"), results3.values("-v")[0]);
     }
 
-    CPPUNIT_TEST_SUITE(valarg_args_test);
+    void test_default_values()
+    {
+        argument_table args_empty("appname", {});
+        argument_table args_one("appname", { "-v", "value" });
+
+        parser parser;
+        auto& arg = parser.add_valued({ "-v" }).set_max_count(3).set_default_values({ "one", "two" });
+
+        auto results_one = parser.parse(args_one);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), results_one.count("-v"));
+        CPPUNIT_ASSERT_EQUAL(std::string("value"), results_one.values("-v")[0]);
+
+        auto results = parser.parse(args_empty);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), results.count("-v"));
+        CPPUNIT_ASSERT_EQUAL(std::string("one"), results.values("-v")[0]);
+        CPPUNIT_ASSERT_EQUAL(std::string("two"), results.values("-v")[1]);
+
+        arg.set_default_values({ "one", "two", "three", "four" });
+        CPPUNIT_ASSERT_THROW(parser.parse(args_empty), parse_exception);
+
+        arg.set_default_values({ "one", "two", "three" });
+        results = parser.parse(args_empty);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), results.count("-v"));
+        CPPUNIT_ASSERT_EQUAL(std::string("one"), results.values("-v")[0]);
+        CPPUNIT_ASSERT_EQUAL(std::string("two"), results.values("-v")[1]);
+        CPPUNIT_ASSERT_EQUAL(std::string("three"), results.values("-v")[2]);
+
+        arg.set_default_value("oko");
+        results = parser.parse(args_empty);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), results.count("-v"));
+        CPPUNIT_ASSERT_EQUAL(std::string("oko"), results.values("-v")[0]);
+
+        arg.set_default_values({});
+        results = parser.parse(args_empty);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("-v"));
+    }
+
+    CPPUNIT_TEST_SUITE(valued_args_test);
     CPPUNIT_TEST(test_happy_hapth);
     CPPUNIT_TEST(test_no_names);
     CPPUNIT_TEST(test_multiple_names);
@@ -274,10 +311,11 @@ private:
     CPPUNIT_TEST(test_equal_mode_value_mixed);
     CPPUNIT_TEST(test_equal_value_invalid);
     CPPUNIT_TEST(test_equal_value_with_equal);
+    CPPUNIT_TEST(test_default_values);
     CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(valarg_args_test);
+CPPUNIT_TEST_SUITE_REGISTRATION(valued_args_test);
 
 } // namespace args
 } // namespace oct

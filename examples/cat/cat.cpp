@@ -156,17 +156,13 @@ public:
             // TODO: .set_description("display $ at end of each line");
             arg_parser.add_switch({ "-n", "--number" }).set_type_and_storage(&cat_app_settings::m_print_line_numbers);
             // TODO: .set_description("number all output lines");
-            arg_parser.add_positional("FILES", false, true).set_type_and_storage(&cat_app_settings::m_input_names);
+            arg_parser.add_positional("FILES", false, true)
+                .set_default_value(STANDARD_INPUT_NAME)
+                .set_type_and_storage(&cat_app_settings::m_input_names);
 
             cat_app_settings settings;
 
             arg_parser.parse(argc, argv, settings);
-
-            // TODO: (planned) - change when defaults values support is ready
-            if (settings.m_input_names.empty())
-            {
-                settings.m_input_names.push_back(STANDARD_INPUT_NAME);
-            }
 
             cat_app_engine(settings).execute();
         }
