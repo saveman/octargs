@@ -44,7 +44,7 @@ private:
         argument_table args("appname", {});
 
         parser parser;
-        parser.add_positional("values", false, true);
+        parser.add_positional("values").set_max_count_unlimited();
 
         auto results = parser.parse(args);
 
@@ -56,7 +56,7 @@ private:
         argument_table args("appname", { "argument1" });
 
         parser parser;
-        parser.add_positional("values", false, true);
+        parser.add_positional("values").set_max_count_unlimited();
 
         auto results = parser.parse(args);
 
@@ -69,7 +69,7 @@ private:
         argument_table args("appname", { "argument1", "argument2", "argument3" });
 
         parser parser;
-        parser.add_positional("values", false, true);
+        parser.add_positional("values").set_max_count_unlimited();
 
         auto results = parser.parse(args);
 
@@ -85,7 +85,7 @@ private:
 
         parser parser;
         parser.add_switch({ "-v" });
-        parser.add_positional("values", false, true);
+        parser.add_positional("values").set_max_count_unlimited();
 
         auto results = parser.parse(args);
 
@@ -98,7 +98,7 @@ private:
 
         parser parser;
         parser.add_switch({ "-v" });
-        parser.add_positional("values", false, true);
+        parser.add_positional("values").set_max_count_unlimited();
 
         auto results = parser.parse(args);
 
@@ -112,7 +112,7 @@ private:
 
         parser parser;
         parser.add_switch({ "-v" });
-        parser.add_positional("values", false, true);
+        parser.add_positional("values").set_max_count_unlimited();
 
         auto results = parser.parse(args);
 
@@ -126,25 +126,11 @@ private:
     {
         argument_table args("appname", { "-v", "argument1", "argument2", "argument3" });
 
-        // first multivalue, so no more can be registered
         parser parser1;
-        parser1.add_positional("values1", false, true);
-        CPPUNIT_ASSERT_THROW(parser1.add_positional("values2", false, true), configuration_exception);
-
-        // first multivalue, so no more can be registered
-        parser parser2;
-        parser2.add_positional("values1", true, true);
-        CPPUNIT_ASSERT_THROW(parser2.add_positional("values2", true, true), configuration_exception);
-
-        // first multivalue, so no more can be registered
-        parser parser3;
-        parser3.add_positional("values1", true, true);
-        CPPUNIT_ASSERT_THROW(parser3.add_positional("values2", true, false), configuration_exception);
-
-        // first optional, so no more can be registered
-        parser parser4;
-        parser4.add_positional("values1", false, false);
-        CPPUNIT_ASSERT_THROW(parser4.add_positional("values2", true, true), configuration_exception);
+        // second argument "required" but first "unlimited"
+        parser1.add_positional("values1").set_max_count_unlimited();
+        parser1.add_positional("values2").set_min_count(1).set_max_count_unlimited();
+        CPPUNIT_ASSERT_THROW(parser1.parse(args), parse_exception);
     }
 
     void test_multiple_required_last_required_singlevalue()
@@ -154,9 +140,9 @@ private:
         argument_table args_too_much("appname", { "argument1", "argument2", "argument3", "argument4" });
 
         parser parser;
-        parser.add_positional("arg1", true, false);
-        parser.add_positional("arg2", true, false);
-        parser.add_positional("arg3", true, false);
+        parser.add_positional("arg1").set_min_count(1);
+        parser.add_positional("arg2").set_min_count(1);
+        parser.add_positional("arg3").set_min_count(1);
 
         CPPUNIT_ASSERT_THROW(parser.parse(args_not_enough), parse_exception);
 
@@ -179,9 +165,9 @@ private:
         argument_table args_too_much("appname", { "argument1", "argument2", "argument3", "argument4" });
 
         parser parser;
-        parser.add_positional("arg1", true, false);
-        parser.add_positional("arg2", true, false);
-        parser.add_positional("arg3", false, false);
+        parser.add_positional("arg1").set_min_count(1);
+        parser.add_positional("arg2").set_min_count(1);
+        parser.add_positional("arg3");
 
         auto results_empty = parser.parse(args_empty);
 
@@ -210,9 +196,9 @@ private:
         argument_table args_last_multi("appname", { "argument1", "argument2", "argument3", "argument4", "argument3" });
 
         parser parser;
-        parser.add_positional("arg1", true, false);
-        parser.add_positional("arg2", true, false);
-        parser.add_positional("arg3", true, true);
+        parser.add_positional("arg1").set_min_count(1);
+        parser.add_positional("arg2").set_min_count(1);
+        parser.add_positional("arg3").set_min_count(1).set_max_count_unlimited();
 
         CPPUNIT_ASSERT_THROW(parser.parse(args_not_enough), parse_exception);
 
@@ -244,9 +230,9 @@ private:
         argument_table args_last_multi("appname", { "argument1", "argument2", "argument3", "argument4", "argument3" });
 
         parser parser;
-        parser.add_positional("arg1", true, false);
-        parser.add_positional("arg2", true, false);
-        parser.add_positional("arg3", false, true);
+        parser.add_positional("arg1").set_min_count(1);
+        parser.add_positional("arg2").set_min_count(1);
+        parser.add_positional("arg3").set_max_count_unlimited();
 
         auto results_last_empty = parser.parse(args_last_empty);
 
@@ -283,7 +269,7 @@ private:
         argument_table args2("appname", { "files=111", "argument1", "argument2" });
 
         parser parser;
-        parser.add_positional("files", false, true);
+        parser.add_positional("files").set_max_count_unlimited();
 
         auto results1 = parser.parse(args1);
 
@@ -306,7 +292,7 @@ private:
         argument_table args_given("appname", { "value1", "value2" });
 
         parser parser1;
-        auto& arg = parser1.add_positional("files", false, true).set_default_values({ "one", "two" });
+        auto& arg = parser1.add_positional("files").set_max_count_unlimited().set_default_values({ "one", "two" });
 
         auto results_args_given = parser1.parse(args_given);
         CPPUNIT_ASSERT_EQUAL(std::size_t(2), results_args_given.count("files"));
@@ -335,8 +321,44 @@ private:
         CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("files"));
 
         parser parser_single;
-        parser_single.add_positional("files", false, false).set_default_values({ "one", "two" });
+        parser_single.add_positional("files").set_default_values({ "one", "two" });
         CPPUNIT_ASSERT_THROW(parser_single.parse(args_empty), parse_exception);
+    }
+
+    void test_min_max_count()
+    {
+        argument_table args0("appname", { "value1" });
+        argument_table args1("appname", { "value1", "value2", "value3" });
+        argument_table args2("appname", { "value1", "value2", "value3", "value4", "value5" });
+
+        parser parser;
+        auto& arg_patterns = parser.add_positional("patterns").set_min_count(1).set_max_count(2);
+        auto& arg_files = parser.add_positional("files").set_max_count(2);
+
+        auto results = parser.parse(args0);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), results.count("patterns"));
+        CPPUNIT_ASSERT_EQUAL(std::string("value1"), results.values("patterns")[0]);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("files"));
+
+        results = parser.parse(args1);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), results.count("patterns"));
+        CPPUNIT_ASSERT_EQUAL(std::string("value1"), results.values("patterns")[0]);
+        CPPUNIT_ASSERT_EQUAL(std::string("value2"), results.values("patterns")[1]);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), results.count("files"));
+        CPPUNIT_ASSERT_EQUAL(std::string("value3"), results.values("files")[0]);
+
+        CPPUNIT_ASSERT_THROW(parser.parse(args2), parse_exception);
+
+        arg_patterns.set_min_count(3).set_max_count(3);
+        arg_files.set_min_count(2).set_max_count_unlimited();
+        results = parser.parse(args2);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), results.count("patterns"));
+        CPPUNIT_ASSERT_EQUAL(std::string("value1"), results.values("patterns")[0]);
+        CPPUNIT_ASSERT_EQUAL(std::string("value2"), results.values("patterns")[1]);
+        CPPUNIT_ASSERT_EQUAL(std::string("value3"), results.values("patterns")[2]);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), results.count("files"));
+        CPPUNIT_ASSERT_EQUAL(std::string("value4"), results.values("files")[0]);
+        CPPUNIT_ASSERT_EQUAL(std::string("value5"), results.values("files")[1]);
     }
 
     CPPUNIT_TEST_SUITE(positional_args_test);
@@ -356,6 +378,7 @@ private:
     CPPUNIT_TEST(test_multiple_required_last_optional_multivalue);
     CPPUNIT_TEST(test_argument_match_positional_name);
     CPPUNIT_TEST(test_default_values);
+    CPPUNIT_TEST(test_min_max_count);
     CPPUNIT_TEST_SUITE_END();
 };
 

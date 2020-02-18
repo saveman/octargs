@@ -133,7 +133,7 @@ private:
         argument_table args("appname", std::vector<std::string>(COUNT, "--arg"));
 
         parser parser;
-        parser.add_switch({ "--arg" }).set_unlimited_count();
+        parser.add_switch({ "--arg" }).set_max_count_unlimited();
 
         auto results = parser.parse(args);
         CPPUNIT_ASSERT_EQUAL(COUNT, results.count("--arg"));

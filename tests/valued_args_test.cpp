@@ -15,7 +15,7 @@ private:
         argument_table args("appname", { "-a", "valuea", "-c", "valuec", "-a", "valueb" });
 
         parser parser;
-        parser.add_valued({ "-a" }).set_unlimited_count();
+        parser.add_valued({ "-a" }).set_max_count_unlimited();
         parser.add_valued({ "-b" });
         parser.add_valued({ "-c" });
 
@@ -133,7 +133,7 @@ private:
         argument_table args("appname", std::vector<std::string>(COUNT, "--arg"));
 
         parser parser;
-        parser.add_valued({ "--arg" }).set_unlimited_count();
+        parser.add_valued({ "--arg" }).set_max_count_unlimited();
 
         auto results = parser.parse(args);
         CPPUNIT_ASSERT_EQUAL(COUNT, results.count("--arg"));
@@ -205,7 +205,7 @@ private:
         argument_table args2("appname", { "-v=value1", "-a", "-v", "value2", "-v=value3" });
 
         parser parser;
-        parser.add_valued({ "-v" }).set_unlimited_count();
+        parser.add_valued({ "-v" }).set_max_count_unlimited();
         parser.add_switch({ "-a" });
 
         auto results1 = parser.parse(args1);
@@ -294,6 +294,31 @@ private:
         CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("-v"));
     }
 
+    void test_min_max_count()
+    {
+        argument_table args("appname", { "-v", "value1", "-v", "value2" });
+
+        parser parser;
+        auto& arg = parser.add_valued({ "-v" }).set_max_count_unlimited();
+
+        auto results = parser.parse(args);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), results.count("-v"));
+
+        arg.set_min_count(1).set_max_count(2);
+        results = parser.parse(args);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), results.count("-v"));
+
+        arg.set_min_count(2).set_max_count(2);
+        results = parser.parse(args);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), results.count("-v"));
+
+        arg.set_min_count(3);
+        CPPUNIT_ASSERT_THROW(parser.parse(args), parse_exception);
+
+        arg.set_min_count(2).set_max_count(1);
+        CPPUNIT_ASSERT_THROW(parser.parse(args), parse_exception);
+    }
+
     CPPUNIT_TEST_SUITE(valued_args_test);
     CPPUNIT_TEST(test_happy_hapth);
     CPPUNIT_TEST(test_no_names);
@@ -312,6 +337,7 @@ private:
     CPPUNIT_TEST(test_equal_value_invalid);
     CPPUNIT_TEST(test_equal_value_with_equal);
     CPPUNIT_TEST(test_default_values);
+    CPPUNIT_TEST(test_min_max_count);
     CPPUNIT_TEST_SUITE_END();
 };
 

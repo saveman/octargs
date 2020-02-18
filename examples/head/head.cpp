@@ -60,7 +60,7 @@ public:
             arg_parser.add_switch({ "-h", "--header" }); // TODO: .set_description("print header with input name");
             arg_parser.add_switch(
                 { "-z", "--zero-terminated" }); // TODO: .set_description("line delimiter is NUL, not newline");
-            arg_parser.add_positional("FILES", false, true);
+            arg_parser.add_positional("FILES").set_max_count_unlimited();
 
             auto results = arg_parser.parse(argc, argv);
 

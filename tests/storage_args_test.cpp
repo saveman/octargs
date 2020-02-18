@@ -33,7 +33,7 @@ private:
         parser.add_switch({ "--verbose" }).set_type_and_storage(&settings::m_verbose);
         parser.add_valued({ "--compress" }).set_type_and_storage(&settings::m_compression_name);
         parser.add_valued({ "--output" }).set_type_and_storage(&settings::m_output_file);
-        parser.add_positional("FILES", false, false).set_type_and_storage(&settings::m_files);
+        parser.add_positional("FILES").set_type_and_storage(&settings::m_files);
 
         settings settings1;
         parser.parse(args1, settings1);
@@ -70,8 +70,8 @@ private:
 
         parser.add_switch({ "--verbose" }).set_type_and_storage(&settings::m_verbose);
         parser.add_valued({ "--compress" }).set_type_and_storage(&settings::m_compression_name);
-        parser.add_valued({ "--include" }).set_unlimited_count().set_type_and_storage(&settings::m_include_files);
-        parser.add_positional("FILES", false, true).set_type_and_storage(&settings::m_files);
+        parser.add_valued({ "--include" }).set_max_count_unlimited().set_type_and_storage(&settings::m_include_files);
+        parser.add_positional("FILES").set_max_count_unlimited().set_type_and_storage(&settings::m_files);
 
         settings settings1;
         parser.parse(args1, settings1);
@@ -98,7 +98,7 @@ private:
 
         storing_parser<settings> parser;
 
-        parser.add_positional("FILES", false, true).set_type_and_storage(&settings::m_value);
+        parser.add_positional("FILES").set_max_count_unlimited().set_type_and_storage(&settings::m_value);
 
         settings settings1;
         parser.parse(args1, settings1);
@@ -126,7 +126,7 @@ private:
 
         storing_parser<settings> parser;
 
-        parser.add_valued({ "--int" }).set_unlimited_count().set_type_and_storage(&settings::m_ints);
+        parser.add_valued({ "--int" }).set_max_count_unlimited().set_type_and_storage(&settings::m_ints);
         parser.add_valued({ "--double" }).set_type_and_storage(&settings::m_double);
         parser.add_valued({ "--longlong" }).set_type_and_storage(&settings::m_longlong);
 

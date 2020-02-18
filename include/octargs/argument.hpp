@@ -20,6 +20,36 @@ template <typename TRAITS, typename VALUES_STORAGE>
 class basic_argument : public internal::basic_argument_tag
 {
 public:
+    using string_vector_type = typename TRAITS::string_vector_type;
+    using handler_type = internal::basic_argument_handler<TRAITS, VALUES_STORAGE>;
+    using handler_ptr_type = std::shared_ptr<const handler_type>;
+
+    virtual ~basic_argument() = default;
+
+    virtual const string_vector_type& get_names() const = 0;
+
+    virtual const string_vector_type& get_default_values() const = 0;
+
+    virtual std::size_t get_min_count() const = 0;
+
+    virtual std::size_t get_max_count() const = 0;
+
+    virtual const handler_ptr_type& get_handler() const = 0;
+
+    virtual bool is_assignable_by_name() const = 0;
+
+    virtual bool is_accepting_immediate_value() const = 0;
+
+    virtual bool is_accepting_separate_value() const = 0;
+};
+
+template <typename DERIVED, typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
+class basic_argument_base : public basic_argument<TRAITS, VALUES_STORAGE>
+{
+public:
+    using derived_type = DERIVED;
+    using base_type = basic_argument<TRAITS, VALUES_STORAGE>;
+
     using traits_type = TRAITS;
     using values_storage_type = VALUES_STORAGE;
     using string_type = typename TRAITS::string_type;
@@ -29,8 +59,6 @@ public:
 
     template <typename DATA>
     using type_handler_type = basic_argument_type_handler<DATA, TRAITS, VALUES_STORAGE>;
-
-    virtual ~basic_argument() = default;
 
     template <typename DATA>
     type_handler_type<DATA>& set_type()
@@ -54,59 +82,58 @@ public:
         return set_type<DATA>().set_storage(member_ptr);
     }
 
-    const string_vector_type& get_names() const
+    derived_type& set_min_count(std::size_t count)
+    {
+        m_min_count = count;
+        return static_cast<derived_type&>(*this);
+    }
+
+    derived_type& set_max_count(std::size_t count)
+    {
+        m_max_count = count;
+        return static_cast<derived_type&>(*this);
+    }
+
+    derived_type& set_max_count_unlimited()
+    {
+        return set_max_count(std::numeric_limits<std::size_t>::max());
+    }
+
+    const string_vector_type& get_names() const final
     {
         return m_names;
     }
 
-    const string_vector_type& get_default_values() const
+    const string_vector_type& get_default_values() const final
     {
         return m_default_values;
     }
 
-    bool is_required() const
+    std::size_t get_min_count() const final
     {
-        return m_is_required;
+        return m_min_count;
     }
 
-    std::size_t get_max_count() const
+    std::size_t get_max_count() const final
     {
         return m_max_count;
     }
 
-    handler_ptr_type get_handler() const
+    const handler_ptr_type& get_handler() const final
     {
         return m_handler_ptr;
     }
 
-    virtual bool is_assignable_by_name() const = 0;
-
-    virtual bool is_accepting_immediate_value() const = 0;
-
-    virtual bool is_accepting_separate_value() const = 0;
-
 protected:
-    explicit basic_argument(const string_vector_type& names)
-        : m_names(names)
-        , m_is_required(false)
+    explicit basic_argument_base(const string_vector_type& names)
+        : base_type()
+        , m_names(names)
+        , m_min_count(0)
         , m_max_count(1)
+        , m_default_values()
+        , m_handler_ptr()
     {
         // noop
-    }
-
-    void set_unlimited_count()
-    {
-        set_max_count(std::numeric_limits<std::size_t>::max());
-    }
-
-    void set_max_count(std::size_t count)
-    {
-        m_max_count = count;
-    }
-
-    void set_required(bool required)
-    {
-        m_is_required = required;
     }
 
     void set_default_values_internal(const string_vector_type& values)
@@ -122,22 +149,23 @@ private:
 
     /// Names.
     const string_vector_type m_names;
-    /// Flag: is argument required.
-    bool m_is_required;
+    /// Minimum number of occurrences in input.
+    std::size_t m_min_count;
     /// Maximum number of occurrences in input.
     std::size_t m_max_count;
-    /// Values storage handler.
-    handler_ptr_type m_handler_ptr;
     /// Defaults values.
     string_vector_type m_default_values;
+    /// Values storage handler.
+    handler_ptr_type m_handler_ptr;
 };
 
 template <typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
-class basic_switch_argument : public basic_argument<TRAITS, VALUES_STORAGE>
+class basic_switch_argument
+    : public basic_argument_base<basic_switch_argument<TRAITS, VALUES_STORAGE>, TRAITS, VALUES_STORAGE>
 {
 public:
     using traits_type = TRAITS;
-    using base_type = basic_argument<TRAITS, VALUES_STORAGE>;
+    using base_type = basic_argument_base<basic_switch_argument<TRAITS, VALUES_STORAGE>, TRAITS, VALUES_STORAGE>;
     using string_vector_type = typename TRAITS::string_vector_type;
 
     explicit basic_switch_argument(const string_vector_type& names)
@@ -146,31 +174,19 @@ public:
         // noop
     }
 
-    bool is_assignable_by_name() const override
+    bool is_assignable_by_name() const final
     {
         return true;
     }
 
-    bool is_accepting_immediate_value() const override
+    bool is_accepting_immediate_value() const final
     {
         return false;
     }
 
-    bool is_accepting_separate_value() const override
+    bool is_accepting_separate_value() const final
     {
         return false;
-    }
-
-    basic_switch_argument& set_max_count(std::size_t count)
-    {
-        base_type::set_max_count(count);
-        return *this;
-    }
-
-    basic_switch_argument& set_unlimited_count()
-    {
-        base_type::set_unlimited_count();
-        return *this;
     }
 
     basic_switch_argument& set_default_values_count(std::size_t count)
@@ -181,10 +197,11 @@ public:
 };
 
 template <typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
-class basic_valued_argument : public basic_argument<TRAITS, VALUES_STORAGE>
+class basic_valued_argument
+    : public basic_argument_base<basic_valued_argument<TRAITS, VALUES_STORAGE>, TRAITS, VALUES_STORAGE>
 {
 public:
-    using base_type = basic_argument<TRAITS, VALUES_STORAGE>;
+    using base_type = basic_argument_base<basic_valued_argument<TRAITS, VALUES_STORAGE>, TRAITS, VALUES_STORAGE>;
     using string_type = typename TRAITS::string_type;
     using string_vector_type = typename TRAITS::string_vector_type;
 
@@ -194,31 +211,19 @@ public:
         // noop
     }
 
-    bool is_assignable_by_name() const override
+    bool is_assignable_by_name() const final
     {
         return true;
     }
 
-    bool is_accepting_immediate_value() const override
+    bool is_accepting_immediate_value() const final
     {
         return true;
     }
 
-    bool is_accepting_separate_value() const override
+    bool is_accepting_separate_value() const final
     {
         return true;
-    }
-
-    basic_valued_argument& set_max_count(std::size_t count)
-    {
-        base_type::set_max_count(count);
-        return *this;
-    }
-
-    basic_valued_argument& set_unlimited_count()
-    {
-        base_type::set_unlimited_count();
-        return *this;
     }
 
     basic_valued_argument& set_default_values(const string_vector_type& values)
@@ -235,21 +240,18 @@ public:
 };
 
 template <typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
-class basic_positional_argument : public basic_argument<TRAITS, VALUES_STORAGE>
+class basic_positional_argument
+    : public basic_argument_base<basic_positional_argument<TRAITS, VALUES_STORAGE>, TRAITS, VALUES_STORAGE>
 {
 public:
-    using base_type = basic_argument<TRAITS, VALUES_STORAGE>;
+    using base_type = basic_argument_base<basic_positional_argument<TRAITS, VALUES_STORAGE>, TRAITS, VALUES_STORAGE>;
     using string_type = typename TRAITS::string_type;
     using string_vector_type = typename TRAITS::string_vector_type;
 
-    explicit basic_positional_argument(const string_vector_type& names, bool required, bool multivalue)
+    explicit basic_positional_argument(const string_vector_type& names)
         : base_type(names)
     {
-        base_type::set_required(required);
-        if (multivalue)
-        {
-            base_type::set_unlimited_count();
-        }
+        // noop
     }
 
     basic_positional_argument& set_default_values(const string_vector_type& values)
@@ -264,17 +266,17 @@ public:
         return *this;
     }
 
-    bool is_assignable_by_name() const override
+    bool is_assignable_by_name() const final
     {
         return false;
     }
 
-    bool is_accepting_immediate_value() const override
+    bool is_accepting_immediate_value() const final
     {
         return false;
     }
 
-    bool is_accepting_separate_value() const override
+    bool is_accepting_separate_value() const final
     {
         return false;
     }

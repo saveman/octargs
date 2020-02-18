@@ -22,7 +22,7 @@ private:
         parser parser;
         parser.add_switch({ "-v" });
         parser.add_switch({ "--help" });
-        parser.add_positional("values", false, true);
+        parser.add_positional("values").set_max_count_unlimited();
 
         auto results = parser.parse(argc, argv);
         CPPUNIT_ASSERT_EQUAL(std::string("appname"), results.get_app_name());
@@ -40,7 +40,7 @@ private:
         parser parser;
         parser.add_switch({ "-v" });
         parser.add_switch({ "--help" });
-        parser.add_positional("values", false, true);
+        parser.add_positional("values").set_max_count_unlimited();
 
         auto results = parser.parse(args);
         CPPUNIT_ASSERT(results.has_value("-v"));

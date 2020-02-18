@@ -42,7 +42,8 @@ struct basic_parser_data : public basic_parser_data_iface<TRAITS>
     using argument_tag_ptr_type = std::shared_ptr<argument_tag_type>;
 
     basic_parser_data()
-        : m_positional_arguments()
+        : m_named_arguments()
+        , m_positional_arguments()
         , m_names_repository()
     {
         // noop
@@ -58,6 +59,7 @@ struct basic_parser_data : public basic_parser_data_iface<TRAITS>
         return nullptr;
     }
 
+    std::vector<argument_ptr_type> m_named_arguments;
     std::vector<argument_ptr_type> m_positional_arguments;
     std::map<string_type, argument_ptr_type> m_names_repository;
 };

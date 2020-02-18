@@ -26,7 +26,7 @@ private:
 
         wparser parser;
         parser.add_switch({ L"-v", L"--version" });
-        parser.add_positional(L"values", false, true);
+        parser.add_positional(L"values").set_max_count_unlimited();
 
         auto results = parser.parse(test_argc, test_argv);
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), results.count(L"values"));

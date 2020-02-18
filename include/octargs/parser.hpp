@@ -57,6 +57,7 @@ public:
         auto new_argument = std::make_shared<switch_argument_type>(names);
 
         add_to_names_repository(new_argument);
+        m_data_ptr->m_named_arguments.emplace_back(new_argument);
 
         return *new_argument;
     }
@@ -68,33 +69,20 @@ public:
         auto new_argument = std::make_shared<valued_argument_type>(names);
 
         add_to_names_repository(new_argument);
+        m_data_ptr->m_named_arguments.emplace_back(new_argument);
 
         return *new_argument;
     }
 
-    positional_argument_type& add_positional(const string_type& name, bool required, bool multivalue)
+    positional_argument_type& add_positional(const string_type& name)
     {
         auto names = { name };
 
         check_names(names);
 
-        if (!m_data_ptr->m_positional_arguments.empty())
-        {
-            auto& last_positional_argument = m_data_ptr->m_positional_arguments.back();
-            if (!last_positional_argument->is_required())
-            {
-                throw configuration_exception("Optional positional argument already added");
-            }
-            if (last_positional_argument->get_max_count() > 1)
-            {
-                throw configuration_exception("Multivalue positional argument already added");
-            }
-        }
-
-        auto new_argument = std::make_shared<positional_argument_type>(names, required, multivalue);
+        auto new_argument = std::make_shared<positional_argument_type>(names);
 
         add_to_names_repository(new_argument);
-
         m_data_ptr->m_positional_arguments.emplace_back(new_argument);
 
         return *new_argument;
@@ -122,7 +110,13 @@ public:
 
         parse_named_arguments(input_iterator, values_storage, results_data_ptr);
         parse_positional_arguments(input_iterator, values_storage, results_data_ptr);
+        if (input_iterator.has_more())
+        {
+            throw parse_exception("Unexpected valued given");
+        }
+
         parse_default_values(results_data_ptr, values_storage);
+        check_values_count(results_data_ptr);
 
         return results_type(results_data_ptr);
     }
@@ -155,32 +149,35 @@ private:
         results_data_ptr->append_value(argument, value_str);
     }
 
+    static void parse_default_value(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+        const argument_ptr_type& argument)
+    {
+        if (results_data_ptr->value_count(argument) > 0)
+        {
+            return;
+        }
+
+        auto& values = argument->get_default_values();
+        if (values.empty())
+        {
+            return;
+        }
+
+        for (auto& value : values)
+        {
+            parse_argument_value(results_data_ptr, values_storage, argument, value);
+        }
+    }
+
     void parse_default_values(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage) const
     {
-        // iterating over arguments using all names is not optimal but safe
-        // as if values will be added for first name then the second name
-        // would be skipped as there will be values already
-        auto cur_iter = m_data_ptr->m_names_repository.begin();
-        auto end_iter = m_data_ptr->m_names_repository.end();
-        for (; cur_iter != end_iter; ++cur_iter)
+        for (auto& argument : m_data_ptr->m_named_arguments)
         {
-            auto& argument = cur_iter->second;
-
-            if (results_data_ptr->value_count(argument) > 0)
-            {
-                continue;
-            }
-
-            auto& values = argument->get_default_values();
-            if (values.empty())
-            {
-                continue;
-            }
-
-            for (auto& value : values)
-            {
-                parse_argument_value(results_data_ptr, values_storage, argument, value);
-            }
+            parse_default_value(results_data_ptr, values_storage, argument);
+        }
+        for (auto& argument : m_data_ptr->m_positional_arguments)
+        {
+            parse_default_value(results_data_ptr, values_storage, argument);
         }
     }
 
@@ -288,40 +285,32 @@ private:
     void parse_positional_arguments(argument_table_iterator& input_iterator, values_storage_type& values_storage,
         const results_data_ptr_type& results_data_ptr) const
     {
-        auto arg_iter = m_data_ptr->m_positional_arguments.begin();
-        auto arg_end_iter = m_data_ptr->m_positional_arguments.end();
-
-        while (input_iterator.has_more())
+        for (auto& argument : m_data_ptr->m_positional_arguments)
         {
-            if (arg_iter == arg_end_iter)
+            while ((results_data_ptr->value_count(argument) < argument->get_max_count()) && input_iterator.has_more())
             {
-                throw parse_exception("Unexpected positional argument");
+                const auto& value_str = input_iterator.take_next();
+
+                parse_argument_value(results_data_ptr, values_storage, argument, value_str);
             }
+        }
+    }
 
-            const auto& value_str = input_iterator.take_next();
-
-            auto& arg_object_ptr = *arg_iter;
-
-            parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, value_str);
-
-            if (arg_object_ptr->get_max_count() == 1)
+    void check_values_count(const results_data_ptr_type& results_data_ptr) const
+    {
+        for (auto& argument : m_data_ptr->m_named_arguments)
+        {
+            if (results_data_ptr->value_count(argument) < argument->get_min_count())
             {
-                ++arg_iter;
+                throw parse_exception("Required named argument value(s) missing");
             }
         }
 
-        for (; arg_iter != arg_end_iter; ++arg_iter)
+        for (auto& argument : m_data_ptr->m_positional_arguments)
         {
-            auto& arg_object_ptr = *arg_iter;
-
-            if (!arg_object_ptr->is_required())
+            if (results_data_ptr->value_count(argument) < argument->get_min_count())
             {
-                continue;
-            }
-
-            if (results_data_ptr->value_count(arg_object_ptr) == 0)
-            {
-                throw parse_exception("Required positional argument missing");
+                throw parse_exception("Required positional argument value(s) missing");
             }
         }
     }
