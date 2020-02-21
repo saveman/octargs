@@ -7,7 +7,7 @@ namespace oct
 namespace args
 {
 
-class basic_parse_test : public test_fixture
+class parser_test : public test_fixture
 {
 private:
     void test_argc_argv_parse()
@@ -72,7 +72,7 @@ private:
         CPPUNIT_ASSERT_THROW(parser.parse(args), parse_exception);
     }
 
-    CPPUNIT_TEST_SUITE(basic_parse_test);
+    CPPUNIT_TEST_SUITE(parser_test);
     CPPUNIT_TEST(test_argc_argv_parse);
     CPPUNIT_TEST(test_argument_table_parse);
     CPPUNIT_TEST(test_invalid_results_arg);
@@ -80,7 +80,7 @@ private:
     CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(basic_parse_test);
+CPPUNIT_TEST_SUITE_REGISTRATION(parser_test);
 
 } // namespace args
 } // namespace oct

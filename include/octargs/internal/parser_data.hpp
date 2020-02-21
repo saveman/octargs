@@ -45,6 +45,8 @@ struct basic_parser_data : public basic_parser_data_iface<TRAITS>
         : m_named_arguments()
         , m_positional_arguments()
         , m_names_repository()
+        , m_info_header()
+        , m_info_footer()
     {
         // noop
     }
@@ -62,6 +64,8 @@ struct basic_parser_data : public basic_parser_data_iface<TRAITS>
     std::vector<argument_ptr_type> m_named_arguments;
     std::vector<argument_ptr_type> m_positional_arguments;
     std::map<string_type, argument_ptr_type> m_names_repository;
+    string_type m_info_header;
+    string_type m_info_footer;
 };
 
 } // namespace internal

@@ -75,6 +75,12 @@ run_examples_cat:
 	@(cd $(EXEDIR) && ./$(EXENAME) -n --show-ends $(SOURCE_DIR)/LICENSE $(SOURCE_DIR)/README.md)
 	@echo "----------------------------"
 
+	@echo "----------------------------"
+	@echo "CAT HELP"
+	@echo "----------------------------"
+	@(cd $(EXEDIR) && ./$(EXENAME) --help)
+	@echo "----------------------------"
+
 examples_cat: install
 	$(MAKE) run_examples_cat EXEDIR=$(INSTALL_DIR)/bin EXENAME=octargs_cat
 

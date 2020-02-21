@@ -20,6 +20,7 @@ template <typename TRAITS, typename VALUES_STORAGE>
 class basic_argument : public internal::basic_argument_tag
 {
 public:
+    using string_type = typename TRAITS::string_type;
     using string_vector_type = typename TRAITS::string_vector_type;
     using handler_type = internal::basic_argument_handler<TRAITS, VALUES_STORAGE>;
     using handler_ptr_type = std::shared_ptr<const handler_type>;
@@ -34,7 +35,13 @@ public:
 
     virtual std::size_t get_max_count() const = 0;
 
+    virtual bool is_max_count_unlimited() const = 0;
+
     virtual const handler_ptr_type& get_handler() const = 0;
+
+    virtual const string_type& get_description() const = 0;
+
+    virtual const string_type& get_value_name() const = 0;
 
     virtual bool is_assignable_by_name() const = 0;
 
@@ -82,6 +89,12 @@ public:
         return set_type<DATA>().set_storage(member_ptr);
     }
 
+    derived_type& set_description(const string_type& text)
+    {
+        m_description = text;
+        return static_cast<derived_type&>(*this);
+    }
+
     derived_type& set_min_count(std::size_t count)
     {
         m_min_count = count;
@@ -119,15 +132,31 @@ public:
         return m_max_count;
     }
 
+    bool is_max_count_unlimited() const final
+    {
+        return get_max_count() == std::numeric_limits<std::size_t>::max();
+    }
+
     const handler_ptr_type& get_handler() const final
     {
         return m_handler_ptr;
+    }
+
+    const string_type& get_description() const final
+    {
+        return m_description;
+    }
+
+    const string_type& get_value_name() const final
+    {
+        return m_value_name;
     }
 
 protected:
     explicit basic_argument_base(const string_vector_type& names)
         : base_type()
         , m_names(names)
+        , m_description()
         , m_min_count(0)
         , m_max_count(1)
         , m_default_values()
@@ -141,6 +170,11 @@ protected:
         m_default_values = values;
     }
 
+    void set_value_name_internal(const string_type& name)
+    {
+        m_value_name = name;
+    }
+
 private:
     void set_handler(const handler_ptr_type& handler_ptr)
     {
@@ -149,6 +183,10 @@ private:
 
     /// Names.
     const string_vector_type m_names;
+    /// Description
+    string_type m_description;
+    /// Value name.
+    string_type m_value_name;
     /// Minimum number of occurrences in input.
     std::size_t m_min_count;
     /// Maximum number of occurrences in input.
@@ -235,6 +273,12 @@ public:
     basic_valued_argument& set_default_value(const string_type& value)
     {
         this->set_default_values_internal({ value });
+        return *this;
+    }
+
+    basic_valued_argument& set_value_name(const string_type& name)
+    {
+        this->set_value_name_internal(name);
         return *this;
     }
 };

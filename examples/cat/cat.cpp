@@ -36,13 +36,15 @@ private:
 struct cat_app_settings
 {
     explicit cat_app_settings()
-        : m_print_line_ends(false)
+        : m_help_requested(false)
+        , m_print_line_ends(false)
         , m_print_line_numbers(false)
         , m_input_names()
     {
         // noop
     }
 
+    bool m_help_requested;
     bool m_print_line_ends;
     bool m_print_line_numbers;
     std::vector<std::string> m_input_names;
@@ -146,32 +148,40 @@ public:
 
         try
         {
-            // cat [OPTION]... [FILE]...
-            //
-            // Concatenate FILE(s) to standard output.
-            // With no FILE, or when FILE is -, read standard input.
+            arg_parser
+                .set_info_header("Concatenate FILE(s) to standard output.\n\n"
+                                 "With no FILE, or when FILE is -, read standard input.")
+                .set_info_footer("Examples:\n"
+                                 "cat f - g  Output f's contents, then standard input, then g's contents.\n"
+                                 "cat        Copy standard input to standard output.");
+            arg_parser.add_switch({ "--help" })
+                .set_description("show help information")
+                .set_type_and_storage(&cat_app_settings::m_help_requested);
+            arg_parser.add_switch({ "-E", "--show-ends" })
+                .set_description("display $ at end of each line")
+                .set_type_and_storage(&cat_app_settings::m_print_line_ends);
 
-            arg_parser.add_switch({ "--help" }); // TODO: remove
-
-            arg_parser.add_switch({ "-E", "--show-ends" }).set_type_and_storage(&cat_app_settings::m_print_line_ends);
-            // TODO: .set_description("display $ at end of each line");
-            arg_parser.add_switch({ "-n", "--number" }).set_type_and_storage(&cat_app_settings::m_print_line_numbers);
-            // TODO: .set_description("number all output lines");
             arg_parser.add_positional("FILES")
                 .set_max_count_unlimited()
                 .set_default_value(STANDARD_INPUT_NAME)
+                .set_description("files to concatenate")
                 .set_type_and_storage(&cat_app_settings::m_input_names);
 
             cat_app_settings settings;
 
             arg_parser.parse(m_input_args, settings);
 
+            if (settings.m_help_requested)
+            {
+                std::cout << arg_parser.usage() << std::endl;
+                return EXIT_SUCCESS;
+            }
             cat_app_engine(settings).execute();
         }
         catch (const oct::args::parse_exception& exc)
         {
             std::cerr << "Invalid arguments: " << exc.what() << std::endl;
-            // TODO: print_usage(std::cerr);
+            std::cerr << "Run " << m_input_args.get_app_name() << " --help to see usage information" << std::endl;
             return EXIT_FAILURE;
         }
         catch (const std::exception& exc)

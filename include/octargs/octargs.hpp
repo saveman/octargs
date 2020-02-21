@@ -28,7 +28,7 @@ using parser = storing_parser<>;
 template <typename VALUES_STORAGE = internal::null_values_storage>
 using storing_wparser = basic_parser<traits<wchar_t>, VALUES_STORAGE>;
 
-using wparser = storing_parser<>;
+using wparser = storing_wparser<>;
 
 } // namespace args
 } // namespace oct

@@ -14,6 +14,7 @@
 #include "internal/misc.hpp"
 #include "internal/parser_data.hpp"
 #include "internal/results_data.hpp"
+#include "parser_usage.hpp"
 #include "results.hpp"
 
 namespace oct
@@ -39,10 +40,29 @@ public:
     using argument_table_type = basic_argument_table<TRAITS>;
     using results_type = basic_results<TRAITS>;
 
+    using parser_usage_type = basic_parser_usage<TRAITS, VALUES_STORAGE>;
+
     basic_parser()
         : m_data_ptr(std::make_shared<parser_data_type>())
     {
         // noop
+    }
+
+    parser_usage_type usage() const
+    {
+        return parser_usage_type(m_data_ptr);
+    }
+
+    basic_parser& set_info_header(const string_type& text)
+    {
+        m_data_ptr->m_info_header = text;
+        return *this;
+    }
+
+    basic_parser& set_info_footer(const string_type& text)
+    {
+        m_data_ptr->m_info_footer = text;
+        return *this;
     }
 
     DEPRECATED argument_type& add_valarg(const string_vector_type& names)
