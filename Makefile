@@ -109,6 +109,11 @@ run_examples_head:
 	@echo "----------------------------"
 	@(cd $(EXEDIR) && ./$(EXENAME) -n=5 -h $(SOURCE_DIR)/LICENSE $(SOURCE_DIR)/README.md - - < $(SOURCE_DIR)/LICENSE)
 	@echo "----------------------------"
+	@echo "----------------------------"
+	@echo "HEAD  HELP"
+	@echo "----------------------------"
+	@(cd $(EXEDIR) && ./$(EXENAME) --help)
+	@echo "----------------------------"
 
 examples_head: install
 	$(MAKE) run_examples_head EXEDIR=$(INSTALL_DIR)/bin EXENAME=octargs_head

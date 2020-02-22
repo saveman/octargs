@@ -1,8 +1,6 @@
 #ifndef OCTARGS_PARSER_HPP_
 #define OCTARGS_PARSER_HPP_
 
-#include <list>
-#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -10,14 +8,13 @@
 #include "argument.hpp"
 #include "argument_table.hpp"
 #include "exception.hpp"
-#include "internal/char_utils.hpp"
-#include "internal/misc.hpp"
-#include "internal/parser_data.hpp"
-#include "internal/results_data.hpp"
-#include "internal/string_utils.hpp"
+#include "exclusive_argument.hpp"
 #include "parser_dictionary.hpp"
+#include "positional_argument.hpp"
 #include "results.hpp"
+#include "switch_argument.hpp"
 #include "usage.hpp"
+#include "valued_argument.hpp"
 
 namespace oct
 {
@@ -36,6 +33,7 @@ public:
     using switch_argument_type = basic_switch_argument<char_type, values_storage_type>;
     using valued_argument_type = basic_valued_argument<char_type, values_storage_type>;
     using positional_argument_type = basic_positional_argument<char_type, values_storage_type>;
+    using exclusive_argument_type = basic_exclusive_argument<char_type, values_storage_type>;
 
     using string_type = std::basic_string<char_type>;
     using string_vector_type = std::vector<string_type>;
@@ -68,9 +66,16 @@ public:
         return *this;
     }
 
-    DEPRECATED argument_type& add_valarg(const string_vector_type& names)
+    exclusive_argument_type& add_exclusive(const string_vector_type& names)
     {
-        return add_valued(names);
+        check_names(names);
+
+        auto new_argument = std::make_shared<exclusive_argument_type>(names);
+
+        add_to_names_repository(new_argument);
+        m_data_ptr->m_exclusive_arguments.emplace_back(new_argument);
+
+        return *new_argument;
     }
 
     switch_argument_type& add_switch(const string_vector_type& names)
@@ -129,8 +134,15 @@ public:
 
         results_data_ptr->set_app_name(arg_table.get_app_name());
 
-        argument_table_iterator input_iterator(arg_table);
+        if (arg_table.get_argument_count() == 1)
+        {
+            if (parse_exclusive(arg_table.get_argument(0), results_data_ptr, values_storage))
+            {
+                return results_type(results_data_ptr);
+            }
+        }
 
+        argument_table_iterator input_iterator(arg_table);
         parse_named_arguments(input_iterator, values_storage, results_data_ptr);
         parse_positional_arguments(input_iterator, values_storage, results_data_ptr);
         if (input_iterator.has_more())
@@ -204,6 +216,31 @@ private:
         }
     }
 
+    bool parse_exclusive(const string_type& arg_name, const results_data_ptr_type& results_data_ptr,
+        values_storage_type& values_storage) const
+    {
+        auto arg_iter = m_data_ptr->m_names_repository.find(arg_name);
+        if (arg_iter == m_data_ptr->m_names_repository.end())
+        {
+            // not an argument name
+            return false;
+        }
+
+        auto& arg_object_ptr = arg_iter->second;
+
+        if (!arg_object_ptr->is_exclusive())
+        {
+            // not exclusive
+            return false;
+        }
+
+        auto& value_str = dictionary_type::get_switch_enabled_literal();
+
+        parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, value_str);
+
+        return true;
+    }
+
     bool parse_named_argument(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
         argument_table_iterator& input_iterator, const string_type& arg_name) const
     {
@@ -216,7 +253,7 @@ private:
 
         auto& arg_object_ptr = arg_iter->second;
 
-        if (!arg_object_ptr->is_assignable_by_name())
+        if (!arg_object_ptr->is_assignable_by_name() || arg_object_ptr->is_exclusive())
         {
             // not an named argument, goto positional arguments processing
             return false;
@@ -242,6 +279,7 @@ private:
         }
 
         parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, value_str);
+
         return true;
     }
 
@@ -256,7 +294,7 @@ private:
 
         auto& arg_object_ptr = arg_iter->second;
 
-        if (!arg_object_ptr->is_assignable_by_name())
+        if (!arg_object_ptr->is_assignable_by_name() || arg_object_ptr->is_exclusive())
         {
             // not an named argument, goto positional arguments processing
             return false;

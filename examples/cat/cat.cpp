@@ -154,12 +154,15 @@ public:
                 .set_info_footer("Examples:\n"
                                  "cat f - g  Output f's contents, then standard input, then g's contents.\n"
                                  "cat        Copy standard input to standard output.");
-            arg_parser.add_switch({ "--help" })
+            arg_parser.add_exclusive({ "--help" })
                 .set_description("show help information")
                 .set_type_and_storage(&cat_app_settings::m_help_requested);
             arg_parser.add_switch({ "-E", "--show-ends" })
                 .set_description("display $ at end of each line")
                 .set_type_and_storage(&cat_app_settings::m_print_line_ends);
+            arg_parser.add_switch({ "-n", "--number" })
+                .set_description("number all output lines")
+                .set_type_and_storage(&cat_app_settings::m_print_line_numbers);
 
             arg_parser.add_positional("FILES")
                 .set_max_count_unlimited()

@@ -85,7 +85,8 @@ private:
     {
         os << "Usage:";
 
-        if (m_data_ptr->m_named_arguments.empty() && m_data_ptr->m_positional_arguments.empty())
+        if (m_data_ptr->m_named_arguments.empty() && m_data_ptr->m_positional_arguments.empty()
+            && m_data_ptr->m_exclusive_arguments.empty())
         {
             os << " --" << std::endl;
             return;
@@ -158,6 +159,11 @@ private:
         {
             arg_info_vector infos;
 
+            for (auto& argument : m_data_ptr->m_exclusive_arguments)
+            {
+                // cppcheck-suppress useStlAlgorithm
+                infos.push_back(prepare_info(argument, false));
+            }
             for (auto& argument : m_data_ptr->m_named_arguments)
             {
                 // cppcheck-suppress useStlAlgorithm

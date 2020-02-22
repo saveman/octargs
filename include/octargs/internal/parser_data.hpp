@@ -17,7 +17,7 @@ namespace internal
 {
 
 template <typename char_T>
-struct basic_parser_data_iface
+class basic_parser_data_iface
 {
 public:
     using char_type = char_T;
@@ -31,8 +31,9 @@ public:
 };
 
 template <typename char_T, typename values_storage_T = internal::null_values_storage>
-struct basic_parser_data : public basic_parser_data_iface<char_T>
+class basic_parser_data : public basic_parser_data_iface<char_T>
 {
+public:
     using char_type = char_T;
     using values_storage_type = values_storage_T;
 
@@ -67,6 +68,7 @@ struct basic_parser_data : public basic_parser_data_iface<char_T>
 
     std::vector<argument_ptr_type> m_named_arguments;
     std::vector<argument_ptr_type> m_positional_arguments;
+    std::vector<argument_ptr_type> m_exclusive_arguments;
     std::map<string_type, argument_ptr_type> m_names_repository;
     string_type m_info_header;
     string_type m_info_footer;

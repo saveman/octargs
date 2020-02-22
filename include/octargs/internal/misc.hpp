@@ -27,6 +27,8 @@ struct null_values_storage
 
 class basic_argument_tag
 {
+public:
+    virtual ~basic_argument_tag() = default;
 };
 
 } // namespace internal

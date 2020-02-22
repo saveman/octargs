@@ -56,17 +56,22 @@ set(${PROJECT_NAME}_HEADERS_INTERNAL
 )
 
 set(${PROJECT_NAME}_HEADERS
+    include/octargs/argument_base.hpp
     include/octargs/argument_table.hpp
     include/octargs/argument_type_handler.hpp
     include/octargs/argument.hpp
     include/octargs/converter.hpp
     include/octargs/exception.hpp
+    include/octargs/exclusive_argument.hpp
     include/octargs/octargs.hpp
     include/octargs/parser.hpp
+    include/octargs/positional_argument.hpp
     include/octargs/parser_dictionary.hpp
     include/octargs/results.hpp
+    include/octargs/switch_argument.hpp
     include/octargs/usage_dictionary.hpp
     include/octargs/usage.hpp
+    include/octargs/valued_argument.hpp
 )
 
 install(FILES ${${PROJECT_NAME}_HEADERS}

@@ -48,23 +48,30 @@ public:
 
         try
         {
-            // Usage: head [OPTION]... [FILE]...
-            // Print the first 10 lines of each FILE to standard output.    TODO: 10 -> DEFAULT_LINES_LIMIT
-            //
-            // With no FILE, or when FILE is -, read standard input.
-
             oct::args::parser arg_parser;
 
-            arg_parser.add_valued({ "-b", "--bytes" }); // TODO: .set_description("number of bytes to print");
-            arg_parser.add_valued({ "-n", "--lines" }); // TODO: .set_description("number of lines to print");
-            arg_parser.add_switch({ "-h", "--header" }); // TODO: .set_description("print header with input name");
-            arg_parser.add_switch(
-                { "-z", "--zero-terminated" }); // TODO: .set_description("line delimiter is NUL, not newline");
-            arg_parser.add_positional("FILES").set_max_count_unlimited();
+            arg_parser.set_info_header(std::string("Print the first ") + std::to_string(DEFAULT_LINES_LIMIT)
+                + "lines of each FILE to standard output.\n\n"
+                  "With no FILE, or when FILE is -, read standard input.");
+            arg_parser.set_info_footer("NUM may have a multiplier suffix:\n"
+                                       "b 512, kB 1000, K 1024, MB 1000*1000, M 1024*1024,\n"
+                                       "GB 1000*1000*1000, G 1024*1024*1024");
+
+            arg_parser.add_exclusive({ "--help" }).set_description("display this help and exit");
+            arg_parser.add_valued({ "-b", "--bytes" }).set_description("number of bytes to print").set_value_name("B");
+            arg_parser.add_valued({ "-n", "--lines" }).set_description("number of lines to print").set_value_name("N");
+            arg_parser.add_switch({ "-h", "--header" }).set_description("print header with input name");
+            arg_parser.add_switch({ "-z", "--zero-terminated" }).set_description("line delimiter is NUL, not newline");
+            arg_parser.add_positional("FILES").set_description("files to process").set_max_count_unlimited();
 
             auto results = arg_parser.parse(argc, argv);
 
-            // TODO: refactor when 'value storage API is ready'
+            if (results.has_value("--help"))
+            {
+                std::cout << arg_parser.usage() << std::endl;
+                return EXIT_SUCCESS;
+            }
+
             if (results.has_value("--zero-terminated"))
             {
                 m_line_terminator = '\0';
@@ -95,7 +102,7 @@ public:
         catch (const oct::args::parse_exception& exc)
         {
             std::cerr << "Invalid arguments: " << exc.what() << std::endl;
-            // print_usage(std::cerr);
+            std::cerr << "Run " << argv[0] << " --help to see usage information" << std::endl;
             return EXIT_FAILURE;
         }
         catch (const std::exception& exc)
