@@ -4,8 +4,6 @@
 
 #include "test_fixture.hpp"
 
-#include "../include/octargs/traits.hpp"
-
 namespace oct
 {
 namespace args
@@ -14,11 +12,13 @@ namespace args
 class argument_test : public test_fixture
 {
 private:
-    using string_vector_type = traits<char>::string_vector_type;
-    using basic_argument_type = basic_argument<traits<char>, internal::null_values_storage>;
-    using switch_argument_type = basic_switch_argument<traits<char>>;
-    using valued_argument_type = basic_valued_argument<traits<char>>;
-    using positional_argument_type = basic_positional_argument<traits<char>>;
+    using string_type = std::string;
+    using string_vector_type = std::vector<string_type>;
+
+    using basic_argument_type = basic_argument<char, internal::null_values_storage>;
+    using switch_argument_type = basic_switch_argument<char>;
+    using valued_argument_type = basic_valued_argument<char>;
+    using positional_argument_type = basic_positional_argument<char>;
 
     void test_single_name()
     {

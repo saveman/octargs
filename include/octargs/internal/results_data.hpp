@@ -8,24 +8,22 @@ namespace oct
 {
 namespace args
 {
-
-template <typename TRAITS>
-class basic_results;
-
 namespace internal
 {
 
-template <typename TRAITS>
+template <typename char_T>
 class basic_results_data
 {
 public:
-    using string_type = typename TRAITS::string_type;
-    using string_vector_type = typename TRAITS::string_vector_type;
+    using char_type = char_T;
+
+    using string_type = std::basic_string<char_type>;
+    using string_vector_type = std::vector<string_type>;
 
     using argument_tag_type = basic_argument_tag;
     using argument_tag_ptr_type = std::shared_ptr<argument_tag_type>;
 
-    using parser_data_iface_type = basic_parser_data_iface<TRAITS>;
+    using parser_data_iface_type = basic_parser_data_iface<char_type>;
     using parser_data_iface_ptr_type = std::shared_ptr<parser_data_iface_type>;
 
     basic_results_data(parser_data_iface_ptr_type parser_data_ptr)
@@ -127,7 +125,7 @@ private:
 
     string_type m_app_name;
     std::map<argument_tag_ptr_type, string_vector_type> m_argument_values;
-}; // namespace internal
+};
 
 } // namespace internal
 } // namespace args

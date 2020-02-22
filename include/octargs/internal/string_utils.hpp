@@ -79,6 +79,37 @@ inline DATA stox(const STRING& value_str, std::size_t* end_ptr, int base = 0)
     return static_cast<data_type>(result);
 }
 
+template <typename STRING>
+class string_utils
+{
+};
+
+template <>
+class string_utils<char>
+{
+public:
+    using string_type = std::string;
+
+    template <typename DATA>
+    static string_type to_string(const DATA& data)
+    {
+        return std::to_string(data);
+    }
+};
+
+template <>
+class string_utils<wchar_t>
+{
+public:
+    using string_type = std::wstring;
+
+    template <typename DATA>
+    static string_type to_string(const DATA& data)
+    {
+        return std::to_wstring(data);
+    }
+};
+
 } // namespace internal
 } // namespace args
 } // namespace oct

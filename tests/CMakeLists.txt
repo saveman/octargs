@@ -25,7 +25,6 @@ function(add_cppunit_test)
     target_link_libraries(${ADD_TEST_ARGS_NAME}
         PRIVATE
             CppUnit::CppUnit
-            # octargs::octargs
     )
     target_compile_features(${ADD_TEST_ARGS_NAME} PUBLIC cxx_std_11)
 

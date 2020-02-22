@@ -20,25 +20,26 @@ check_version_part ()
 
 recreate_release_dir ()
 {
-    rm -rf ${RELEASE_DIR}
-    mkdir -p ${RELEASE_DIR}
-    mkdir -p ${BUILD_DIR}
-    mkdir -p ${INSTALL_DIR}
-    mkdir -p ${PACKAGE_DIR}
+    rm -rf "${RELEASE_DIR}"
+    mkdir -p "${RELEASE_DIR}"
+    mkdir -p "${BUILD_DIR}"
+    mkdir -p "${INSTALL_DIR}"
+    mkdir -p "${PACKAGE_DIR}"
+    mkdir -p "${VERIFY_DIR}"
 }
 
 rebuild_and_test ()
 {
-    pushd ${BUILD_DIR}
+    pushd "${BUILD_DIR}"
     cmake \
         -DCMAKE_BUILD_TYPE=Debug \
-        -DRELEASE_VERSION=${RELEASE_VERSION} \
-        -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} \
-        -DCPACK_PACKAGE_DIRECTORY=${PACKAGE_DIR} \
+        -DRELEASE_VERSION="${RELEASE_VERSION}" \
+        -DCMAKE_INSTALL_PREFIX="${INSTALL_DIR}" \
+        -DCPACK_PACKAGE_DIRECTORY="${PACKAGE_DIR}" \
         -DBUILD_TESTS=True \
         -DBUILD_EXAMPLES=False \
         -DENABLE_COVERAGE=False \
-        ${SOURCE_DIR}
+        "${SOURCE_DIR}"
     cmake --build . -- all -j ${CPUCOUNT}
     cmake --build . -- test
     popd
@@ -47,21 +48,32 @@ rebuild_and_test ()
 rebuild_and_package ()
 {
     local CPUCOUNT=$(nproc)
-    pushd ${BUILD_DIR}
+    pushd "${BUILD_DIR}"
     cmake \
         -DCMAKE_BUILD_TYPE=Release \
-        -DRELEASE_VERSION=${RELEASE_VERSION} \
-        -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} \
-        -DCPACK_PACKAGE_DIRECTORY=${PACKAGE_DIR} \
-        -DCMAKE_BUILD_TYPE=Debug \
+        -DRELEASE_VERSION="${RELEASE_VERSION}" \
+        -DCMAKE_INSTALL_PREFIX="${INSTALL_DIR}" \
+        -DCPACK_PACKAGE_DIRECTORY="${PACKAGE_DIR}" \
         -DBUILD_TESTS=False \
         -DBUILD_EXAMPLES=False \
         -DENABLE_COVERAGE=False \
-        ${SOURCE_DIR}
+        "${SOURCE_DIR}"
     cmake --build . -- all -j ${CPUCOUNT}
     cmake --build . -- install
     cmake --build . -- package
     cmake --build . -- package_source
+    popd
+}
+
+verify_install ()
+{
+    pushd "${VERIFY_DIR}"
+    cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DOCTARGS_ROOT_DIR="${INSTALL_DIR}" \
+        -DSTANDALONE_EXAMPLES_BUILD=True \
+        "${SOURCE_DIR}"
+    cmake --build . -- all -j ${CPUCOUNT}
     popd
 }
 
@@ -128,11 +140,14 @@ check_git_branch
 check_git_tag
 check_git_changes
 
-SOURCE_DIR=$(pwd)
-RELEASE_DIR=$(pwd)/_release
-BUILD_DIR=${RELEASE_DIR}/build
-INSTALL_DIR=${RELEASE_DIR}/install
-PACKAGE_DIR=${RELEASE_DIR}/package
+SOURCE_DIR="$(pwd)"
+SOURCE_DIR_EXAMPLES="${SOURCE_DIR}/examples"
+
+RELEASE_DIR="$(pwd)/_release"
+BUILD_DIR="${RELEASE_DIR}/build"
+INSTALL_DIR="${RELEASE_DIR}/install"
+PACKAGE_DIR="${RELEASE_DIR}/package"
+VERIFY_DIR="${RELEASE_DIR}/verify"
 
 recreate_release_dir
 rebuild_and_test
@@ -140,9 +155,13 @@ rebuild_and_test
 recreate_release_dir
 rebuild_and_package
 
+verify_install
+
 if [ ${DRY_RUN} -eq 0 ]; then
     echo "Creating and pushing tag: ${RELEASE_TAG}"
     git tag "${RELEASE_TAG}"
     echo "Now if everything is correct push the tag manually:"
     echo "git push origin "${RELEASE_TAG}""
+else
+    echo "Release dry run complete"
 fi

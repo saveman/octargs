@@ -1,10 +1,14 @@
 CURRENT_DIR:=$(PWD)
 
 SOURCE_DIR:=$(CURRENT_DIR)
+SOURCE_EXAMPLES_DIR:=$(SOURCE_DIR)/examples
+
 BUILD_DIR:=$(CURRENT_DIR)/_build
 INSTALL_DIR:=$(CURRENT_DIR)/_install
 PACKAGE_DIR:=$(CURRENT_DIR)/_package
-CPPCHECK_DIR:=$(BUILD_DIR)/cppcheck
+VERIFY_DIR=$(CURRENT_DIR)/_verify
+
+BUILD_CPPCHECK_DIR:=$(BUILD_DIR)/cppcheck
 
 CPUCOUNT=$(shell nproc)
 
@@ -18,6 +22,11 @@ CMAKE_OPTS=\
 	-DENABLE_COVERAGE=True \
 	-DCMAKE_EXPORT_COMPILE_COMMANDS=True
 
+VERIFY_CMAKE_OPTS=\
+	-DCMAKE_BUILD_TYPE=Release \
+	-DOCTARGS_ROOT_DIR=$(INSTALL_DIR) \
+	-DSTANDALONE_EXAMPLES_BUILD=True
+
 CPPCHECK_OPTS=\
 	--enable=all \
 	--std=c++11 \
@@ -25,7 +34,7 @@ CPPCHECK_OPTS=\
 	--force \
 	--inline-suppr
 
-all: install test
+all: install_verify test
 
 build:
 	mkdir -p $(BUILD_DIR)
@@ -36,6 +45,12 @@ build:
 install: build
 	(cd $(BUILD_DIR) && cmake --build . -- install)
 
+install_verify: install
+	rm -rf $(VERIFY_DIR)
+	mkdir -p $(VERIFY_DIR)
+	(cd $(VERIFY_DIR) && cmake $(VERIFY_CMAKE_OPTS) $(SOURCE_EXAMPLES_DIR) )
+	(cd $(VERIFY_DIR) && cmake --build . -j $(CPUCOUNT))
+
 test: build
 	(cd $(BUILD_DIR) && ctest --output-on-failure)
 
@@ -43,10 +58,10 @@ package: install
 	(cd $(BUILD_DIR) && cmake --build . -- package)
 
 cppcheck: test
-	mkdir -p $(CPPCHECK_DIR)
+	mkdir -p $(BUILD_CPPCHECK_DIR)
 	(cd $(BUILD_DIR) && cppcheck --project=compile_commands.json $(CPPCHECK_OPTS) --xml 2> cppcheck-report.xml)
-	(cd $(BUILD_DIR) && cppcheck-htmlreport --file=cppcheck-report.xml --report-dir=$(CPPCHECK_DIR) --source-dir=$(SOURCE_DIR))
-	(cd $(BUILD_DIR) && pdetach xdg-open $(CPPCHECK_DIR)/index.html)
+	(cd $(BUILD_DIR) && cppcheck-htmlreport --file=cppcheck-report.xml --report-dir=$(BUILD_CPPCHECK_DIR) --source-dir=$(SOURCE_DIR))
+	(cd $(BUILD_DIR) && pdetach xdg-open $(BUILD_CPPCHECK_DIR)/index.html)
 
 run_examples_cat:
 	@echo "----------------------------"
@@ -118,3 +133,5 @@ total_coverage_open: total_coverage
 clean:
 	rm -rf $(BUILD_DIR)
 	rm -rf $(INSTALL_DIR)
+	rm -rf $(VERIFY_DIR)
+	rm -rf $(PACKAGE_DIR)

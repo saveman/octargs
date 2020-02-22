@@ -1,8 +1,6 @@
 #include "../include/octargs/parser.hpp"
 #include "test_fixture.hpp"
 
-#include "../include/octargs/traits.hpp"
-
 namespace oct
 {
 namespace args
@@ -11,7 +9,7 @@ namespace args
 class wchar_test : public test_fixture
 {
 private:
-    using wparser = basic_parser<traits<wchar_t>>;
+    using parser_type = basic_parser<wchar_t>;
 
     void test_basic()
     {
@@ -24,7 +22,7 @@ private:
         };
         int test_argc = sizeof(test_argv) / sizeof(test_argv[0]);
 
-        wparser parser;
+        parser_type parser;
         parser.add_switch({ L"-v", L"--version" });
         parser.add_positional(L"values").set_max_count_unlimited();
 

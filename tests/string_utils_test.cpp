@@ -3,7 +3,6 @@
 #include "test_fixture.hpp"
 
 #include "../include/octargs/internal/string_utils.hpp"
-#include "../include/octargs/traits.hpp"
 
 namespace oct
 {

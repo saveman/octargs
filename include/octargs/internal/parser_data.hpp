@@ -16,11 +16,13 @@ namespace args
 namespace internal
 {
 
-template <typename TRAITS>
+template <typename char_T>
 struct basic_parser_data_iface
 {
 public:
-    using string_type = typename TRAITS::string_type;
+    using char_type = char_T;
+
+    using string_type = std::basic_string<char_type>;
     using argument_tag_type = basic_argument_tag;
     using argument_tag_ptr_type = std::shared_ptr<argument_tag_type>;
 
@@ -28,14 +30,16 @@ public:
     virtual argument_tag_ptr_type find_argument(const string_type& arg_name) const = 0;
 };
 
-template <typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
-struct basic_parser_data : public basic_parser_data_iface<TRAITS>
+template <typename char_T, typename values_storage_T = internal::null_values_storage>
+struct basic_parser_data : public basic_parser_data_iface<char_T>
 {
-    using char_type = typename TRAITS::char_type;
-    using string_type = typename TRAITS::string_type;
-    using string_vector_type = typename TRAITS::string_vector_type;
+    using char_type = char_T;
+    using values_storage_type = values_storage_T;
 
-    using argument_type = basic_argument<TRAITS, VALUES_STORAGE>;
+    using string_type = std::basic_string<char_type>;
+    using string_vector_type = std::vector<string_type>;
+
+    using argument_type = basic_argument<char_type, values_storage_type>;
     using argument_ptr_type = std::shared_ptr<argument_type>;
 
     using argument_tag_type = basic_argument_tag;

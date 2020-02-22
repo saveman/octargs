@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <iostream>
 
-#include "octargs.hpp"
+#include "octargs/octargs.hpp"
 
 namespace oct_args_examples
 {

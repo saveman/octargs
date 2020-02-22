@@ -12,6 +12,8 @@ class switch_args_test : public test_fixture
 private:
     void test_happy_hapth()
     {
+        using dictionary_type = parser_dictionary<char>;
+
         argument_table args("appname", { "-a", "-c" });
 
         parser parser;
@@ -22,12 +24,12 @@ private:
         auto results = parser.parse(args);
         CPPUNIT_ASSERT(results.has_value("-a"));
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), results.values("-a").size());
-        CPPUNIT_ASSERT_EQUAL(traits<char>::get_switch_enabled_literal(), results.values("-a")[0]);
+        CPPUNIT_ASSERT_EQUAL(dictionary_type::get_switch_enabled_literal(), results.values("-a")[0]);
         CPPUNIT_ASSERT(!results.has_value("-b"));
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), results.values("-b").size());
         CPPUNIT_ASSERT(results.has_value("-c"));
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), results.values("-c").size());
-        CPPUNIT_ASSERT_EQUAL(traits<char>::get_switch_enabled_literal(), results.values("-c")[0]);
+        CPPUNIT_ASSERT_EQUAL(dictionary_type::get_switch_enabled_literal(), results.values("-c")[0]);
     }
 
     void test_no_names()

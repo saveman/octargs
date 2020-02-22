@@ -6,23 +6,23 @@
 #include "argument.hpp"
 #include "argument_table.hpp"
 #include "internal/results_data.hpp"
-#include "traits.hpp"
 
 namespace oct
 {
 namespace args
 {
-template <typename TRAITS>
+template <typename char_T>
 class basic_results
 {
 public:
-    using char_type = typename TRAITS::char_type;
-    using string_type = typename TRAITS::string_type;
-    using string_vector_type = typename TRAITS::string_vector_type;
+    using char_type = char_T;
 
-    using argument_table_type = basic_argument_table<TRAITS>;
+    using string_type = std::basic_string<char_type>;
+    using string_vector_type = std::vector<string_type>;
 
-    using results_data_type = internal::basic_results_data<TRAITS>;
+    using argument_table_type = basic_argument_table<char_type>;
+
+    using results_data_type = internal::basic_results_data<char_type>;
     using results_data_ptr_type = std::shared_ptr<const results_data_type>;
 
     basic_results(results_data_ptr_type results_data_ptr)
@@ -54,9 +54,6 @@ public:
 private:
     results_data_ptr_type m_results_data_ptr;
 };
-
-using results = basic_results<traits<char>>;
-using wresults = basic_results<traits<wchar_t>>;
 
 } // namespace args
 } // namespace oct

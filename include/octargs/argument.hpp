@@ -10,19 +10,23 @@
 #include "exception.hpp"
 #include "internal/argument_handler.hpp"
 #include "internal/misc.hpp"
+#include "parser_dictionary.hpp"
 
 namespace oct
 {
 namespace args
 {
 
-template <typename TRAITS, typename VALUES_STORAGE>
+template <typename char_T, typename values_storage_T>
 class basic_argument : public internal::basic_argument_tag
 {
 public:
-    using string_type = typename TRAITS::string_type;
-    using string_vector_type = typename TRAITS::string_vector_type;
-    using handler_type = internal::basic_argument_handler<TRAITS, VALUES_STORAGE>;
+    using char_type = char_T;
+    using values_storage_type = values_storage_T;
+
+    using string_type = std::basic_string<char_type>;
+    using string_vector_type = std::vector<string_type>;
+    using handler_type = internal::basic_argument_handler<char_type, values_storage_type>;
     using handler_ptr_type = std::shared_ptr<const handler_type>;
 
     virtual ~basic_argument() = default;
@@ -50,22 +54,24 @@ public:
     virtual bool is_accepting_separate_value() const = 0;
 };
 
-template <typename DERIVED, typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
-class basic_argument_base : public basic_argument<TRAITS, VALUES_STORAGE>
+template <typename derived_T, typename char_T, typename values_storage_T = internal::null_values_storage>
+class basic_argument_base : public basic_argument<char_T, values_storage_T>
 {
 public:
-    using derived_type = DERIVED;
-    using base_type = basic_argument<TRAITS, VALUES_STORAGE>;
+    using derived_type = derived_T;
+    using char_type = char_T;
+    using values_storage_type = values_storage_T;
 
-    using traits_type = TRAITS;
-    using values_storage_type = VALUES_STORAGE;
-    using string_type = typename TRAITS::string_type;
-    using string_vector_type = typename TRAITS::string_vector_type;
-    using handler_type = internal::basic_argument_handler<TRAITS, VALUES_STORAGE>;
+    using base_type = basic_argument<char_type, values_storage_type>;
+
+    using string_type = std::basic_string<char_type>;
+    using string_vector_type = std::vector<string_type>;
+
+    using handler_type = internal::basic_argument_handler<char_type, values_storage_type>;
     using handler_ptr_type = std::shared_ptr<const handler_type>;
 
     template <typename DATA>
-    using type_handler_type = basic_argument_type_handler<DATA, TRAITS, VALUES_STORAGE>;
+    using type_handler_type = basic_argument_type_handler<DATA, char_type, values_storage_type>;
 
     template <typename DATA>
     type_handler_type<DATA>& set_type()
@@ -197,14 +203,20 @@ private:
     handler_ptr_type m_handler_ptr;
 };
 
-template <typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
+template <typename char_T, typename values_storage_T = internal::null_values_storage>
 class basic_switch_argument
-    : public basic_argument_base<basic_switch_argument<TRAITS, VALUES_STORAGE>, TRAITS, VALUES_STORAGE>
+    : public basic_argument_base<basic_switch_argument<char_T, values_storage_T>, char_T, values_storage_T>
 {
 public:
-    using traits_type = TRAITS;
-    using base_type = basic_argument_base<basic_switch_argument<TRAITS, VALUES_STORAGE>, TRAITS, VALUES_STORAGE>;
-    using string_vector_type = typename TRAITS::string_vector_type;
+    using char_type = char_T;
+    using values_storage_type = values_storage_T;
+
+    using base_type
+        = basic_argument_base<basic_switch_argument<char_type, values_storage_type>, char_type, values_storage_type>;
+
+    using dictionary_type = parser_dictionary<char_type>;
+    using string_type = std::basic_string<char_type>;
+    using string_vector_type = std::vector<string_type>;
 
     explicit basic_switch_argument(const string_vector_type& names)
         : base_type(names)
@@ -229,19 +241,24 @@ public:
 
     basic_switch_argument& set_default_values_count(std::size_t count)
     {
-        this->set_default_values_internal(string_vector_type(count, traits_type::get_switch_enabled_literal()));
+        this->set_default_values_internal(string_vector_type(count, dictionary_type::get_switch_enabled_literal()));
         return *this;
     }
 };
 
-template <typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
+template <typename char_T, typename values_storage_T = internal::null_values_storage>
 class basic_valued_argument
-    : public basic_argument_base<basic_valued_argument<TRAITS, VALUES_STORAGE>, TRAITS, VALUES_STORAGE>
+    : public basic_argument_base<basic_valued_argument<char_T, values_storage_T>, char_T, values_storage_T>
 {
 public:
-    using base_type = basic_argument_base<basic_valued_argument<TRAITS, VALUES_STORAGE>, TRAITS, VALUES_STORAGE>;
-    using string_type = typename TRAITS::string_type;
-    using string_vector_type = typename TRAITS::string_vector_type;
+    using char_type = char_T;
+    using values_storage_type = values_storage_T;
+
+    using base_type
+        = basic_argument_base<basic_valued_argument<char_type, values_storage_type>, char_type, values_storage_type>;
+
+    using string_type = std::basic_string<char_type>;
+    using string_vector_type = std::vector<string_type>;
 
     explicit basic_valued_argument(const string_vector_type& names)
         : base_type(names)
@@ -283,14 +300,20 @@ public:
     }
 };
 
-template <typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
+template <typename char_T, typename values_storage_T = internal::null_values_storage>
 class basic_positional_argument
-    : public basic_argument_base<basic_positional_argument<TRAITS, VALUES_STORAGE>, TRAITS, VALUES_STORAGE>
+    : public basic_argument_base<basic_positional_argument<char_T, values_storage_T>, char_T, values_storage_T>
 {
 public:
-    using base_type = basic_argument_base<basic_positional_argument<TRAITS, VALUES_STORAGE>, TRAITS, VALUES_STORAGE>;
-    using string_type = typename TRAITS::string_type;
-    using string_vector_type = typename TRAITS::string_vector_type;
+    using char_type = char_T;
+    using values_storage_type = values_storage_T;
+
+    using base_type = basic_argument_base<basic_positional_argument<char_type, values_storage_type>, char_type,
+        values_storage_type>;
+
+    using dictionary_type = parser_dictionary<char_type>;
+    using string_type = std::basic_string<char_type>;
+    using string_vector_type = std::vector<string_type>;
 
     explicit basic_positional_argument(const string_vector_type& names)
         : base_type(names)

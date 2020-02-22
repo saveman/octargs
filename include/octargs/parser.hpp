@@ -14,33 +14,36 @@
 #include "internal/misc.hpp"
 #include "internal/parser_data.hpp"
 #include "internal/results_data.hpp"
-#include "parser_usage.hpp"
+#include "internal/string_utils.hpp"
+#include "parser_dictionary.hpp"
 #include "results.hpp"
+#include "usage.hpp"
 
 namespace oct
 {
 namespace args
 {
 
-template <typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
+template <typename char_T, typename values_storage_T = internal::null_values_storage>
 class basic_parser
 {
 public:
-    using values_storage_type = VALUES_STORAGE;
+    using char_type = char_T;
+    using values_storage_type = values_storage_T;
 
-    using argument_type = basic_argument<TRAITS, VALUES_STORAGE>;
-    using switch_argument_type = basic_switch_argument<TRAITS, VALUES_STORAGE>;
-    using valued_argument_type = basic_valued_argument<TRAITS, VALUES_STORAGE>;
-    using positional_argument_type = basic_positional_argument<TRAITS, VALUES_STORAGE>;
+    using dictionary_type = parser_dictionary<char_type>;
+    using argument_type = basic_argument<char_type, values_storage_type>;
+    using switch_argument_type = basic_switch_argument<char_type, values_storage_type>;
+    using valued_argument_type = basic_valued_argument<char_type, values_storage_type>;
+    using positional_argument_type = basic_positional_argument<char_type, values_storage_type>;
 
-    using char_type = typename TRAITS::char_type;
-    using string_type = typename TRAITS::string_type;
-    using string_vector_type = typename TRAITS::string_vector_type;
+    using string_type = std::basic_string<char_type>;
+    using string_vector_type = std::vector<string_type>;
 
-    using argument_table_type = basic_argument_table<TRAITS>;
-    using results_type = basic_results<TRAITS>;
+    using argument_table_type = basic_argument_table<char_type>;
+    using results_type = basic_results<char_type>;
 
-    using parser_usage_type = basic_parser_usage<TRAITS, VALUES_STORAGE>;
+    using parser_usage_type = basic_parser_usage<char_type, values_storage_type>;
 
     basic_parser()
         : m_data_ptr(std::make_shared<parser_data_type>())
@@ -142,11 +145,11 @@ public:
     }
 
 private:
-    using argument_table_iterator = basic_argument_table_iterator<TRAITS>;
+    using argument_table_iterator = basic_argument_table_iterator<char_type>;
     using argument_ptr_type = std::shared_ptr<argument_type>;
-    using parser_data_type = internal::basic_parser_data<TRAITS, VALUES_STORAGE>;
+    using parser_data_type = internal::basic_parser_data<char_type, values_storage_type>;
     using parser_data_ptr_type = std::shared_ptr<parser_data_type>;
-    using results_data_type = internal::basic_results_data<TRAITS>;
+    using results_data_type = internal::basic_results_data<char_type>;
     using results_data_ptr_type = std::shared_ptr<results_data_type>;
 
     static void parse_argument_value(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
@@ -235,7 +238,7 @@ private:
         }
         else
         {
-            value_str = TRAITS::get_switch_enabled_literal();
+            value_str = dictionary_type::get_switch_enabled_literal();
         }
 
         parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, value_str);
@@ -276,7 +279,7 @@ private:
     {
         auto& input_value = input_iterator.peek_next();
 
-        auto equal_char_pos = input_value.find(TRAITS::get_equal_literal());
+        auto equal_char_pos = input_value.find(dictionary_type::get_equal_literal());
         if (equal_char_pos == string_type::npos)
         {
             return parse_named_argument(results_data_ptr, values_storage, input_iterator, input_value);
@@ -405,7 +408,7 @@ private:
             {
                 throw configuration_exception("Argument name must not contain whitespace characters");
             }
-            if (c == TRAITS::get_equal_literal())
+            if (c == dictionary_type::get_equal_literal())
             {
                 throw configuration_exception("Argument name must not contain equal characters");
             }

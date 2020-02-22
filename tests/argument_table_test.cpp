@@ -4,8 +4,6 @@
 
 #include "test_fixture.hpp"
 
-#include "../include/octargs/traits.hpp"
-
 namespace oct
 {
 namespace args
@@ -14,8 +12,8 @@ namespace args
 class argument_table_test : public test_fixture
 {
 private:
-    using argument_table = basic_argument_table<traits<char>>;
-    using argument_table_iterator = basic_argument_table_iterator<traits<char>>;
+    using argument_table = basic_argument_table<char>;
+    using argument_table_iterator = basic_argument_table_iterator<char>;
 
     void test_argc_argv_version()
     {

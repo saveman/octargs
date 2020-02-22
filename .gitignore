@@ -36,6 +36,7 @@ _build
 _install
 _package
 _release
+_verify
 .cproject
 .project
 .settings

@@ -4,31 +4,29 @@
 #include "argument_table.hpp"
 #include "parser.hpp"
 #include "results.hpp"
-#include "traits.hpp"
 
 namespace oct
 {
 namespace args
 {
 
-using argument_table = basic_argument_table<traits<char>>;
-using wargument_table = basic_argument_table<traits<wchar_t>>;
+using argument_table = basic_argument_table<char>;
+using wargument_table = basic_argument_table<wchar_t>;
 
-using argument_table_iterator = basic_argument_table_iterator<traits<char>>;
-using wargument_table_iterator = basic_argument_table_iterator<traits<wchar_t>>;
+using argument_table_iterator = basic_argument_table_iterator<char>;
+using wargument_table_iterator = basic_argument_table_iterator<wchar_t>;
 
-using results = basic_results<traits<char>>;
-using wresults = basic_results<traits<wchar_t>>;
+using results = basic_results<char>;
+using wresults = basic_results<wchar_t>;
 
-template <typename VALUES_STORAGE = internal::null_values_storage>
-using storing_parser = basic_parser<traits<char>, VALUES_STORAGE>;
+using parser = basic_parser<char>;
+using wparser = basic_parser<wchar_t>;
 
-using parser = storing_parser<>;
+template <typename VALUES_STORAGE>
+using storing_parser = basic_parser<char, VALUES_STORAGE>;
 
-template <typename VALUES_STORAGE = internal::null_values_storage>
-using storing_wparser = basic_parser<traits<wchar_t>, VALUES_STORAGE>;
-
-using wparser = storing_wparser<>;
+template <typename VALUES_STORAGE>
+using wstoring_parser = basic_parser<wchar_t, VALUES_STORAGE>;
 
 } // namespace args
 } // namespace oct

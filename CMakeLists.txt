@@ -43,16 +43,19 @@ add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME}
     INTERFACE
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/octargs
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-set(${PROJECT_NAME}_HEADERS
+set(${PROJECT_NAME}_HEADERS_INTERNAL
     include/octargs/internal/argument_handler.hpp
     include/octargs/internal/char_utils.hpp
     include/octargs/internal/misc.hpp
     include/octargs/internal/parser_data.hpp
     include/octargs/internal/results_data.hpp
     include/octargs/internal/string_utils.hpp
+)
+
+set(${PROJECT_NAME}_HEADERS
     include/octargs/argument_table.hpp
     include/octargs/argument_type_handler.hpp
     include/octargs/argument.hpp
@@ -60,12 +63,19 @@ set(${PROJECT_NAME}_HEADERS
     include/octargs/exception.hpp
     include/octargs/octargs.hpp
     include/octargs/parser.hpp
+    include/octargs/parser_dictionary.hpp
     include/octargs/results.hpp
-    include/octargs/traits.hpp
+    include/octargs/usage_dictionary.hpp
+    include/octargs/usage.hpp
 )
 
 install(FILES ${${PROJECT_NAME}_HEADERS}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/octargs
+    COMPONENT dev
+)
+
+install(FILES ${${PROJECT_NAME}_HEADERS_INTERNAL}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/octargs/internal
     COMPONENT dev
 )
 

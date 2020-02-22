@@ -5,7 +5,6 @@
 #include "test_fixture.hpp"
 
 #include "../include/octargs/converter.hpp"
-#include "../include/octargs/traits.hpp"
 
 namespace oct
 {
@@ -17,9 +16,10 @@ class converter_test : public test_fixture
 private:
     void test_string_converter()
     {
-        using traits_type = traits<char>;
-        using string_type = traits_type::string_type;
-        basic_converter<traits_type, string_type> converter;
+        using char_type = char;
+        using string_type = std::basic_string<char_type>;
+
+        basic_converter<char_type, string_type> converter;
 
         CPPUNIT_ASSERT_EQUAL(string_type(""), converter(""));
         CPPUNIT_ASSERT_EQUAL(string_type("x"), converter("x"));
@@ -31,9 +31,10 @@ private:
 
     void test_wstring_converter()
     {
-        using traits_type = traits<wchar_t>;
-        using string_type = traits_type::string_type;
-        basic_converter<traits_type, string_type> converter;
+        using char_type = wchar_t;
+        using string_type = std::basic_string<char_type>;
+
+        basic_converter<char_type, string_type> converter;
 
         CPPUNIT_ASSERT(string_type(L"") == converter(L""));
         CPPUNIT_ASSERT(string_type(L"x") == converter(L"x"));
@@ -43,22 +44,23 @@ private:
         CPPUNIT_ASSERT(string_type(L"  abc\t\n") == converter(L"  abc\t\n"));
     }
 
-    template <typename CHAR>
+    template <typename char_T>
     void test_bool_converter_helper()
     {
-        using char_type = CHAR;
-        using char_traits_type = traits<char_type>;
-        basic_converter<char_traits_type, bool> char_converter;
+        using char_type = char_T;
+        using dictionary_type = parser_dictionary<char_type>;
 
-        CPPUNIT_ASSERT_EQUAL(true, char_converter(char_traits_type::get_switch_enabled_literal()));
+        basic_converter<char_type, bool> char_converter;
 
-        auto true_values = char_traits_type::get_true_literals();
+        CPPUNIT_ASSERT_EQUAL(true, char_converter(dictionary_type::get_switch_enabled_literal()));
+
+        auto true_values = dictionary_type::get_true_literals();
         for (auto value : true_values)
         {
             CPPUNIT_ASSERT_EQUAL(true, char_converter(value));
         }
 
-        auto false_values = char_traits_type::get_false_literals();
+        auto false_values = dictionary_type::get_false_literals();
         for (auto value : false_values)
         {
             CPPUNIT_ASSERT_EQUAL(false, char_converter(value));
@@ -69,27 +71,27 @@ private:
     {
         test_bool_converter_helper<char>();
 
-        basic_converter<traits<char>, bool> char_converter;
+        basic_converter<char, bool> char_converter;
         CPPUNIT_ASSERT_THROW(char_converter(""), parse_exception);
         CPPUNIT_ASSERT_THROW(char_converter("a"), parse_exception);
         CPPUNIT_ASSERT_THROW(char_converter(" 1"), parse_exception);
 
         test_bool_converter_helper<wchar_t>();
 
-        basic_converter<traits<wchar_t>, bool> wchart_converter;
+        basic_converter<wchar_t, bool> wchart_converter;
         CPPUNIT_ASSERT_THROW(wchart_converter(L""), parse_exception);
         CPPUNIT_ASSERT_THROW(wchart_converter(L"a"), parse_exception);
         CPPUNIT_ASSERT_THROW(wchart_converter(L" 1"), parse_exception);
     }
 
-    template <typename VALUE>
+    template <typename value_T>
     void test_integer_converter()
     {
-        using value_type = VALUE;
-        using traits_type = traits<char>;
+        using char_type = char;
+        using value_type = value_T;
         using limits_type = std::numeric_limits<value_type>;
 
-        basic_converter<traits_type, value_type> converter;
+        basic_converter<char_type, value_type> converter;
 
         CPPUNIT_ASSERT_EQUAL(static_cast<value_type>(0), converter("0"));
         CPPUNIT_ASSERT_EQUAL(limits_type::min(), converter(std::to_string(limits_type::min())));
@@ -120,13 +122,13 @@ private:
         CPPUNIT_ASSERT_THROW(converter("-111111111111111111111111"), parse_exception);
     }
 
-    template <typename VALUE>
+    template <typename value_T>
     void test_float_converter()
     {
-        using value_type = VALUE;
-        using traits_type = traits<char>;
+        using char_type = char;
+        using value_type = value_T;
 
-        basic_converter<traits_type, value_type> converter;
+        basic_converter<char_type, value_type> converter;
 
         value_type epsylon = 0.001;
 

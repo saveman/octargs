@@ -11,13 +11,14 @@ namespace oct
 namespace args
 {
 
-template <typename TRAITS>
+template <typename char_T>
 class basic_argument_table
 {
 public:
-    using char_type = typename TRAITS::char_type;
-    using string_type = typename TRAITS::string_type;
-    using string_vector_type = typename TRAITS::string_vector_type;
+    using char_type = char_T;
+
+    using string_type = std::basic_string<char_type>;
+    using string_vector_type = std::vector<string_type>;
 
     explicit basic_argument_table()
         : m_app_name()
@@ -67,12 +68,14 @@ private:
     string_vector_type m_arguments;
 };
 
-template <typename TRAITS>
+template <typename char_T>
 class basic_argument_table_iterator
 {
 public:
-    using argument_table_type = basic_argument_table<TRAITS>;
-    using string_type = typename TRAITS::string_type;
+    using char_type = char_T;
+
+    using argument_table_type = basic_argument_table<char_type>;
+    using string_type = std::basic_string<char_type>;
 
     explicit basic_argument_table_iterator(const argument_table_type& arg_table)
         : m_arg_table(arg_table)

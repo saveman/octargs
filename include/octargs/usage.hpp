@@ -16,30 +16,35 @@
 #include "internal/parser_data.hpp"
 #include "internal/results_data.hpp"
 #include "results.hpp"
+#include "usage_dictionary.hpp"
 
 namespace oct
 {
 namespace args
 {
 
-template <typename TRAITS, typename VALUES_STORAGE = internal::null_values_storage>
+template <typename char_T, typename values_storage_T = internal::null_values_storage>
 class basic_parser_usage
 {
 public:
-    using traits_type = TRAITS;
+    using char_type = char_T;
+    using values_storage_type = values_storage_T;
 
-    using values_storage_type = VALUES_STORAGE;
-
-    using argument_type = basic_argument<TRAITS, VALUES_STORAGE>;
+    using argument_type = basic_argument<char_type, values_storage_type>;
     using argument_ptr_type = std::shared_ptr<const argument_type>;
 
-    using char_type = typename TRAITS::char_type;
-    using string_type = typename TRAITS::string_type;
-    using string_vector_type = typename TRAITS::string_vector_type;
-    using ostream_type = typename TRAITS::ostream_type;
+    using string_type = std::basic_string<char_type>;
+    using ostream_type = std::basic_ostream<char_type>;
 
-    using parser_data_type = internal::basic_parser_data<TRAITS, VALUES_STORAGE>;
+    using string_vector_type = std::vector<string_type>;
+
+    using parser_data_type = internal::basic_parser_data<char_type, values_storage_type>;
     using parser_data_ptr_type = std::shared_ptr<const parser_data_type>;
+
+    using string_utils_type = internal::string_utils<char_type>;
+
+    using dictionary_type = usage_dictionary<char_type>;
+    using dictionary_ptr_type = std::shared_ptr<dictionary_type>;
 
     explicit basic_parser_usage(const parser_data_ptr_type& parser_data)
         : m_data_ptr(parser_data)
@@ -47,6 +52,7 @@ public:
         , m_description_indent(2)
         , m_multiline_indent(2)
         , m_arg_line_indent(1)
+        , m_dictionary(std::make_shared<default_usage_dictionary<char_type>>())
     {
         // noop
     }
@@ -160,7 +166,8 @@ private:
 
             build_infos(infos);
 
-            output_infos(os, infos, traits_type::get_usage_literal(usage_dict_key::DEFAULT_NAMED_ARGUMENTS_GROUP_NAME));
+            output_infos(os, infos,
+                m_dictionary->get_string(usage_dictionary_string_key::USAGE_DEFAULT_NAMED_ARGUMENTS_GROUP_NAME));
         }
     }
 
@@ -178,8 +185,8 @@ private:
 
             build_infos(infos);
 
-            output_infos(
-                os, infos, traits_type::get_usage_literal(usage_dict_key::DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME));
+            output_infos(os, infos,
+                m_dictionary->get_string(usage_dictionary_string_key::USAGE_DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME));
         }
     }
 
@@ -220,13 +227,14 @@ private:
                     description += '[';
                     if (argument->get_min_count() == 1)
                     {
-                        description += traits_type::get_usage_literal(usage_dict_key::DECORATOR_REQUIRED);
+                        description += m_dictionary->get_string(usage_dictionary_string_key::USAGE_DECORATOR_REQUIRED);
                     }
                     else
                     {
-                        description += traits_type::get_usage_literal(usage_dict_key::DECORATOR_MIN_COUNT);
-                        description += traits_type::get_usage_literal(usage_dict_key::DECORATOR_VALUE_SEPARATOR);
-                        description += traits_type::to_string(argument->get_min_count());
+                        description += m_dictionary->get_string(usage_dictionary_string_key::USAGE_DECORATOR_MIN_COUNT);
+                        description
+                            += m_dictionary->get_string(usage_dictionary_string_key::USAGE_DECORATOR_VALUE_SEPARATOR);
+                        description += string_utils_type::to_string(argument->get_min_count());
                     }
                     description += ']';
                 }
@@ -240,13 +248,15 @@ private:
                     description += '[';
                     if (argument->is_max_count_unlimited())
                     {
-                        description += traits_type::get_usage_literal(usage_dict_key::DECORATOR_MAX_COUNT_UNLIMITED);
+                        description += m_dictionary->get_string(
+                            usage_dictionary_string_key::USAGE_DECORATOR_MAX_COUNT_UNLIMITED);
                     }
                     else
                     {
-                        description += traits_type::get_usage_literal(usage_dict_key::DECORATOR_MAX_COUNT);
-                        description += traits_type::get_usage_literal(usage_dict_key::DECORATOR_VALUE_SEPARATOR);
-                        description += traits_type::to_string(argument->get_max_count());
+                        description += m_dictionary->get_string(usage_dictionary_string_key::USAGE_DECORATOR_MAX_COUNT);
+                        description
+                            += m_dictionary->get_string(usage_dictionary_string_key::USAGE_DECORATOR_VALUE_SEPARATOR);
+                        description += string_utils_type::to_string(argument->get_max_count());
                     }
                     description += ']';
                 }
@@ -401,6 +411,7 @@ private:
     std::size_t m_description_indent;
     std::size_t m_multiline_indent;
     std::size_t m_arg_line_indent;
+    dictionary_ptr_type m_dictionary;
 };
 
 } // namespace args

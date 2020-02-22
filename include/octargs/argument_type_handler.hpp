@@ -11,14 +11,15 @@ namespace oct
 namespace args
 {
 
-template <typename DATA, typename TRAITS, typename VALUES_STORAGE>
-class basic_argument_type_handler : public internal::basic_argument_handler<TRAITS, VALUES_STORAGE>
+template <typename data_T, typename char_T, typename values_storage_T>
+class basic_argument_type_handler : public internal::basic_argument_handler<char_T, values_storage_T>
 {
 public:
-    using data_type = DATA;
-    using traits_type = TRAITS;
-    using string_type = typename TRAITS::string_type;
-    using values_storage_type = VALUES_STORAGE;
+    using data_type = data_T;
+    using char_type = char_T;
+    using values_storage_type = values_storage_T;
+
+    using string_type = std::basic_string<char_T>;
 
     using convert_function_type = std::function<data_type(const string_type&)>;
     using check_function_type = std::function<void(const data_type& data)>;
@@ -26,7 +27,7 @@ public:
     using store_function_type = std::function<void(values_storage_type& storage, const data_type& data)>;
 
     basic_argument_type_handler()
-        : m_convert_function(basic_converter<traits_type, data_type>())
+        : m_convert_function(basic_converter<char_type, data_type>())
         , m_store_function()
     {
         // noop
