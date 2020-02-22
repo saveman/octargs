@@ -1,9 +1,12 @@
 CURRENT_DIR:=$(PWD)
 
 SOURCE_DIR:=$(CURRENT_DIR)
+SOURCE_EXAMPLES_DIR:=$(SOURCE_DIR)/examples
+
 BUILD_DIR:=$(CURRENT_DIR)/_build
 INSTALL_DIR:=$(CURRENT_DIR)/_install
 PACKAGE_DIR:=$(CURRENT_DIR)/_package
+VERIFY_DIR=$(CURRENT_DIR)/_verify
 
 CPUCOUNT=$(shell nproc)
 
@@ -16,7 +19,12 @@ CMAKE_OPTS=\
 	-DBUILD_EXAMPLES=True \
 	-DENABLE_COVERAGE=True
 
-all: install test
+VERIFY_CMAKE_OPTS=\
+	-DCMAKE_BUILD_TYPE=Release \
+	-DOCTARGS_ROOT_DIR=$(INSTALL_DIR) \
+	-DSTANDALONE_EXAMPLES_BUILD=True
+
+all: install_verify test
 
 build:
 	mkdir -p $(BUILD_DIR)
@@ -26,6 +34,12 @@ build:
 
 install: build
 	(cd $(BUILD_DIR) && cmake --build . -- install)
+
+install_verify: install
+	rm -rf $(VERIFY_DIR)
+	mkdir -p $(VERIFY_DIR)
+	(cd $(VERIFY_DIR) && cmake $(VERIFY_CMAKE_OPTS) $(SOURCE_EXAMPLES_DIR) )
+	(cd $(VERIFY_DIR) && cmake --build . -j $(CPUCOUNT))
 
 test: build
 	(cd $(BUILD_DIR) && ctest --output-on-failure)
