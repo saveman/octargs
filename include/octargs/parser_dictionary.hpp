@@ -1,11 +1,8 @@
 #ifndef OCTARGS_PARSER_DICTIONARY_HPP_
 #define OCTARGS_PARSER_DICTIONARY_HPP_
 
-#include <iostream>
 #include <string>
 #include <vector>
-
-#include "exception.hpp"
 
 namespace oct
 {
@@ -23,7 +20,7 @@ class parser_dictionary<char>
 {
 public:
     using char_type = char;
-    using string_type = std::string;
+    using string_type = std::basic_string<char_type>;
     using string_vector_type = std::vector<string_type>;
 
     static const string_type& get_switch_enabled_literal()
@@ -63,7 +60,7 @@ class parser_dictionary<wchar_t>
 {
 public:
     using char_type = wchar_t;
-    using string_type = std::wstring;
+    using string_type = std::basic_string<char_type>;
     using string_vector_type = std::vector<string_type>;
 
     static const string_type& get_switch_enabled_literal()

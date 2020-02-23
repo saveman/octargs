@@ -26,7 +26,7 @@ private:
 
         parser parser;
 
-        CPPUNIT_ASSERT_THROW(parser.parse(args), exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args), parser_error);
     }
 
     void test_no_positional_with_switch_extra_values()
@@ -36,7 +36,7 @@ private:
         parser parser;
         parser.add_switch({ "-v" });
 
-        CPPUNIT_ASSERT_THROW(parser.parse(args), exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args), parser_error);
     }
 
     void test_allowed_no_arguments()
@@ -130,7 +130,7 @@ private:
         // second argument "required" but first "unlimited"
         parser1.add_positional("values1").set_max_count_unlimited();
         parser1.add_positional("values2").set_min_count(1).set_max_count_unlimited();
-        CPPUNIT_ASSERT_THROW(parser1.parse(args), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser1.parse(args), parser_error);
     }
 
     void test_multiple_required_last_required_singlevalue()
@@ -144,7 +144,7 @@ private:
         parser.add_positional("arg2").set_min_count(1);
         parser.add_positional("arg3").set_min_count(1);
 
-        CPPUNIT_ASSERT_THROW(parser.parse(args_not_enough), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args_not_enough), parser_error);
 
         auto results = parser.parse(args_enough);
 
@@ -155,7 +155,7 @@ private:
         CPPUNIT_ASSERT_EQUAL(std::string("argument2"), results.values("arg2")[0]);
         CPPUNIT_ASSERT_EQUAL(std::string("argument3"), results.values("arg3")[0]);
 
-        CPPUNIT_ASSERT_THROW(parser.parse(args_too_much), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args_too_much), parser_error);
     }
 
     void test_multiple_required_last_optional_singlevalue()
@@ -186,7 +186,7 @@ private:
         CPPUNIT_ASSERT_EQUAL(std::string("argument2"), results_single.values("arg2")[0]);
         CPPUNIT_ASSERT_EQUAL(std::string("argument3"), results_single.values("arg3")[0]);
 
-        CPPUNIT_ASSERT_THROW(parser.parse(args_too_much), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args_too_much), parser_error);
     }
 
     void test_multiple_required_last_required_multivalue()
@@ -200,7 +200,7 @@ private:
         parser.add_positional("arg2").set_min_count(1);
         parser.add_positional("arg3").set_min_count(1).set_max_count_unlimited();
 
-        CPPUNIT_ASSERT_THROW(parser.parse(args_not_enough), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args_not_enough), parser_error);
 
         auto results_enough = parser.parse(args_enough);
 
@@ -322,7 +322,7 @@ private:
 
         parser parser_single;
         parser_single.add_positional("files").set_default_values({ "one", "two" });
-        CPPUNIT_ASSERT_THROW(parser_single.parse(args_empty), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser_single.parse(args_empty), parser_error);
     }
 
     void test_min_max_count()
@@ -347,7 +347,7 @@ private:
         CPPUNIT_ASSERT_EQUAL(std::size_t(1), results.count("files"));
         CPPUNIT_ASSERT_EQUAL(std::string("value3"), results.values("files")[0]);
 
-        CPPUNIT_ASSERT_THROW(parser.parse(args2), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args2), parser_error);
 
         arg_patterns.set_min_count(3).set_max_count(3);
         arg_files.set_min_count(2).set_max_count_unlimited();

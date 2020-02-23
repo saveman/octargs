@@ -16,22 +16,23 @@ static const std::string STANDARD_INPUT_NAME("-");
 
 }
 
-class execution_error : public std::exception
+class parse_error : public std::runtime_error
+{
+public:
+    parse_error(const std::string& message)
+        : std::runtime_error(message) {
+            // noop }
+        };
+};
+
+class execution_error : public std::runtime_error
 {
 public:
     explicit execution_error(const std::string& message)
-        : m_message(message)
+        : std::runtime_error(message)
     {
         // noop
     }
-
-    virtual const char* what() const noexcept
-    {
-        return m_message.c_str();
-    }
-
-private:
-    std::string m_message;
 };
 
 class head_app
@@ -99,10 +100,21 @@ public:
                 process_inputs(results.values("FILES"));
             }
         }
-        catch (const oct::args::parse_exception& exc)
+        catch (const oct::args::parser_error_ex<char>& exc)
         {
-            std::cerr << "Invalid arguments: " << exc.what() << std::endl;
+            std::cerr << "Argument parsing error near: " << exc.name() << " " << exc.value() << std::endl;
             std::cerr << "Run " << argv[0] << " --help to see usage information" << std::endl;
+            return EXIT_FAILURE;
+        }
+        catch (const parse_error& exc)
+        {
+            std::cerr << "Argument parsing error: " << exc.what() << std::endl;
+            std::cerr << "Run " << argv[0] << " --help to see usage information" << std::endl;
+            return EXIT_FAILURE;
+        }
+        catch (const execution_error& exc)
+        {
+            std::cerr << "Execution failed: " << exc.what() << std::endl;
             return EXIT_FAILURE;
         }
         catch (const std::exception& exc)
@@ -129,7 +141,7 @@ private:
             limit = std::stoll(value_str, &parsed_chars, 0);
             if (limit < 0)
             {
-                throw oct::args::parse_exception("Negative limit is not supported");
+                throw parse_error("Negative limit is not supported");
             }
 
             std::string suffix = value_str.substr(parsed_chars);
@@ -153,12 +165,12 @@ private:
             }
             else
             {
-                throw oct::args::parse_exception("Invalid suffix in limit");
+                throw parse_error("Invalid suffix in limit");
             }
         }
         catch (const std::exception& exc)
         {
-            throw oct::args::parse_exception("Invalid limit value");
+            throw parse_error("Invalid limit value");
         }
 
         return limit;
@@ -218,7 +230,7 @@ private:
             return;
         }
 
-        // TODO: optimize, this is just an example
+        // not optimized, this is just an example
         long long bytes_count = 0;
         long long lines_count = 0;
 

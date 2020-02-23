@@ -37,7 +37,7 @@ private:
     void test_no_names()
     {
         parser parser;
-        CPPUNIT_ASSERT_THROW(parser.add_valued({}), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({}), invalid_argument_name);
     }
 
     void test_multiple_names()
@@ -65,25 +65,25 @@ private:
     void test_invalid_name()
     {
         parser parser;
-        CPPUNIT_ASSERT_THROW(parser.add_valued({ "" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_valued({ "\t\n\r" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_valued({ "a " }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_valued({ " b" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_valued({ " c " }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ "" }), invalid_argument_name);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ "\t\n\r" }), invalid_argument_name);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ "a " }), invalid_argument_name);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ " b" }), invalid_argument_name);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ " c " }), invalid_argument_name);
     }
 
     void test_duplicated_names()
     {
         parser parser;
-        CPPUNIT_ASSERT_THROW(parser.add_valued({ "-h", "-h" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_valued({ "-v", "--version", "-v" }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ "-h", "-h" }), invalid_argument_name);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ "-v", "--version", "-v" }), invalid_argument_name);
     }
 
     void test_conflicting_names()
     {
         parser parser;
         parser.add_valued({ "-h" });
-        CPPUNIT_ASSERT_THROW(parser.add_valued({ "-h" }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ "-h" }), invalid_argument_name);
     }
 
     void test_duplicated_value()
@@ -93,7 +93,7 @@ private:
         parser parser;
         parser.add_valued({ "-v" });
 
-        CPPUNIT_ASSERT_THROW(parser.parse(args), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args), parser_error);
     }
 
     void test_multiple_values()
@@ -124,7 +124,7 @@ private:
         parser parser;
         parser.add_valued({ "-v" }).set_max_count(2);
 
-        CPPUNIT_ASSERT_THROW(parser.parse(args), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args), parser_error);
     }
 
     void test_unlimited_values()
@@ -148,8 +148,8 @@ private:
         parser.add_valued({ "-a" });
         parser.add_valued({ "-v" });
 
-        CPPUNIT_ASSERT_THROW(parser.parse(args1), parse_exception);
-        CPPUNIT_ASSERT_THROW(parser.parse(args2), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args1), parser_error);
+        CPPUNIT_ASSERT_THROW(parser.parse(args2), parser_error);
     }
 
     void test_value_is_arg_name()
@@ -176,10 +176,10 @@ private:
         parser parser;
         parser.add_switch({ "-s", "--switch" });
         parser.add_valued({ "-v", "--value" });
-        CPPUNIT_ASSERT_THROW(parser.add_valued({ "-s" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_valued({ "--switch" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_switch({ "-v" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_switch({ "--value" }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ "-s" }), invalid_argument_name);
+        CPPUNIT_ASSERT_THROW(parser.add_valued({ "--switch" }), invalid_argument_name);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({ "-v" }), invalid_argument_name);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({ "--value" }), invalid_argument_name);
     }
 
     void test_equal_mode_value_valid()
@@ -230,9 +230,9 @@ private:
         parser.add_valued({ "-v" });
         parser.add_switch({ "-s" });
 
-        CPPUNIT_ASSERT_THROW(parser.parse(args1), parse_exception);
-        CPPUNIT_ASSERT_THROW(parser.parse(args2), parse_exception);
-        CPPUNIT_ASSERT_THROW(parser.parse(args3), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args1), parser_error);
+        CPPUNIT_ASSERT_THROW(parser.parse(args2), parser_error);
+        CPPUNIT_ASSERT_THROW(parser.parse(args3), parser_error);
     }
 
     void test_equal_value_with_equal()
@@ -275,7 +275,7 @@ private:
         CPPUNIT_ASSERT_EQUAL(std::string("two"), results.values("-v")[1]);
 
         arg.set_default_values({ "one", "two", "three", "four" });
-        CPPUNIT_ASSERT_THROW(parser.parse(args_empty), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args_empty), parser_error);
 
         arg.set_default_values({ "one", "two", "three" });
         results = parser.parse(args_empty);
@@ -313,10 +313,10 @@ private:
         CPPUNIT_ASSERT_EQUAL(std::size_t(2), results.count("-v"));
 
         arg.set_min_count(3);
-        CPPUNIT_ASSERT_THROW(parser.parse(args), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args), parser_error);
 
         arg.set_min_count(2).set_max_count(1);
-        CPPUNIT_ASSERT_THROW(parser.parse(args), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args), parser_error);
     }
 
     CPPUNIT_TEST_SUITE(valued_args_test);

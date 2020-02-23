@@ -160,7 +160,7 @@ private:
         parser.parse(args1, settings1);
 
         handler.set_convert_function(nullptr);
-        CPPUNIT_ASSERT_THROW(parser.parse(args1, settings1), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args1, settings1), missing_converter);
     }
 
     void test_convert_function()
@@ -248,6 +248,69 @@ private:
         CPPUNIT_ASSERT_EQUAL(double(-17.43), my_double);
     }
 
+    template <typename parser_T>
+    void check_parse_exception(parser_T& parser, const argument_table& args, parser_error_code code,
+        const std::string& arg_name, const std::string& value_str)
+    {
+        try
+        {
+            parser.parse(args);
+            CPPUNIT_ASSERT(false);
+        }
+        catch (const parser_error_ex<char>& exc)
+        {
+            CPPUNIT_ASSERT_EQUAL(exc.error_code(), code);
+            CPPUNIT_ASSERT_EQUAL(exc.name(), arg_name);
+            CPPUNIT_ASSERT_EQUAL(exc.value(), value_str);
+        }
+    }
+
+    void test_bad_values()
+    {
+        struct settings
+        {
+            std::vector<int> m_ints;
+            double m_double;
+            long long m_longlong;
+        };
+
+        storing_parser<settings> parser;
+
+        parser.add_valued({ "--int" }).set_max_count_unlimited().set_type_and_storage(&settings::m_ints);
+        parser.add_valued({ "--double" }).set_type_and_storage(&settings::m_double);
+        parser.add_valued({ "--longlong" }).set_type_and_storage(&settings::m_longlong);
+
+        check_parse_exception(
+            parser, argument_table("appname", { "--int=5.1" }), parser_error_code::CONVERSION_FAILED, "--int", "5.1");
+        check_parse_exception(parser, argument_table("appname", { "--double=abc" }),
+            parser_error_code::CONVERSION_FAILED, "--double", "abc");
+        check_parse_exception(parser, argument_table("appname", { "--int=3", "--longlong", "1a" }),
+            parser_error_code::CONVERSION_FAILED, "--longlong", "1a");
+
+        check_parse_exception(parser, argument_table("appname", { "--double=3", "--double=5" }),
+            parser_error_code::TOO_MANY_OCCURRENCES, "--double", "5");
+
+        check_parse_exception(parser, argument_table("appname", { "--int=3", "7", "--longlong", "3" }),
+            parser_error_code::SYNTAX_ERROR, "", "7");
+        check_parse_exception(
+            parser, argument_table("appname", { "--int=3", "aaa" }), parser_error_code::SYNTAX_ERROR, "", "aaa");
+
+        check_parse_exception(
+            parser, argument_table("appname", { "--double" }), parser_error_code::VALUE_MISSING, "--double", "");
+        check_parse_exception(parser, argument_table("appname", { "--int=3", "--longlong" }),
+            parser_error_code::VALUE_MISSING, "--longlong", "");
+
+        parser.add_switch({ "--switch" });
+
+        check_parse_exception(
+            parser, argument_table("appname", { "--switch=3" }), parser_error_code::UNEXPECTED_VALUE, "--switch", "3");
+
+        parser.add_valued({ "-s", "--string" }).set_min_count(1);
+
+        check_parse_exception(
+            parser, argument_table("appname", {}), parser_error_code::REQUIRED_ARGUMENT_MISSING, "-s", "");
+    }
+
     CPPUNIT_TEST_SUITE(storage_args_test);
     CPPUNIT_TEST(test_single_value);
     CPPUNIT_TEST(test_multi_value);
@@ -257,6 +320,7 @@ private:
     CPPUNIT_TEST(test_convert_function);
     CPPUNIT_TEST(test_check_function);
     CPPUNIT_TEST(test_store_function);
+    CPPUNIT_TEST(test_bad_values);
     CPPUNIT_TEST_SUITE_END();
 };
 

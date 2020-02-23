@@ -80,7 +80,7 @@ public:
         auto arg_ptr = m_parser_data_iface_ptr->find_argument(arg_name);
         if (!arg_ptr)
         {
-            throw logic_error_exception("Argument not found");
+            throw unknown_argument_ex<char_type>(arg_name);
         }
 
         return arg_ptr;

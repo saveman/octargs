@@ -10,6 +10,16 @@ namespace oct
 namespace args
 {
 
+class invalid_usage_dictionary_key : public std::logic_error
+{
+public:
+    invalid_usage_dictionary_key(const std::string& message)
+        : std::logic_error(message)
+    {
+        // noop
+    }
+};
+
 enum class usage_dictionary_string_key
 {
     USAGE_DEFAULT_NAMED_ARGUMENTS_GROUP_NAME,
@@ -58,7 +68,7 @@ public:
         {
             return iter->second;
         }
-        throw logic_error_exception("Invalid key");
+        throw invalid_usage_dictionary_key(std::string("Invalid key: ") + std::to_string(static_cast<int>(key)));
     }
 };
 
@@ -82,7 +92,7 @@ public:
         {
             return iter->second;
         }
-        throw logic_error_exception("Invalid key");
+        throw invalid_usage_dictionary_key(std::string("Invalid key: ") + std::to_string(static_cast<int>(key)));
     }
 };
 

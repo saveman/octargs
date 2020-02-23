@@ -72,16 +72,26 @@ private:
         test_bool_converter_helper<char>();
 
         basic_converter<char, bool> char_converter;
-        CPPUNIT_ASSERT_THROW(char_converter(""), parse_exception);
-        CPPUNIT_ASSERT_THROW(char_converter("a"), parse_exception);
-        CPPUNIT_ASSERT_THROW(char_converter(" 1"), parse_exception);
+        CPPUNIT_ASSERT_THROW(char_converter(""), conversion_error);
+        CPPUNIT_ASSERT_THROW(char_converter("a"), conversion_error);
+        CPPUNIT_ASSERT_THROW(char_converter(" 1"), conversion_error);
 
         test_bool_converter_helper<wchar_t>();
 
         basic_converter<wchar_t, bool> wchart_converter;
-        CPPUNIT_ASSERT_THROW(wchart_converter(L""), parse_exception);
-        CPPUNIT_ASSERT_THROW(wchart_converter(L"a"), parse_exception);
-        CPPUNIT_ASSERT_THROW(wchart_converter(L" 1"), parse_exception);
+        CPPUNIT_ASSERT_THROW(wchart_converter(L""), conversion_error);
+        CPPUNIT_ASSERT_THROW(wchart_converter(L"a"), conversion_error);
+        CPPUNIT_ASSERT_THROW(wchart_converter(L" 1"), conversion_error);
+
+        try
+        {
+            wchart_converter(L"a");
+            CPPUNIT_ASSERT(false);
+        }
+        catch (const conversion_error_ex<wchar_t>& exc)
+        {
+            CPPUNIT_ASSERT(std::wstring(L"a") == exc.value());
+        }
     }
 
     template <typename value_T>
@@ -111,15 +121,25 @@ private:
         CPPUNIT_ASSERT_EQUAL(static_cast<value_type>(13), converter("13 "));
         CPPUNIT_ASSERT_EQUAL(static_cast<value_type>(13), converter(" 13 "));
 
-        CPPUNIT_ASSERT_THROW(converter(""), parse_exception);
-        CPPUNIT_ASSERT_THROW(converter("a"), parse_exception);
-        CPPUNIT_ASSERT_THROW(converter("15a"), parse_exception);
-        CPPUNIT_ASSERT_THROW(converter("15 15"), parse_exception);
-        CPPUNIT_ASSERT_THROW(converter("078"), parse_exception);
-        CPPUNIT_ASSERT_THROW(converter("0xfg"), parse_exception);
-        CPPUNIT_ASSERT_THROW(converter("2+2"), parse_exception);
-        CPPUNIT_ASSERT_THROW(converter("111111111111111111111111"), parse_exception);
-        CPPUNIT_ASSERT_THROW(converter("-111111111111111111111111"), parse_exception);
+        CPPUNIT_ASSERT_THROW(converter(""), conversion_error);
+        CPPUNIT_ASSERT_THROW(converter("a"), conversion_error);
+        CPPUNIT_ASSERT_THROW(converter("15a"), conversion_error);
+        CPPUNIT_ASSERT_THROW(converter("15 15"), conversion_error);
+        CPPUNIT_ASSERT_THROW(converter("078"), conversion_error);
+        CPPUNIT_ASSERT_THROW(converter("0xfg"), conversion_error);
+        CPPUNIT_ASSERT_THROW(converter("2+2"), conversion_error);
+        CPPUNIT_ASSERT_THROW(converter("111111111111111111111111"), conversion_error);
+        CPPUNIT_ASSERT_THROW(converter("-111111111111111111111111"), conversion_error);
+
+        try
+        {
+            converter("0xfg");
+            CPPUNIT_ASSERT(false);
+        }
+        catch (const conversion_error_ex<char_type>& exc)
+        {
+            CPPUNIT_ASSERT_EQUAL(std::string("0xfg"), exc.value());
+        }
     }
 
     template <typename value_T>
@@ -138,12 +158,22 @@ private:
         CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<value_type>(-21.3), converter("-21.3"), epsylon);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<value_type>(-0.004), converter("-0.004"), epsylon);
 
-        CPPUNIT_ASSERT_THROW(converter(""), parse_exception);
-        CPPUNIT_ASSERT_THROW(converter("a"), parse_exception);
-        CPPUNIT_ASSERT_THROW(converter("15a"), parse_exception);
-        CPPUNIT_ASSERT_THROW(converter("15 15"), parse_exception);
-        CPPUNIT_ASSERT_THROW(converter("0xfg"), parse_exception);
-        CPPUNIT_ASSERT_THROW(converter("2+2"), parse_exception);
+        CPPUNIT_ASSERT_THROW(converter(""), conversion_error);
+        CPPUNIT_ASSERT_THROW(converter("a"), conversion_error);
+        CPPUNIT_ASSERT_THROW(converter("15a"), conversion_error);
+        CPPUNIT_ASSERT_THROW(converter("15 15"), conversion_error);
+        CPPUNIT_ASSERT_THROW(converter("0xfg"), conversion_error);
+        CPPUNIT_ASSERT_THROW(converter("2+2"), conversion_error);
+
+        try
+        {
+            converter("15 15");
+            CPPUNIT_ASSERT(false);
+        }
+        catch (const conversion_error_ex<char_type>& exc)
+        {
+            CPPUNIT_ASSERT_EQUAL(std::string("15 15"), exc.value());
+        }
     }
 
     CPPUNIT_TEST_SUITE(converter_test);

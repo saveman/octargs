@@ -35,7 +35,7 @@ private:
     void test_no_names()
     {
         parser parser;
-        CPPUNIT_ASSERT_THROW(parser.add_switch({}), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({}), invalid_argument_name);
     }
 
     void test_multiple_names()
@@ -63,29 +63,29 @@ private:
     void test_invalid_name()
     {
         parser parser;
-        CPPUNIT_ASSERT_THROW(parser.add_switch({ "" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_switch({ "\t\n\r" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_switch({ "a " }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_switch({ " b" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_switch({ " c " }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_switch({ "=c" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_switch({ "c=" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_switch({ "c==c" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_switch({ "=" }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({ "" }), invalid_argument_name);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({ "\t\n\r" }), invalid_argument_name);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({ "a " }), invalid_argument_name);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({ " b" }), invalid_argument_name);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({ " c " }), invalid_argument_name);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({ "=c" }), invalid_argument_name);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({ "c=" }), invalid_argument_name);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({ "c==c" }), invalid_argument_name);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({ "=" }), invalid_argument_name);
     }
 
     void test_duplicated_names()
     {
         parser parser;
-        CPPUNIT_ASSERT_THROW(parser.add_switch({ "-h", "-h" }), configuration_exception);
-        CPPUNIT_ASSERT_THROW(parser.add_switch({ "-v", "--version", "-v" }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({ "-h", "-h" }), invalid_argument_name);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({ "-v", "--version", "-v" }), invalid_argument_name);
     }
 
     void test_conflicting_names()
     {
         parser parser;
         parser.add_switch({ "-h" });
-        CPPUNIT_ASSERT_THROW(parser.add_switch({ "-h" }), configuration_exception);
+        CPPUNIT_ASSERT_THROW(parser.add_switch({ "-h" }), invalid_argument_name);
     }
 
     void test_duplicated_value()
@@ -95,7 +95,7 @@ private:
         parser parser;
         parser.add_switch({ "-v" });
 
-        CPPUNIT_ASSERT_THROW(parser.parse(args), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args), parser_error);
     }
 
     void test_multiple_values()
@@ -126,7 +126,7 @@ private:
         parser parser;
         parser.add_switch({ "-v" }).set_max_count(2);
 
-        CPPUNIT_ASSERT_THROW(parser.parse(args), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args), parser_error);
     }
 
     void test_unlimited_values()
@@ -156,7 +156,7 @@ private:
         CPPUNIT_ASSERT_EQUAL(std::size_t(2), results.count("-v"));
 
         arg.set_default_values_count(4);
-        CPPUNIT_ASSERT_THROW(parser.parse(args_empty), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args_empty), parser_error);
 
         arg.set_default_values_count(3);
         results = parser.parse(args_empty);

@@ -181,9 +181,9 @@ public:
             }
             cat_app_engine(settings).execute();
         }
-        catch (const oct::args::parse_exception& exc)
+        catch (const oct::args::parser_error_ex<char>& exc)
         {
-            std::cerr << "Invalid arguments: " << exc.what() << std::endl;
+            std::cerr << "Argument parsing error near: " << exc.name() << " " << exc.value() << std::endl;
             std::cerr << "Run " << m_input_args.get_app_name() << " --help to see usage information" << std::endl;
             return EXIT_FAILURE;
         }

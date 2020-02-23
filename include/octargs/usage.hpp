@@ -10,7 +10,6 @@
 
 #include "argument.hpp"
 #include "argument_table.hpp"
-#include "exception.hpp"
 #include "internal/char_utils.hpp"
 #include "internal/misc.hpp"
 #include "internal/parser_data.hpp"

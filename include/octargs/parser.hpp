@@ -21,6 +21,65 @@ namespace oct
 namespace args
 {
 
+enum class parser_error_code
+{
+    CONVERSION_FAILED,
+    TOO_MANY_OCCURRENCES,
+    SYNTAX_ERROR,
+    VALUE_MISSING,
+    UNEXPECTED_VALUE,
+    REQUIRED_ARGUMENT_MISSING,
+};
+
+class parser_error : public std::runtime_error
+{
+public:
+    parser_error(parser_error_code code)
+        : std::runtime_error("parsing error occurred")
+        , m_error_code(code)
+    {
+        // noop
+    }
+
+    parser_error_code error_code() const
+    {
+        return m_error_code;
+    }
+
+private:
+    parser_error_code m_error_code;
+};
+
+template <class char_T>
+class parser_error_ex : public parser_error
+{
+public:
+    using char_type = char_T;
+    using string_type = std::basic_string<char_type>;
+
+    parser_error_ex(parser_error_code code, const string_type& name, const string_type& value)
+        : parser_error(code)
+        , m_name(name)
+        , m_value(value)
+    {
+        // noop
+    }
+
+    const string_type& name() const
+    {
+        return m_name;
+    }
+
+    const string_type& value() const
+    {
+        return m_value;
+    }
+
+private:
+    basic_shared_string<char_type> m_name;
+    basic_shared_string<char_type> m_value;
+};
+
 template <typename char_T, typename values_storage_T = internal::null_values_storage>
 class basic_parser
 {
@@ -147,7 +206,8 @@ public:
         parse_positional_arguments(input_iterator, values_storage, results_data_ptr);
         if (input_iterator.has_more())
         {
-            throw parse_exception("Unexpected valued given");
+            throw parser_error_ex<char_type>(
+                parser_error_code::SYNTAX_ERROR, string_type(), input_iterator.peek_next());
         }
 
         parse_default_values(results_data_ptr, values_storage);
@@ -165,12 +225,12 @@ private:
     using results_data_ptr_type = std::shared_ptr<results_data_type>;
 
     static void parse_argument_value(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
-        const argument_ptr_type& argument, const string_type& value_str)
+        const argument_ptr_type& argument, const string_type& arg_name, const string_type& value_str)
     {
         auto count = results_data_ptr->value_count(argument);
         if (count >= argument->get_max_count())
         {
-            throw parse_exception("Argument specified too many times");
+            throw parser_error_ex<char_type>(parser_error_code::TOO_MANY_OCCURRENCES, arg_name, value_str);
         }
 
         // if there is a handler call it first, to make sure the value
@@ -178,7 +238,15 @@ private:
         auto handler = argument->get_handler();
         if (handler)
         {
-            handler->parse(values_storage, value_str);
+            try
+            {
+                handler->parse(values_storage, value_str);
+            }
+            catch (const conversion_error& exc)
+            {
+                std::throw_with_nested(
+                    parser_error_ex<char_type>(parser_error_code::CONVERSION_FAILED, arg_name, value_str));
+            }
         }
 
         results_data_ptr->append_value(argument, value_str);
@@ -200,7 +268,8 @@ private:
 
         for (auto& value : values)
         {
-            parse_argument_value(results_data_ptr, values_storage, argument, value);
+            // TODO: should we throw logic_error instead of runtime_error if value is invalid?
+            parse_argument_value(results_data_ptr, values_storage, argument, argument->get_names()[0], value);
         }
     }
 
@@ -236,7 +305,7 @@ private:
 
         auto& value_str = dictionary_type::get_switch_enabled_literal();
 
-        parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, value_str);
+        parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, arg_name, value_str);
 
         return true;
     }
@@ -268,7 +337,7 @@ private:
         {
             if (!input_iterator.has_more())
             {
-                throw parse_exception("Value missing in input");
+                throw parser_error_ex<char_type>(parser_error_code::VALUE_MISSING, arg_name, string_type());
             }
 
             value_str = input_iterator.take_next();
@@ -278,7 +347,7 @@ private:
             value_str = dictionary_type::get_switch_enabled_literal();
         }
 
-        parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, value_str);
+        parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, arg_name, value_str);
 
         return true;
     }
@@ -305,10 +374,10 @@ private:
 
         if (!arg_object_ptr->is_accepting_immediate_value())
         {
-            throw parse_exception("Value specified but not expected");
+            throw parser_error_ex<char_type>(parser_error_code::UNEXPECTED_VALUE, arg_name, arg_value);
         }
 
-        parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, arg_value);
+        parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, arg_name, arg_value);
         return true;
     }
 
@@ -352,7 +421,7 @@ private:
             {
                 const auto& value_str = input_iterator.take_next();
 
-                parse_argument_value(results_data_ptr, values_storage, argument, value_str);
+                parse_argument_value(results_data_ptr, values_storage, argument, argument->get_names()[0], value_str);
             }
         }
     }
@@ -363,7 +432,8 @@ private:
         {
             if (results_data_ptr->value_count(argument) < argument->get_min_count())
             {
-                throw parse_exception("Required named argument value(s) missing");
+                throw parser_error_ex<char_type>(
+                    parser_error_code::REQUIRED_ARGUMENT_MISSING, argument->get_names()[0], string_type());
             }
         }
 
@@ -371,7 +441,8 @@ private:
         {
             if (results_data_ptr->value_count(argument) < argument->get_min_count())
             {
-                throw parse_exception("Required positional argument value(s) missing");
+                throw parser_error_ex<char_type>(
+                    parser_error_code::REQUIRED_ARGUMENT_MISSING, argument->get_names()[0], string_type());
             }
         }
     }
@@ -382,7 +453,7 @@ private:
 
         if (name_count < 1)
         {
-            throw configuration_exception("No names given");
+            throw invalid_argument_name_ex<char_type>("no names given", string_type());
         }
 
         ensure_names_characters_valid(names);
@@ -396,7 +467,7 @@ private:
         {
             if (m_data_ptr->m_names_repository.find(name) != m_data_ptr->m_names_repository.end())
             {
-                throw configuration_exception("Argument with given name already registered");
+                throw invalid_argument_name_ex<char_type>("argument with given name already registered", name);
             }
         }
     }
@@ -411,7 +482,7 @@ private:
             {
                 if (names[i] == names[j])
                 {
-                    throw configuration_exception("Duplicated name");
+                    throw invalid_argument_name_ex<char_type>("duplicated name", names[i]);
                 }
             }
         }
@@ -437,18 +508,18 @@ private:
     {
         if (name.empty())
         {
-            throw configuration_exception("Argument name must not be empty");
+            throw invalid_argument_name_ex<char_type>("argument name must not be empty", name);
         }
 
         for (auto c : name)
         {
             if (internal::is_space(c))
             {
-                throw configuration_exception("Argument name must not contain whitespace characters");
+                throw invalid_argument_name_ex<char_type>("argument name must not contain whitespace characters", name);
             }
             if (c == dictionary_type::get_equal_literal())
             {
-                throw configuration_exception("Argument name must not contain equal characters");
+                throw invalid_argument_name_ex<char_type>("argument name must not contain equal characters", name);
             }
         }
     }

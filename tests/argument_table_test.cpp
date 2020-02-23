@@ -57,8 +57,8 @@ private:
         CPPUNIT_ASSERT_EQUAL(std::string("arg2"), iter.peek_next());
         CPPUNIT_ASSERT_EQUAL(std::string("arg2"), iter.take_next());
         CPPUNIT_ASSERT(!iter.has_more());
-        CPPUNIT_ASSERT_THROW(iter.peek_next(), logic_error_exception);
-        CPPUNIT_ASSERT_THROW(iter.take_next(), logic_error_exception);
+        CPPUNIT_ASSERT_THROW(iter.peek_next(), std::out_of_range);
+        CPPUNIT_ASSERT_THROW(iter.take_next(), std::out_of_range);
         CPPUNIT_ASSERT(!iter.has_more());
     }
 

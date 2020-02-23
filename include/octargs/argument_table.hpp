@@ -94,7 +94,7 @@ public:
     {
         if (!has_more())
         {
-            throw logic_error_exception();
+            throw std::out_of_range("No more arguments available");
         }
 
         return m_arg_table.get_argument(m_arg_index);
@@ -104,7 +104,7 @@ public:
     {
         if (!has_more())
         {
-            throw logic_error_exception();
+            throw std::out_of_range("No more arguments available");
         }
 
         return m_arg_table.get_argument(m_arg_index++);

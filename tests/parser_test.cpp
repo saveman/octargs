@@ -59,7 +59,7 @@ private:
 
         auto results = parser.parse(args);
         CPPUNIT_ASSERT(results.has_value("-v"));
-        CPPUNIT_ASSERT_THROW(results.has_value("-a"), logic_error_exception);
+        CPPUNIT_ASSERT_THROW(results.has_value("-a"), unknown_argument);
     }
 
     void test_unknown_argument()
@@ -69,7 +69,7 @@ private:
         parser parser;
         parser.add_switch({ "-v" });
 
-        CPPUNIT_ASSERT_THROW(parser.parse(args), parse_exception);
+        CPPUNIT_ASSERT_THROW(parser.parse(args), parser_error);
     }
 
     CPPUNIT_TEST_SUITE(parser_test);

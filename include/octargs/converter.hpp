@@ -1,7 +1,6 @@
 #ifndef OCTARGS_CONVERTER_HPP_
 #define OCTARGS_CONVERTER_HPP_
 
-#include <exception>
 #include <limits>
 #include <string>
 
@@ -17,6 +16,8 @@ namespace args
 template <typename char_T, typename data_T>
 class basic_converter
 {
+public:
+    basic_converter() = delete;
 };
 
 template <typename char_T>
@@ -56,7 +57,7 @@ public:
             return false;
         }
 
-        throw parse_exception("Invalid argument value");
+        throw conversion_error_ex<char_type>(value_str);
     }
 };
 
@@ -84,9 +85,9 @@ public:
         }
         catch (const std::exception&)
         {
-            // ignore
+            std::throw_with_nested(conversion_error_ex<char_type>(value_str));
         }
-        throw parse_exception("Invalid argument value");
+        throw conversion_error_ex<char_type>(value_str);
     }
 };
 
@@ -114,9 +115,9 @@ public:
         }
         catch (const std::exception&)
         {
-            // ignore
+            std::throw_with_nested(conversion_error_ex<char_type>(value_str));
         }
-        throw parse_exception("Invalid argument value");
+        throw conversion_error_ex<char_type>(value_str);
     }
 };
 
