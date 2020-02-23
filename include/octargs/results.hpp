@@ -51,6 +51,42 @@ public:
         return m_results_data_ptr->values(arg_name);
     }
 
+    template <typename data_T, typename converter_T = basic_converter<char_type, data_T>>
+    data_T as(const string_type& arg_name, const data_T& default_value = data_T()) const
+    {
+        using data_type = data_T;
+        using converter_type = converter_T;
+
+        data_type data(default_value);
+
+        converter_type converter;
+
+        for (const auto& value_str : values(arg_name))
+        {
+            data = converter(value_str);
+        }
+
+        return data;
+    }
+
+    template <typename data_T, typename converter_T = basic_converter<char_type, data_T>>
+    std::vector<data_T> as_vector(const string_type& arg_name) const
+    {
+        using data_type = data_T;
+        using converter_type = converter_T;
+
+        std::vector<data_type> data_vector;
+
+        converter_type converter;
+
+        for (const auto& value_str : values(arg_name))
+        {
+            data_vector.emplace_back(converter(value_str));
+        }
+
+        return data_vector;
+    }
+
 private:
     results_data_ptr_type m_results_data_ptr;
 };

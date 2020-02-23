@@ -219,7 +219,7 @@ private:
 
         if (m_decorators_enabled)
         {
-            bool is_required = (argument->get_min_count() > 0);
+            bool is_required = (argument->get_min_count() > 0) && (argument->get_default_values().size() == 0);
             bool is_multivalued = (argument->get_max_count() > 1);
             if (is_required || is_multivalued)
             {

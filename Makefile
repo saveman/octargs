@@ -118,6 +118,30 @@ run_examples_head:
 examples_head: install
 	$(MAKE) run_examples_head EXEDIR=$(INSTALL_DIR)/bin EXENAME=octargs_head
 
+run_examples_calc:
+	@echo "----------------------------"
+	@echo "CALC TEST 1"
+	@echo "----------------------------"
+	(cd $(EXEDIR) && ./$(EXENAME) 1 2 3 4 5 )
+	@echo "----------------------------"
+	(cd $(EXEDIR) && ./$(EXENAME) 5 -5 5 -5 5 )
+	@echo "----------------------------"
+	@echo "CALC TEST 2"
+	@echo "----------------------------"
+	(cd $(EXEDIR) && ./$(EXENAME) -o mul -t double 1.2 1.2 )
+	@echo "----------------------------"
+	(cd $(EXEDIR) && ./$(EXENAME) --operation max -t float 1.1 1.3 1.0 0.7 1.25 )
+	@echo "----------------------------"
+	(cd $(EXEDIR) && ./$(EXENAME) --operation min -t float 1.1 1.3 1.0 0.7 1.25 )
+	@echo "----------------------------"
+	@echo "CALC HELP"
+	@echo "----------------------------"
+	@(cd $(EXEDIR) && ./$(EXENAME) --help)
+	@echo "----------------------------"
+
+examples_calc: install
+	$(MAKE) run_examples_calc EXEDIR=$(INSTALL_DIR)/bin EXENAME=octargs_calc
+
 coverage_prepare: build
 	(cd $(BUILD_DIR) && find . -name "*.gcda" -exec rm -f {} \; )
 
@@ -130,6 +154,7 @@ ctest_coverage_open: ctest_coverage
 total_coverage: coverage_prepare
 	$(MAKE) run_examples_cat  EXEDIR=$(BUILD_DIR)/examples/cat  EXENAME=octargs_cat
 	$(MAKE) run_examples_head EXEDIR=$(BUILD_DIR)/examples/head EXENAME=octargs_head
+	$(MAKE) run_examples_calc EXEDIR=$(BUILD_DIR)/examples/calc EXENAME=octargs_calc
 	(cd $(BUILD_DIR) && cmake --build . -- ctest_coverage)
 
 total_coverage_open: total_coverage

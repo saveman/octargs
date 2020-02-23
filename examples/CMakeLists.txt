@@ -5,5 +5,6 @@ if (STANDALONE_EXAMPLES_BUILD)
     find_package(OctArgs REQUIRED)
 endif()
 
+add_subdirectory(calc)
 add_subdirectory(cat)
 add_subdirectory(head)

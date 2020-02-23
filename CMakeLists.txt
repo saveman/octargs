@@ -110,7 +110,6 @@ set(CPACK_SOURCE_IGNORE_FILES
     "/.gitignore$"
     "/.project$"
     "/.travis.yml$"
-    "/build.sh$"
     "/format-all.sh$"
     "/Makefile$"
     "/prepare-release.sh$"

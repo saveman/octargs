@@ -311,6 +311,83 @@ private:
             parser, argument_table("appname", {}), parser_error_code::REQUIRED_ARGUMENT_MISSING, "-s", "");
     }
 
+    void test_custom_type()
+    {
+        enum class format_code
+        {
+            UNKNOWN,
+            HEX,
+            DEC,
+        };
+
+        class format_code_converter
+        {
+        public:
+            format_code operator()(const std::string& value_str)
+            {
+                if (value_str == "hex")
+                {
+                    return format_code::HEX;
+                }
+                else if (value_str == "dec")
+                {
+                    return format_code::DEC;
+                }
+                throw conversion_error_ex<char>(value_str);
+            }
+        };
+
+        struct settings
+        {
+            settings()
+                : m_format(format_code::UNKNOWN)
+                , m_multiformat()
+            {
+                // noop
+            }
+
+            format_code m_format;
+            std::vector<format_code> m_multiformat;
+        };
+
+        storing_parser<settings> parser;
+
+        parser.add_valued({ "--format" })
+            .set_type<format_code, format_code_converter>()
+            .set_storage(&settings::m_format);
+        parser.add_valued({ "--multi" })
+            .set_max_count_unlimited()
+            .set_type<format_code, format_code_converter>()
+            .set_storage(&settings::m_multiformat);
+
+        settings settings1;
+        auto results1 = parser.parse(argument_table("appname", { "--format=hex" }), settings1);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), results1.count("--format"));
+        CPPUNIT_ASSERT_EQUAL(std::string("hex"), results1.values("--format")[0]);
+        CPPUNIT_ASSERT_EQUAL(format_code::HEX, settings1.m_format);
+
+        settings settings2;
+        auto results2 = parser.parse(argument_table("appname", { "--format=dec" }), settings2);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), results2.count("--format"));
+        CPPUNIT_ASSERT_EQUAL(std::string("dec"), results2.values("--format")[0]);
+        CPPUNIT_ASSERT_EQUAL(format_code::DEC, settings2.m_format);
+
+        CPPUNIT_ASSERT_THROW(parser.parse(argument_table("appname", { "--format=aaa" }), settings1), parser_error);
+
+        settings settings3;
+        auto results3
+            = parser.parse(argument_table("appname", { "--multi=dec", "--multi", "hex", "--multi", "dec" }), settings3);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(0), results3.count("--format"));
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), results3.count("--multi"));
+        CPPUNIT_ASSERT_EQUAL(std::string("dec"), results3.values("--multi")[0]);
+        CPPUNIT_ASSERT_EQUAL(std::string("hex"), results3.values("--multi")[1]);
+        CPPUNIT_ASSERT_EQUAL(std::string("dec"), results3.values("--multi")[2]);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(3), settings3.m_multiformat.size());
+        CPPUNIT_ASSERT_EQUAL(format_code::DEC, settings3.m_multiformat[0]);
+        CPPUNIT_ASSERT_EQUAL(format_code::HEX, settings3.m_multiformat[1]);
+        CPPUNIT_ASSERT_EQUAL(format_code::DEC, settings3.m_multiformat[2]);
+    }
+
     CPPUNIT_TEST_SUITE(storage_args_test);
     CPPUNIT_TEST(test_single_value);
     CPPUNIT_TEST(test_multi_value);
@@ -321,8 +398,9 @@ private:
     CPPUNIT_TEST(test_check_function);
     CPPUNIT_TEST(test_store_function);
     CPPUNIT_TEST(test_bad_values);
+    CPPUNIT_TEST(test_custom_type);
     CPPUNIT_TEST_SUITE_END();
-};
+}; // namespace args
 
 CPPUNIT_TEST_SUITE_REGISTRATION(storage_args_test);
 

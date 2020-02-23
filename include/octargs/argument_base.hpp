@@ -24,13 +24,13 @@ public:
     using handler_type = internal::basic_argument_handler<char_type, values_storage_type>;
     using handler_ptr_type = std::shared_ptr<const handler_type>;
 
-    template <typename DATA>
-    using type_handler_type = basic_argument_type_handler<DATA, char_type, values_storage_type>;
+    template <typename data_T>
+    using type_handler_type = basic_argument_type_handler<data_T, char_type, values_storage_type>;
 
-    template <typename DATA>
-    type_handler_type<DATA>& set_type()
+    template <typename data_T, typename converter_T = basic_converter<char_type, data_T>>
+    type_handler_type<data_T>& set_type()
     {
-        auto handler_ptr = std::make_shared<type_handler_type<DATA>>();
+        auto handler_ptr = std::make_shared<type_handler_type<data_T>>(converter_T());
 
         set_handler(handler_ptr);
 
