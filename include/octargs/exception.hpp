@@ -17,7 +17,7 @@ public:
     using char_type = char_T;
     using string_type = std::basic_string<char_type>;
 
-    basic_shared_string(const string_type& str)
+    explicit basic_shared_string(const string_type& str)
         : m_string_ptr(std::make_shared<string_type>(str))
     {
         // noop
@@ -37,7 +37,7 @@ private:
 class missing_converter : public std::logic_error
 {
 public:
-    missing_converter()
+    explicit missing_converter()
         : std::logic_error("converter function is missing")
     {
         // noop
@@ -49,7 +49,7 @@ public:
 class conversion_error : public std::runtime_error
 {
 public:
-    conversion_error()
+    explicit conversion_error()
         : std::runtime_error("Conversion failed")
     {
         // noop
@@ -63,7 +63,7 @@ public:
     using char_type = char_T;
     using string_type = std::basic_string<char_type>;
 
-    conversion_error_ex(const string_type& value)
+    explicit conversion_error_ex(const string_type& value)
         : conversion_error()
         , m_value(value)
     {
@@ -84,7 +84,7 @@ private:
 class unknown_argument : public std::logic_error
 {
 public:
-    unknown_argument()
+    explicit unknown_argument()
         : std::logic_error("Unknown argument requested")
     {
         // noop
@@ -98,7 +98,7 @@ public:
     using char_type = char_T;
     using string_type = std::basic_string<char_type>;
 
-    unknown_argument_ex(const string_type& name)
+    explicit unknown_argument_ex(const string_type& name)
         : unknown_argument()
         , m_name(name)
     {
@@ -119,7 +119,7 @@ private:
 class invalid_argument_name : public std::logic_error
 {
 public:
-    invalid_argument_name(const std::string& message)
+    explicit invalid_argument_name(const std::string& message)
         : std::logic_error(message)
     {
         // noop
@@ -133,7 +133,7 @@ public:
     using char_type = char_T;
     using string_type = std::basic_string<char_type>;
 
-    invalid_argument_name_ex(const std::string& message, const string_type& name)
+    explicit invalid_argument_name_ex(const std::string& message, const string_type& name)
         : invalid_argument_name(message)
         , m_name(name)
     {

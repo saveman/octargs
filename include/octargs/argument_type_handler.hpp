@@ -49,7 +49,7 @@ public:
     using direct_store_function_type = std::function<void(const data_type& data)>;
     using store_function_type = std::function<void(values_storage_type& storage, const data_type& data)>;
 
-    basic_argument_type_handler(convert_function_type convert_func = basic_converter<char_type, data_type>())
+    basic_argument_type_handler(const convert_function_type& convert_func = basic_converter<char_type, data_type>())
         : m_convert_function(convert_func)
         , m_store_function()
     {

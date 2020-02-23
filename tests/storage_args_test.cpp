@@ -323,7 +323,7 @@ private:
         class format_code_converter
         {
         public:
-            format_code operator()(const std::string& value_str)
+            format_code operator()(const std::string& value_str) const
             {
                 if (value_str == "hex")
                 {

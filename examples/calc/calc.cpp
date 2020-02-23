@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <numeric>
 
 #include "octargs/octargs.hpp"
 
@@ -73,58 +74,28 @@ class calc_app
     };
 
     template <class data_T>
-    data_T execute(const std::vector<data_T>& values, operation_code operation)
+    static data_T execute(const std::vector<data_T>& values, operation_code operation)
     {
         using data_type = data_T;
 
         switch (operation)
         {
         case operation_code::SUM:
-        {
-            data_type result = 0;
-            for (auto& value : values)
-            {
-                result += value;
-            }
-            return result;
-        }
+            return std::accumulate(values.begin(), values.end(), data_type(0));
         case operation_code::MUL:
-        {
-            data_type result = 1;
-            for (auto& value : values)
-            {
-                result *= value;
-            }
-            return result;
-        }
+            return std::accumulate(values.begin(), values.end(), data_type(1),
+                [](const data_type& v1, const data_type& v2) { return v1 * v2; });
         case operation_code::MIN:
-        {
-            data_type result = values[0];
-            for (auto& value : values)
-            {
-                result = std::min(result, value);
-            }
-            return result;
-        }
+            return *std::min_element(values.begin(), values.end());
         case operation_code::MAX:
-        {
-            data_type result = values[0];
-            for (auto& value : values)
-            {
-                result = std::max(result, value);
-            }
-            return result;
+            return *std::max_element(values.begin(), values.end());
+        default:
+            throw std::logic_error("unsupported operation");
         }
-        }
-
-        throw std::logic_error("unsupported operation");
     }
 
 public:
-    calc_app()
-    {
-        // noop
-    }
+    calc_app() = default;
 
     int run(int argc, char* argv[])
     {

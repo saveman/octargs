@@ -13,7 +13,7 @@ namespace args
 class invalid_usage_dictionary_key : public std::logic_error
 {
 public:
-    invalid_usage_dictionary_key(const std::string& message)
+    explicit invalid_usage_dictionary_key(const std::string& message)
         : std::logic_error(message)
     {
         // noop

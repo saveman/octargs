@@ -34,7 +34,7 @@ enum class parser_error_code
 class parser_error : public std::runtime_error
 {
 public:
-    parser_error(parser_error_code code)
+    explicit parser_error(parser_error_code code)
         : std::runtime_error("parsing error occurred")
         , m_error_code(code)
     {
@@ -57,7 +57,7 @@ public:
     using char_type = char_T;
     using string_type = std::basic_string<char_type>;
 
-    parser_error_ex(parser_error_code code, const string_type& name, const string_type& value)
+    explicit parser_error_ex(parser_error_code code, const string_type& name, const string_type& value)
         : parser_error(code)
         , m_name(name)
         , m_value(value)
