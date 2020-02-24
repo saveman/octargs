@@ -111,7 +111,7 @@ private:
         CPPUNIT_ASSERT_EQUAL(std::size_t(3), arg2.get_min_count());
         CPPUNIT_ASSERT_EQUAL(std::size_t(10), arg2.get_max_count());
         arg2.set_max_count_unlimited();
-        CPPUNIT_ASSERT_GREATER(static_cast<std::size_t>(1000), arg2.get_max_count());
+        CPPUNIT_ASSERT(arg2.is_max_count_unlimited());
     }
 
     CPPUNIT_TEST_SUITE(argument_test);

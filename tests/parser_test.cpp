@@ -7,6 +7,40 @@ namespace oct
 namespace args
 {
 
+namespace
+{
+
+enum class format_code
+{
+    UNKNOWN,
+    HEX,
+    DEC,
+};
+
+class format_code_converter
+{
+public:
+    format_code operator()(const std::string& value_str) const
+    {
+        if (value_str == "hex")
+        {
+            return format_code::HEX;
+        }
+        else if (value_str == "dec")
+        {
+            return format_code::DEC;
+        }
+        throw conversion_error_ex<char>(value_str);
+    }
+};
+
+std::ostream& operator << (std::ostream& os, format_code code)
+{
+    return os << static_cast<int>(code);
+}
+
+}
+
 class parser_test : public test_fixture
 {
 private:
@@ -74,30 +108,6 @@ private:
 
     void test_custom_type()
     {
-        enum class format_code
-        {
-            UNKNOWN,
-            HEX,
-            DEC,
-        };
-
-        class format_code_converter
-        {
-        public:
-            format_code operator()(const std::string& value_str) const
-            {
-                if (value_str == "hex")
-                {
-                    return format_code::HEX;
-                }
-                else if (value_str == "dec")
-                {
-                    return format_code::DEC;
-                }
-                throw conversion_error_ex<char>(value_str);
-            }
-        };
-
         parser parser;
 
         parser.add_valued({ "--format" });
@@ -121,7 +131,7 @@ private:
             results3.as<format_code, format_code_converter>("--format");
             CPPUNIT_ASSERT(false);
         }
-        catch (const conversion_error& e)
+        catch (const conversion_error&)
         {
             // ignore
         }

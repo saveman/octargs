@@ -242,7 +242,7 @@ private:
             {
                 handler->parse(values_storage, value_str);
             }
-            catch (const conversion_error& exc)
+            catch (const conversion_error&)
             {
                 std::throw_with_nested(
                     parser_error_ex<char_type>(parser_error_code::CONVERSION_FAILED, arg_name, value_str));

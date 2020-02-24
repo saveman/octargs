@@ -168,7 +168,7 @@ private:
                 throw parse_error("Invalid suffix in limit");
             }
         }
-        catch (const std::exception& exc)
+        catch (const std::exception&)
         {
             throw parse_error("Invalid limit value");
         }
