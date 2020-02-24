@@ -18,7 +18,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(CTest)
 include(GNUInstallDirs)
 
-if (ENABLE_COVERAGE)
+if (ENABLE_COVERAGE AND NOT WIN32)
     include(CodeCoverage)
     append_coverage_compiler_flags()
 

@@ -1,15 +1,3 @@
-language: cpp
-
-os:
-  - linux
-
-dist:
-  - bionic
-
-compiler:
-  - gcc
-  - clang
-
 env:
   global:
     # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
@@ -26,43 +14,37 @@ addons:
     build_command: "/usr/bin/cmake --build ."
     branch_pattern: coverity_scan
 
-before_install:
-  # For Coverity
-  - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
-  # Repository for new CMake
-  - wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
-  - sudo apt-add-repository "deb https://apt.kitware.com/ubuntu/ bionic main"
-  - sudo apt-get -y update
-  # Install
-  # - New CMake
-  # - CppUnit library
-  # - Coverage tools: GCOVR
-  - sudo apt-get -y install cmake libcppunit-dev gcovr
+jobs:
+  include:
+    - name: Linux GCC
+      os: linux
+      dist: bionic
+      language: cpp
+      compiler: gcc
+      before_install:
+        - bash ./scripts/travis-linux-before_install.sh
+      before_script:
+        - bash ./scripts/travis-linux-before_script.sh
+      script:
+        - bash ./scripts/travis-linux-script.sh
 
-before_script:
-  # Make sure everything is clean
-  - rm -rf build
-  - rm -rf install
-  # Create build directories
-  - mkdir -p build/debug
-  - mkdir -p build/release
-  # Prepare build environment (cmake)
-  - /usr/bin/cmake --version
-  - pushd build/debug
-  - /usr/bin/cmake -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/../../install/debug -DCMAKE_BUILD_TYPE=Debug ../..
-  - popd
-  - pushd build/release
-  - /usr/bin/cmake -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/../../install/release -DCMAKE_BUILD_TYPE=Release ../..
-  - popd
+    - name: Linux CLANG
+      os: linux
+      dist: bionic
+      language: cpp
+      compiler: clang
+      before_install:
+        - bash ./scripts/travis-linux-before_install.sh
+      before_script:
+        - bash ./scripts/travis-linux-before_script.sh
+      script:
+        - bash ./scripts/travis-linux-script.sh
 
-script:
-  - pushd build/debug
-  - /usr/bin/cmake --build .
-  - /usr/bin/cmake --build . -- install
-  - /usr/bin/cmake --build . -- test
-  - popd
-  - pushd build/release
-  - /usr/bin/cmake --build .
-  - /usr/bin/cmake --build . -- install
-  - /usr/bin/cmake --build . -- test
-  - popd
+    - name: Windows
+      os: windows
+      language: cpp
+      filter_secrets: false
+      before_install:
+        - choco install nsis
+      script:
+        - ./scripts/travis-windows-script.bat

@@ -37,6 +37,9 @@ _install
 _package
 _release
 _verify
+_win_build
+_win_install
+_win_package
 .cproject
 .project
 .settings
