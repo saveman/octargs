@@ -7,6 +7,45 @@ namespace oct
 namespace args
 {
 
+namespace
+{
+
+enum class format_code
+{
+    UNKNOWN,
+    HEX,
+    DEC,
+};
+
+class format_code_converter
+{
+public:
+    format_code operator()(const std::string& value_str) const
+    {
+        if (value_str == "hex")
+        {
+            return format_code::HEX;
+        }
+        else if (value_str == "dec")
+        {
+            return format_code::DEC;
+        }
+        throw conversion_error_ex<char>(value_str);
+    }
+};
+
+std::ostream& operator << (std::ostream& os, const format_code& code)
+{
+    return os << static_cast<int>(code);
+}
+
+}
+
+std::ostream& operator << (std::ostream& os, const oct::args::parser_error_code& code)
+{
+    return os << static_cast<int>(code);
+}
+
 class storage_args_test : public test_fixture
 {
 private:
@@ -281,7 +320,8 @@ private:
         parser.add_valued({ "--longlong" }).set_type_and_storage(&settings::m_longlong);
 
         check_parse_exception(
-            parser, argument_table("appname", { "--int=5.1" }), parser_error_code::CONVERSION_FAILED, "--int", "5.1");
+            parser, argument_table("appname", { "--int=5.1" }), parser_error_code::CONVERSION_FAILED,
+            std::string("--int"), std::string("5.1"));
         check_parse_exception(parser, argument_table("appname", { "--double=abc" }),
             parser_error_code::CONVERSION_FAILED, "--double", "abc");
         check_parse_exception(parser, argument_table("appname", { "--int=3", "--longlong", "1a" }),
@@ -313,30 +353,6 @@ private:
 
     void test_custom_type()
     {
-        enum class format_code
-        {
-            UNKNOWN,
-            HEX,
-            DEC,
-        };
-
-        class format_code_converter
-        {
-        public:
-            format_code operator()(const std::string& value_str) const
-            {
-                if (value_str == "hex")
-                {
-                    return format_code::HEX;
-                }
-                else if (value_str == "dec")
-                {
-                    return format_code::DEC;
-                }
-                throw conversion_error_ex<char>(value_str);
-            }
-        };
-
         struct settings
         {
             settings()

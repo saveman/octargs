@@ -40,6 +40,7 @@ _verify
 _win_build
 _win_install
 _win_package
+_win_cppunit
 .cproject
 .project
 .settings

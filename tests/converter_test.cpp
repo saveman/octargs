@@ -150,7 +150,7 @@ private:
 
         basic_converter<char_type, value_type> converter;
 
-        value_type epsylon = 0.001;
+        value_type epsylon(0.001f);
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<value_type>(0), converter("0"), epsylon);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<value_type>(163), converter("163"), epsylon);
