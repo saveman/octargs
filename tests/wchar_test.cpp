@@ -1,45 +1,41 @@
+#include "gtest/gtest.h"
+
 #include "../include/octargs/parser.hpp"
-#include "test_fixture.hpp"
 
 namespace oct
 {
 namespace args
 {
 
-class wchar_test : public test_fixture
+namespace
 {
-private:
-    using parser_type = basic_parser<wchar_t>;
 
-    void test_basic()
-    {
-        const wchar_t* test_argv[] = {
-            L"appname",
-            L"-v",
-            L"param1",
-            L"param2",
-            L"param3",
-        };
-        int test_argc = sizeof(test_argv) / sizeof(test_argv[0]);
+using parser_type = basic_parser<wchar_t>;
 
-        parser_type parser;
-        parser.add_switch({ L"-v", L"--version" });
-        parser.add_positional(L"values").set_max_count_unlimited();
+}
 
-        auto results = parser.parse(test_argc, test_argv);
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), results.count(L"values"));
-        CPPUNIT_ASSERT(results.values(L"values")[0] == test_argv[2]);
-        CPPUNIT_ASSERT(results.values(L"values")[1] == test_argv[3]);
-        CPPUNIT_ASSERT(results.values(L"values")[2] == test_argv[4]);
-        CPPUNIT_ASSERT(results.has_value(L"--version"));
-    }
+TEST(wchar_test, test_basic)
+{
+    const wchar_t* test_argv[] = {
+        L"appname",
+        L"-v",
+        L"param1",
+        L"param2",
+        L"param3",
+    };
+    int test_argc = sizeof(test_argv) / sizeof(test_argv[0]);
 
-    CPPUNIT_TEST_SUITE(wchar_test);
-    CPPUNIT_TEST(test_basic);
-    CPPUNIT_TEST_SUITE_END();
-};
+    parser_type parser;
+    parser.add_switch({ L"-v", L"--version" });
+    parser.add_positional(L"values").set_max_count_unlimited();
 
-CPPUNIT_TEST_SUITE_REGISTRATION(wchar_test);
+    auto results = parser.parse(test_argc, test_argv);
+    ASSERT_EQ(static_cast<size_t>(3), results.count(L"values"));
+    ASSERT_TRUE(results.values(L"values")[0] == test_argv[2]);
+    ASSERT_TRUE(results.values(L"values")[1] == test_argv[3]);
+    ASSERT_TRUE(results.values(L"values")[2] == test_argv[4]);
+    ASSERT_TRUE(results.has_value(L"--version"));
+}
 
 } // namespace args
 } // namespace oct

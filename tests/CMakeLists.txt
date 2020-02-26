@@ -2,9 +2,7 @@ cmake_minimum_required(VERSION 3.13)
 
 project(octargs-tests)
 
-find_package(CppUnit REQUIRED)
-
-function(add_cppunit_test)
+function(add_gtest_test)
     cmake_parse_arguments(PARSE_ARGV 0
         ADD_TEST_ARGS
         ""
@@ -16,7 +14,7 @@ function(add_cppunit_test)
     target_sources(${ADD_TEST_ARGS_NAME}
         PRIVATE
             ${ADD_TEST_ARGS_SOURCES}
-            runner.cpp
+            gtest_runner.cpp
     )
     target_include_directories(${ADD_TEST_ARGS_NAME}
         PRIVATE
@@ -24,7 +22,7 @@ function(add_cppunit_test)
     )
     target_link_libraries(${ADD_TEST_ARGS_NAME}
         PRIVATE
-            CppUnit::CppUnit
+            gtest
     )
     target_compile_features(${ADD_TEST_ARGS_NAME} PUBLIC cxx_std_11)
 
@@ -35,7 +33,7 @@ function(add_cppunit_test)
     add_test(NAME ${ADD_TEST_ARGS_NAME} COMMAND $<TARGET_FILE:${ADD_TEST_ARGS_NAME}>)
 endfunction()
 
-function(add_cppunit_test_basic)
+function(add_gtest_test_basic)
     cmake_parse_arguments(PARSE_ARGV 0
         ADD_TEST_ARGS
         ""
@@ -43,19 +41,19 @@ function(add_cppunit_test_basic)
         ""
     )
 
-    add_cppunit_test(NAME "${ADD_TEST_ARGS_NAME}" SOURCES "${ADD_TEST_ARGS_NAME}.cpp")
+    add_gtest_test(NAME "${ADD_TEST_ARGS_NAME}" SOURCES "${ADD_TEST_ARGS_NAME}.cpp")
 endfunction()
 
-add_cppunit_test_basic(NAME argument_table_test)
-add_cppunit_test_basic(NAME argument_test)
-add_cppunit_test_basic(NAME char_utils_test)
-add_cppunit_test_basic(NAME converter_test)
-add_cppunit_test_basic(NAME exclusive_args_test)
-add_cppunit_test_basic(NAME parser_test)
-add_cppunit_test_basic(NAME parser_usage_test)
-add_cppunit_test_basic(NAME positional_args_test)
-add_cppunit_test_basic(NAME storage_args_test)
-add_cppunit_test_basic(NAME string_utils_test)
-add_cppunit_test_basic(NAME switch_args_test)
-add_cppunit_test_basic(NAME valued_args_test)
-add_cppunit_test_basic(NAME wchar_test)
+add_gtest_test_basic(NAME argument_table_test)
+add_gtest_test_basic(NAME argument_test)
+add_gtest_test_basic(NAME char_utils_test)
+add_gtest_test_basic(NAME converter_test)
+add_gtest_test_basic(NAME exclusive_args_test)
+add_gtest_test_basic(NAME parser_test)
+add_gtest_test_basic(NAME parser_usage_test)
+add_gtest_test_basic(NAME positional_args_test)
+add_gtest_test_basic(NAME storage_args_test)
+add_gtest_test_basic(NAME string_utils_test)
+add_gtest_test_basic(NAME switch_args_test)
+add_gtest_test_basic(NAME valued_args_test)
+add_gtest_test_basic(NAME wchar_test)

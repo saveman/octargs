@@ -9,4 +9,4 @@ wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | 
 sudo apt-add-repository "deb https://apt.kitware.com/ubuntu/ bionic main"
 sudo apt-get -y update
 
-sudo apt-get -y install cmake libcppunit-dev gcovr
+sudo apt-get -y install cmake gcovr

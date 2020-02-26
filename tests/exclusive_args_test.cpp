@@ -1,4 +1,4 @@
-#include "test_fixture.hpp"
+#include "gtest/gtest.h"
 
 #include "../include/octargs/octargs.hpp"
 
@@ -7,86 +7,73 @@ namespace oct
 namespace args
 {
 
-class exclusive_args_test : public test_fixture
+TEST(exclusive_args_test, test_not_given_no_args)
 {
-private:
-    void test_not_given_no_args()
-    {
-        argument_table args("appname", {});
+    argument_table args("appname", {});
 
-        parser parser;
-        parser.add_exclusive({ "--help" });
-        parser.add_exclusive({ "--version" });
-        parser.add_switch({ "--verbose" });
-        parser.add_positional("files").set_max_count_unlimited();
+    parser parser;
+    parser.add_exclusive({ "--help" });
+    parser.add_exclusive({ "--version" });
+    parser.add_switch({ "--verbose" });
+    parser.add_positional("files").set_max_count_unlimited();
 
-        auto results = parser.parse(args);
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("--help"));
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("--version"));
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("--verbose"));
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("files"));
-    }
+    auto results = parser.parse(args);
+    ASSERT_EQ(std::size_t(0), results.count("--help"));
+    ASSERT_EQ(std::size_t(0), results.count("--version"));
+    ASSERT_EQ(std::size_t(0), results.count("--verbose"));
+    ASSERT_EQ(std::size_t(0), results.count("files"));
+}
 
-    void test_switch_given()
-    {
-        argument_table args("appname", { "--verbose" });
+TEST(exclusive_args_test, test_switch_given)
+{
+    argument_table args("appname", { "--verbose" });
 
-        parser parser;
-        parser.add_exclusive({ "--help" });
-        parser.add_exclusive({ "--version" });
-        parser.add_switch({ "--verbose" });
-        parser.add_positional("files").set_max_count_unlimited();
+    parser parser;
+    parser.add_exclusive({ "--help" });
+    parser.add_exclusive({ "--version" });
+    parser.add_switch({ "--verbose" });
+    parser.add_positional("files").set_max_count_unlimited();
 
-        auto results = parser.parse(args);
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("--help"));
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("--version"));
-        CPPUNIT_ASSERT_EQUAL(std::size_t(1), results.count("--verbose"));
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("files"));
-    }
+    auto results = parser.parse(args);
+    ASSERT_EQ(std::size_t(0), results.count("--help"));
+    ASSERT_EQ(std::size_t(0), results.count("--version"));
+    ASSERT_EQ(std::size_t(1), results.count("--verbose"));
+    ASSERT_EQ(std::size_t(0), results.count("files"));
+}
 
-    void test_one_given()
-    {
-        argument_table args("appname", { "--version" });
+TEST(exclusive_args_test, test_one_given)
+{
+    argument_table args("appname", { "--version" });
 
-        parser parser;
-        parser.add_exclusive({ "--help" });
-        parser.add_exclusive({ "--version" });
-        parser.add_switch({ "--verbose" });
-        parser.add_positional("files").set_max_count_unlimited();
+    parser parser;
+    parser.add_exclusive({ "--help" });
+    parser.add_exclusive({ "--version" });
+    parser.add_switch({ "--verbose" });
+    parser.add_positional("files").set_max_count_unlimited();
 
-        auto results = parser.parse(args);
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("--help"));
-        CPPUNIT_ASSERT_EQUAL(std::size_t(1), results.count("--version"));
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("--verbose"));
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("files"));
-    }
+    auto results = parser.parse(args);
+    ASSERT_EQ(std::size_t(0), results.count("--help"));
+    ASSERT_EQ(std::size_t(1), results.count("--version"));
+    ASSERT_EQ(std::size_t(0), results.count("--verbose"));
+    ASSERT_EQ(std::size_t(0), results.count("files"));
+}
 
-    void test_two_given()
-    {
-        argument_table args("appname", { "--version", "--help" });
+TEST(exclusive_args_test, test_two_given)
+{
+    argument_table args("appname", { "--version", "--help" });
 
-        parser parser;
-        parser.add_exclusive({ "--help" });
-        parser.add_exclusive({ "--version" });
-        parser.add_switch({ "--verbose" });
-        parser.add_positional("files").set_max_count_unlimited();
+    parser parser;
+    parser.add_exclusive({ "--help" });
+    parser.add_exclusive({ "--version" });
+    parser.add_switch({ "--verbose" });
+    parser.add_positional("files").set_max_count_unlimited();
 
-        auto results = parser.parse(args);
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("--help"));
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("--version"));
-        CPPUNIT_ASSERT_EQUAL(std::size_t(0), results.count("--verbose"));
-        CPPUNIT_ASSERT_EQUAL(std::size_t(2), results.count("files"));
-    }
-
-    CPPUNIT_TEST_SUITE(exclusive_args_test);
-    CPPUNIT_TEST(test_not_given_no_args);
-    CPPUNIT_TEST(test_switch_given);
-    CPPUNIT_TEST(test_one_given);
-    CPPUNIT_TEST(test_two_given);
-    CPPUNIT_TEST_SUITE_END();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(exclusive_args_test);
+    auto results = parser.parse(args);
+    ASSERT_EQ(std::size_t(0), results.count("--help"));
+    ASSERT_EQ(std::size_t(0), results.count("--version"));
+    ASSERT_EQ(std::size_t(0), results.count("--verbose"));
+    ASSERT_EQ(std::size_t(2), results.count("files"));
+}
 
 } // namespace args
 } // namespace oct

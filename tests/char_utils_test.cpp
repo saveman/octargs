@@ -1,6 +1,6 @@
-#include <array>
+#include "gtest/gtest.h"
 
-#include "test_fixture.hpp"
+#include <array>
 
 #include "../include/octargs/internal/char_utils.hpp"
 
@@ -9,38 +9,27 @@ namespace oct
 namespace args
 {
 
-class char_utils_test : public test_fixture
+TEST(char_utils_test, test_char_is_space)
 {
-private:
-    void test_char_is_space()
-    {
-        CPPUNIT_ASSERT(internal::is_space(' '));
-        CPPUNIT_ASSERT(internal::is_space('\t'));
-        CPPUNIT_ASSERT(internal::is_space('\r'));
-        CPPUNIT_ASSERT(internal::is_space('\n'));
-        CPPUNIT_ASSERT(!internal::is_space('a'));
-        CPPUNIT_ASSERT(!internal::is_space('1'));
-        CPPUNIT_ASSERT(!internal::is_space('#'));
-    }
+    ASSERT_TRUE(internal::is_space(' '));
+    ASSERT_TRUE(internal::is_space('\t'));
+    ASSERT_TRUE(internal::is_space('\r'));
+    ASSERT_TRUE(internal::is_space('\n'));
+    ASSERT_TRUE(!internal::is_space('a'));
+    ASSERT_TRUE(!internal::is_space('1'));
+    ASSERT_TRUE(!internal::is_space('#'));
+}
 
-    void test_wchar_is_space()
-    {
-        CPPUNIT_ASSERT(internal::is_space(L' '));
-        CPPUNIT_ASSERT(internal::is_space(L'\t'));
-        CPPUNIT_ASSERT(internal::is_space(L'\r'));
-        CPPUNIT_ASSERT(internal::is_space(L'\n'));
-        CPPUNIT_ASSERT(!internal::is_space(L'a'));
-        CPPUNIT_ASSERT(!internal::is_space(L'1'));
-        CPPUNIT_ASSERT(!internal::is_space(L'#'));
-    }
-
-    CPPUNIT_TEST_SUITE(char_utils_test);
-    CPPUNIT_TEST(test_char_is_space);
-    CPPUNIT_TEST(test_wchar_is_space);
-    CPPUNIT_TEST_SUITE_END();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(char_utils_test);
+TEST(char_utils_test, test_wchar_is_space)
+{
+    ASSERT_TRUE(internal::is_space(L' '));
+    ASSERT_TRUE(internal::is_space(L'\t'));
+    ASSERT_TRUE(internal::is_space(L'\r'));
+    ASSERT_TRUE(internal::is_space(L'\n'));
+    ASSERT_TRUE(!internal::is_space(L'a'));
+    ASSERT_TRUE(!internal::is_space(L'1'));
+    ASSERT_TRUE(!internal::is_space(L'#'));
+}
 
 } // namespace args
 } // namespace oct

@@ -89,6 +89,8 @@ if (BUILD_EXAMPLES)
 endif()
 
 if (BUILD_TESTS)
+    set(INSTALL_GTEST "OFF")
+    add_subdirectory(3rdparty/googletest)
     add_subdirectory(tests)
 endif()
 
