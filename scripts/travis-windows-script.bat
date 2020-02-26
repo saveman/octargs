@@ -29,30 +29,35 @@ cmake ^
 	--build . ^
 	--config Debug ^
 	--target ALL_BUILD ^
+	-- /m ^
 	|| EXIT /B 1
 
 cmake ^
 	--build . ^
 	--config Debug ^
 	--target RUN_TESTS ^
+	-- /m ^
 	|| EXIT /B 1
 
 cmake ^
 	--build . ^
 	--config Release ^
 	--target ALL_BUILD ^
+	-- /m ^
 	|| EXIT /B 1
 
 cmake ^
 	--build . ^
 	--config Release ^
 	--target INSTALL ^
+	-- /m ^
 	|| EXIT /B 1
 
 cmake ^
 	--build . ^
 	--config Release ^
 	--target PACKAGE ^
+	-- /m ^
 	|| EXIT /B 1
 
 echo "Success"
