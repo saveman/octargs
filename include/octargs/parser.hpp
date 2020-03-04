@@ -12,6 +12,7 @@
 #include "parser_dictionary.hpp"
 #include "positional_argument.hpp"
 #include "results.hpp"
+#include "subparser_argument.hpp"
 #include "switch_argument.hpp"
 #include "usage.hpp"
 #include "valued_argument.hpp"
@@ -29,6 +30,8 @@ enum class parser_error_code
     VALUE_MISSING,
     UNEXPECTED_VALUE,
     REQUIRED_ARGUMENT_MISSING,
+    SUBPARSER_NAME_MISSING,
+    SUBPARSER_NOT_FOUND
 };
 
 class parser_error : public std::runtime_error
@@ -93,6 +96,7 @@ public:
     using valued_argument_type = basic_valued_argument<char_type, values_storage_type>;
     using positional_argument_type = basic_positional_argument<char_type, values_storage_type>;
     using exclusive_argument_type = basic_exclusive_argument<char_type, values_storage_type>;
+    using subparser_argument_type = basic_subparser_argument<char_type, values_storage_type>;
 
     using string_type = std::basic_string<char_type>;
     using string_vector_type = std::vector<string_type>;
@@ -113,15 +117,21 @@ public:
         return parser_usage_type(m_data_ptr);
     }
 
-    basic_parser& set_info_header(const string_type& text)
+    basic_parser& set_usage_oneliner(const string_type& text)
     {
-        m_data_ptr->m_info_header = text;
+        m_data_ptr->m_usage_oneliner = text;
         return *this;
     }
 
-    basic_parser& set_info_footer(const string_type& text)
+    basic_parser& set_usage_header(const string_type& text)
     {
-        m_data_ptr->m_info_footer = text;
+        m_data_ptr->m_usage_header = text;
+        return *this;
+    }
+
+    basic_parser& set_usage_footer(const string_type& text)
+    {
+        m_data_ptr->m_usage_footer = text;
         return *this;
     }
 
@@ -166,6 +176,10 @@ public:
         auto names = { name };
 
         check_names(names);
+        if (m_data_ptr->m_subparsers_argument)
+        {
+            throw subparser_positional_conflict("subparser argument already registered");
+        }
 
         auto new_argument = std::make_shared<positional_argument_type>(names);
 
@@ -175,35 +189,105 @@ public:
         return *new_argument;
     }
 
+    subparser_argument_type& add_subparsers(const string_type& name)
+    {
+        auto names = { name };
+
+        check_names(names);
+        if (m_data_ptr->m_subparsers_argument)
+        {
+            throw subparser_positional_conflict("subparser already registered");
+        }
+        if (!m_data_ptr->m_positional_arguments.empty())
+        {
+            throw subparser_positional_conflict("positional arguments already registered");
+        }
+
+        auto new_argument = std::make_shared<subparser_argument_type>(names);
+
+        add_to_names_repository(new_argument);
+        m_data_ptr->m_subparsers_argument = new_argument;
+
+        return *new_argument;
+    }
+
     results_type parse(int argc, char_type* argv[], values_storage_type& values_storage = get_null_storage()) const
     {
-        return parse(argument_table_type(argc, argv), values_storage);
+        return parse_internal(argument_table_type(argc, argv), values_storage);
     }
 
     results_type parse(
         int argc, const char_type* argv[], values_storage_type& values_storage = get_null_storage()) const
     {
-        return parse(argument_table_type(argc, argv), values_storage);
+        return parse_internal(argument_table_type(argc, argv), values_storage);
     }
 
     results_type parse(
         const argument_table_type& arg_table, values_storage_type& values_storage = get_null_storage()) const
     {
-        auto results_data_ptr = std::make_shared<results_data_type>(m_data_ptr);
+        return parse_internal(arg_table, values_storage);
+    }
+
+private:
+    using argument_table_iterator = basic_argument_table_iterator<char_type>;
+    using argument_ptr_type = std::shared_ptr<argument_type>;
+    using parser_data_type = internal::basic_parser_data<char_type, values_storage_type>;
+    using parser_data_ptr_type = std::shared_ptr<parser_data_type>;
+    using results_data_type = internal::basic_results_data<char_type>;
+    using results_data_ptr_type = std::shared_ptr<results_data_type>;
+
+    void fill_results_data_names(const string_type& prefix, const results_data_ptr_type& results_data_ptr) const
+    {
+        for (auto& iter : m_data_ptr->m_names_repository)
+        {
+            results_data_ptr->add_name(prefix + iter.first, iter.second);
+        }
+
+        if (!m_data_ptr->m_subparsers_argument)
+        {
+            return;
+        }
+
+        for (auto& subparser_item : m_data_ptr->m_subparsers_argument->get_parsers())
+        {
+            auto new_prefix = prefix + subparser_item.first + char_type(' ');
+
+            subparser_item.second->fill_results_data_names(new_prefix, results_data_ptr);
+        }
+    }
+
+    results_type parse_internal(const argument_table_type& arg_table, values_storage_type& values_storage) const
+    {
+        auto results_data_ptr = std::make_shared<results_data_type>();
+
+        fill_results_data_names(string_type(), results_data_ptr);
 
         results_data_ptr->set_app_name(arg_table.get_app_name());
 
-        if (arg_table.get_argument_count() == 1)
+        argument_table_iterator input_iterator(arg_table);
+
+        return parse_internal(results_data_ptr, values_storage, input_iterator);
+    }
+
+    results_type parse_internal(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+        argument_table_iterator& input_iterator) const
+    {
+        if (input_iterator.get_remaining_count() == 1)
         {
-            if (parse_exclusive(arg_table.get_argument(0), results_data_ptr, values_storage))
+            if (parse_exclusive_argument(results_data_ptr, values_storage, input_iterator.peek_next()))
             {
                 return results_type(results_data_ptr);
             }
         }
 
-        argument_table_iterator input_iterator(arg_table);
-        parse_named_arguments(input_iterator, values_storage, results_data_ptr);
-        parse_positional_arguments(input_iterator, values_storage, results_data_ptr);
+        parse_named_arguments(values_storage, results_data_ptr, input_iterator);
+        if (m_data_ptr->m_subparsers_argument)
+        {
+            return parse_subparsers_argument(values_storage, results_data_ptr, input_iterator);
+        }
+
+        parse_positional_arguments(values_storage, results_data_ptr, input_iterator);
+
         if (input_iterator.has_more())
         {
             throw parser_error_ex<char_type>(
@@ -215,14 +299,6 @@ public:
 
         return results_type(results_data_ptr);
     }
-
-private:
-    using argument_table_iterator = basic_argument_table_iterator<char_type>;
-    using argument_ptr_type = std::shared_ptr<argument_type>;
-    using parser_data_type = internal::basic_parser_data<char_type, values_storage_type>;
-    using parser_data_ptr_type = std::shared_ptr<parser_data_type>;
-    using results_data_type = internal::basic_results_data<char_type>;
-    using results_data_ptr_type = std::shared_ptr<results_data_type>;
 
     static void parse_argument_value(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
         const argument_ptr_type& argument, const string_type& arg_name, const string_type& value_str)
@@ -285,8 +361,8 @@ private:
         }
     }
 
-    bool parse_exclusive(const string_type& arg_name, const results_data_ptr_type& results_data_ptr,
-        values_storage_type& values_storage) const
+    bool parse_exclusive_argument(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+        const string_type& arg_name) const
     {
         auto arg_iter = m_data_ptr->m_names_repository.find(arg_name);
         if (arg_iter == m_data_ptr->m_names_repository.end())
@@ -400,8 +476,8 @@ private:
         }
     }
 
-    void parse_named_arguments(argument_table_iterator& input_iterator, values_storage_type& values_storage,
-        const results_data_ptr_type& results_data_ptr) const
+    void parse_named_arguments(values_storage_type& values_storage, const results_data_ptr_type& results_data_ptr,
+        argument_table_iterator& input_iterator) const
     {
         while (input_iterator.has_more())
         {
@@ -412,8 +488,32 @@ private:
         }
     }
 
-    void parse_positional_arguments(argument_table_iterator& input_iterator, values_storage_type& values_storage,
-        const results_data_ptr_type& results_data_ptr) const
+    results_type parse_subparsers_argument(values_storage_type& values_storage,
+        const results_data_ptr_type& results_data_ptr, argument_table_iterator& input_iterator) const
+    {
+        auto& name = m_data_ptr->m_subparsers_argument->get_names()[0];
+
+        if (!input_iterator.has_more())
+        {
+            throw parser_error_ex<char_type>(parser_error_code::SUBPARSER_NAME_MISSING, name, string_type());
+        }
+
+        auto& argument = m_data_ptr->m_subparsers_argument;
+        auto& value_str = input_iterator.take_next();
+
+        auto subparser = argument->get_parser(value_str);
+        if (!subparser)
+        {
+            throw parser_error_ex<char_type>(parser_error_code::SUBPARSER_NOT_FOUND, name, string_type());
+        }
+
+        parse_argument_value(results_data_ptr, values_storage, argument, argument->get_names()[0], value_str);
+
+        return subparser->parse_internal(results_data_ptr, values_storage, input_iterator);
+    }
+
+    void parse_positional_arguments(values_storage_type& values_storage, const results_data_ptr_type& results_data_ptr,
+        argument_table_iterator& input_iterator) const
     {
         for (auto& argument : m_data_ptr->m_positional_arguments)
         {
@@ -531,7 +631,7 @@ private:
         return null_storage;
     }
 
-    const parser_data_ptr_type m_data_ptr;
+    parser_data_ptr_type m_data_ptr;
 };
 
 } // namespace args

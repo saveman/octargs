@@ -11,10 +11,10 @@ function(add_gtest_test)
     )
 
     add_executable(${ADD_TEST_ARGS_NAME})
+
     target_sources(${ADD_TEST_ARGS_NAME}
         PRIVATE
             ${ADD_TEST_ARGS_SOURCES}
-            gtest_runner.cpp
     )
     target_include_directories(${ADD_TEST_ARGS_NAME}
         PRIVATE
@@ -22,7 +22,7 @@ function(add_gtest_test)
     )
     target_link_libraries(${ADD_TEST_ARGS_NAME}
         PRIVATE
-            gtest
+            gtest_main
     )
     target_compile_features(${ADD_TEST_ARGS_NAME} PUBLIC cxx_std_11)
 
@@ -54,6 +54,7 @@ add_gtest_test_basic(NAME parser_usage_test)
 add_gtest_test_basic(NAME positional_args_test)
 add_gtest_test_basic(NAME storage_args_test)
 add_gtest_test_basic(NAME string_utils_test)
+add_gtest_test_basic(NAME subparser_test)
 add_gtest_test_basic(NAME switch_args_test)
 add_gtest_test_basic(NAME valued_args_test)
 add_gtest_test_basic(NAME wchar_test)

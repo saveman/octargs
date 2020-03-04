@@ -85,6 +85,11 @@ public:
         // noop
     }
 
+    std::size_t get_remaining_count() const
+    {
+        return m_arg_count - m_arg_index;
+    }
+
     bool has_more() const
     {
         return m_arg_index < m_arg_count;

@@ -51,12 +51,12 @@ public:
         {
             oct::args::parser arg_parser;
 
-            arg_parser.set_info_header(std::string("Print the first ") + std::to_string(DEFAULT_LINES_LIMIT)
-                + "lines of each FILE to standard output.\n\n"
-                  "With no FILE, or when FILE is -, read standard input.");
-            arg_parser.set_info_footer("NUM may have a multiplier suffix:\n"
-                                       "b 512, kB 1000, K 1024, MB 1000*1000, M 1024*1024,\n"
-                                       "GB 1000*1000*1000, G 1024*1024*1024");
+            arg_parser.set_usage_oneliner(std::string("Print the first ") + std::to_string(DEFAULT_LINES_LIMIT)
+                + "lines of each FILE to standard output.");
+            arg_parser.set_usage_header("With no FILE, or when FILE is -, read standard input.");
+            arg_parser.set_usage_footer("NUM may have a multiplier suffix:\n"
+                                        "b 512, kB 1000, K 1024, MB 1000*1000, M 1024*1024,\n"
+                                        "GB 1000*1000*1000, G 1024*1024*1024");
 
             arg_parser.add_exclusive({ "--help" }).set_description("display this help and exit");
             arg_parser.add_valued({ "-b", "--bytes" }).set_description("number of bytes to print").set_value_name("B");

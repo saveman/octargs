@@ -149,6 +149,18 @@ private:
     basic_shared_string<char_type> m_name;
 };
 
+//---------------------------------
+
+class subparser_positional_conflict : public std::logic_error
+{
+public:
+    explicit subparser_positional_conflict(const std::string& message)
+        : std::logic_error(message)
+    {
+        // noop
+    }
+};
+
 } // namespace args
 } // namespace oct
 

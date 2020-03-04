@@ -62,6 +62,7 @@ public:
         usage.print_header(os);
         usage.print_named_arguments(os);
         usage.print_positional_arguments(os);
+        usage.print_subparsers(os);
 
         usage.print_footer(os);
 
@@ -80,9 +81,15 @@ private:
 
     using arg_info_vector = std::vector<arg_info>;
 
+    bool has_args() const
+    {
+        return !m_data_ptr->m_named_arguments.empty() || !m_data_ptr->m_positional_arguments.empty()
+            || m_data_ptr->m_subparsers_argument;
+    }
+
     void print_usage_line(ostream_type& os) const
     {
-        os << "Usage:";
+        os << m_dictionary->get_string(usage_dictionary_string_key::USAGE_LEAD) << ':';
 
         if (m_data_ptr->m_named_arguments.empty() && m_data_ptr->m_positional_arguments.empty()
             && m_data_ptr->m_exclusive_arguments.empty())
@@ -137,6 +144,30 @@ private:
                 os << "...";
             }
         }
+
+        if (m_data_ptr->m_subparsers_argument)
+        {
+            os << ' ' << '<' << m_data_ptr->m_subparsers_argument->get_names()[0] << '>';
+
+            bool any_args = false;
+
+            for (auto& iter : m_data_ptr->m_subparsers_argument->get_parsers())
+            {
+                auto subusage = iter.second->usage();
+
+                if (subusage.has_args())
+                {
+                    any_args = true;
+                    break;
+                }
+            }
+
+            if (any_args)
+            {
+                os << ' ' << '[' << "ARGS" << ']';
+            }
+        }
+
         os << std::endl;
     }
 
@@ -171,8 +202,8 @@ private:
 
             build_infos(infos);
 
-            output_infos(os, infos,
-                m_dictionary->get_string(usage_dictionary_string_key::USAGE_DEFAULT_NAMED_ARGUMENTS_GROUP_NAME));
+            output_infos(
+                os, infos, m_dictionary->get_string(usage_dictionary_string_key::DEFAULT_NAMED_ARGUMENTS_GROUP_NAME));
         }
     }
 
@@ -191,25 +222,55 @@ private:
             build_infos(infos);
 
             output_infos(os, infos,
-                m_dictionary->get_string(usage_dictionary_string_key::USAGE_DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME));
+                m_dictionary->get_string(usage_dictionary_string_key::DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME));
+        }
+    }
+
+    void print_subparsers(ostream_type& os) const
+    {
+        if (m_data_ptr->m_subparsers_argument)
+        {
+            os << std::endl;
+            os << m_data_ptr->m_subparsers_argument->get_names()[0] << ':' << std::endl;
+
+            std::size_t longest_name_len = 0;
+            for (auto& iter : m_data_ptr->m_subparsers_argument->get_parsers())
+            {
+                longest_name_len = std::max(longest_name_len, iter.first.size());
+            }
+
+            for (auto& iter : m_data_ptr->m_subparsers_argument->get_parsers())
+            {
+                auto subusage = iter.second->usage();
+
+                auto this_name_len = iter.first.size();
+
+                os << "  " << iter.first << string_type(longest_name_len - this_name_len, ' ') << "  "
+                   << subusage.m_data_ptr->m_usage_oneliner << std::endl;
+            }
         }
     }
 
     void print_header(ostream_type& os) const
     {
-        if (!m_data_ptr->m_info_header.empty())
+        if (!m_data_ptr->m_usage_oneliner.empty())
         {
             os << std::endl;
-            os << m_data_ptr->m_info_header << std::endl;
+            os << m_data_ptr->m_usage_oneliner << std::endl;
+        }
+        if (!m_data_ptr->m_usage_header.empty())
+        {
+            os << std::endl;
+            os << m_data_ptr->m_usage_header << std::endl;
         }
     }
 
     void print_footer(ostream_type& os) const
     {
-        if (!m_data_ptr->m_info_footer.empty())
+        if (!m_data_ptr->m_usage_footer.empty())
         {
             os << std::endl;
-            os << m_data_ptr->m_info_footer << std::endl;
+            os << m_data_ptr->m_usage_footer << std::endl;
         }
     }
 
@@ -232,13 +293,12 @@ private:
                     description += '[';
                     if (argument->get_min_count() == 1)
                     {
-                        description += m_dictionary->get_string(usage_dictionary_string_key::USAGE_DECORATOR_REQUIRED);
+                        description += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_REQUIRED);
                     }
                     else
                     {
-                        description += m_dictionary->get_string(usage_dictionary_string_key::USAGE_DECORATOR_MIN_COUNT);
-                        description
-                            += m_dictionary->get_string(usage_dictionary_string_key::USAGE_DECORATOR_VALUE_SEPARATOR);
+                        description += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_MIN_COUNT);
+                        description += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_VALUE_SEPARATOR);
                         description += string_utils_type::to_string(argument->get_min_count());
                     }
                     description += ']';
@@ -253,18 +313,43 @@ private:
                     description += '[';
                     if (argument->is_max_count_unlimited())
                     {
-                        description += m_dictionary->get_string(
-                            usage_dictionary_string_key::USAGE_DECORATOR_MAX_COUNT_UNLIMITED);
+                        description
+                            += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_MAX_COUNT_UNLIMITED);
                     }
                     else
                     {
-                        description += m_dictionary->get_string(usage_dictionary_string_key::USAGE_DECORATOR_MAX_COUNT);
-                        description
-                            += m_dictionary->get_string(usage_dictionary_string_key::USAGE_DECORATOR_VALUE_SEPARATOR);
+                        description += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_MAX_COUNT);
+                        description += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_VALUE_SEPARATOR);
                         description += string_utils_type::to_string(argument->get_max_count());
                     }
                     description += ']';
                 }
+            }
+
+            auto& default_values = argument->get_default_values();
+            if (!default_values.empty())
+            {
+                if (!description.empty())
+                {
+                    description += '\n';
+                }
+                bool first = true;
+                description += '[';
+                description += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_DEFAULT);
+                description += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_VALUE_SEPARATOR);
+                for (auto& value : default_values)
+                {
+                    if (first)
+                    {
+                        first = false;
+                    }
+                    else
+                    {
+                        description += ' ';
+                    }
+                    description += value;
+                }
+                description += ']';
             }
         }
 

@@ -1,8 +1,9 @@
 #ifndef OCTARGS_RESULTS_DATA_HPP_
 #define OCTARGS_RESULTS_DATA_HPP_
 
+#include <map>
+
 #include "../exception.hpp"
-#include "parser_data.hpp"
 
 namespace oct
 {
@@ -23,12 +24,9 @@ public:
     using argument_tag_type = basic_argument_tag;
     using argument_tag_ptr_type = std::shared_ptr<argument_tag_type>;
 
-    using parser_data_iface_type = basic_parser_data_iface<char_type>;
-    using parser_data_iface_ptr_type = std::shared_ptr<parser_data_iface_type>;
-
-    basic_results_data(parser_data_iface_ptr_type parser_data_ptr)
-        : m_parser_data_iface_ptr(parser_data_ptr)
-        , m_app_name()
+    basic_results_data()
+        : m_app_name()
+        , m_names_repository()
         , m_argument_values()
     {
         // noop
@@ -77,13 +75,13 @@ public:
 
     argument_tag_ptr_type find_argument(const string_type& arg_name) const
     {
-        auto arg_ptr = m_parser_data_iface_ptr->find_argument(arg_name);
-        if (!arg_ptr)
+        auto name_arg_iter = m_names_repository.find(arg_name);
+        if (name_arg_iter == m_names_repository.end())
         {
             throw unknown_argument_ex<char_type>(arg_name);
         }
 
-        return arg_ptr;
+        return name_arg_iter->second;
     }
 
     std::size_t count(const string_type& arg_name) const
@@ -114,6 +112,11 @@ public:
         }
     }
 
+    void add_name(const string_type& name, argument_tag_ptr_type tag)
+    {
+        m_names_repository.emplace(name, tag);
+    }
+
 private:
     static const string_vector_type& get_empty_values()
     {
@@ -121,9 +124,8 @@ private:
         return EMPTY_VALUES;
     }
 
-    const parser_data_iface_ptr_type m_parser_data_iface_ptr;
-
     string_type m_app_name;
+    std::map<string_type, argument_tag_ptr_type> m_names_repository;
     std::map<argument_tag_ptr_type, string_vector_type> m_argument_values;
 };
 

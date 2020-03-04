@@ -20,10 +20,8 @@ void test_stox()
     long long max_value = limits_type::max();
 
     ASSERT_EQ(value_type(0), (internal::stox<string_type, value_type>(std::string("0"), nullptr, 0)));
-    ASSERT_EQ(
-        value_type(min_value), (internal::stox<string_type, value_type>(std::to_string(min_value), nullptr, 0)));
-    ASSERT_EQ(
-        value_type(max_value), (internal::stox<string_type, value_type>(std::to_string(max_value), nullptr, 0)));
+    ASSERT_EQ(value_type(min_value), (internal::stox<string_type, value_type>(std::to_string(min_value), nullptr, 0)));
+    ASSERT_EQ(value_type(max_value), (internal::stox<string_type, value_type>(std::to_string(max_value), nullptr, 0)));
 
     ASSERT_THROW(
         (internal::stox<string_type, value_type>(std::to_string(min_value - 1), nullptr, 0)), std::out_of_range);

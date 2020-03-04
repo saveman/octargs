@@ -39,7 +39,6 @@ rebuild_and_test ()
         -DBUILD_TESTS=True \
         -DBUILD_EXAMPLES=False \
         -DENABLE_COVERAGE=False \
-        -DINSTALL_GTEST=False \
         "${SOURCE_DIR}"
     cmake --build . -- all -j ${CPUCOUNT}
     cmake --build . -- test
@@ -58,7 +57,6 @@ rebuild_and_package ()
         -DBUILD_TESTS=False \
         -DBUILD_EXAMPLES=False \
         -DENABLE_COVERAGE=False \
-        -DINSTALL_GTEST=False \
         "${SOURCE_DIR}"
     cmake --build . -- all -j ${CPUCOUNT}
     cmake --build . -- install
@@ -74,7 +72,6 @@ verify_install ()
         -DCMAKE_BUILD_TYPE=Release \
         -DOCTARGS_ROOT_DIR="${INSTALL_DIR}" \
         -DSTANDALONE_EXAMPLES_BUILD=True \
-        -DINSTALL_GTEST=False \
         "${SOURCE_DIR}"
     cmake --build . -- all -j ${CPUCOUNT}
     popd

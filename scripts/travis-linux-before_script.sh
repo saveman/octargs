@@ -18,7 +18,6 @@ pushd build/debug
 /usr/bin/cmake \
     -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/../../install/debug \
     -DCMAKE_BUILD_TYPE=Debug \
-    -DINSTALL_GTEST=False \
     ../..
 popd
 
@@ -26,6 +25,5 @@ pushd build/release
 /usr/bin/cmake \
     -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/../../install/release \
     -DCMAKE_BUILD_TYPE=Release \
-    -DINSTALL_GTEST=False \
     ../..
 popd

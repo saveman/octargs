@@ -22,13 +22,15 @@ public:
 
 enum class usage_dictionary_string_key
 {
-    USAGE_DEFAULT_NAMED_ARGUMENTS_GROUP_NAME,
-    USAGE_DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME,
-    USAGE_DECORATOR_REQUIRED,
-    USAGE_DECORATOR_MIN_COUNT,
-    USAGE_DECORATOR_MAX_COUNT,
-    USAGE_DECORATOR_MAX_COUNT_UNLIMITED,
-    USAGE_DECORATOR_VALUE_SEPARATOR,
+    USAGE_LEAD,
+    DEFAULT_NAMED_ARGUMENTS_GROUP_NAME,
+    DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME,
+    DECORATOR_REQUIRED,
+    DECORATOR_MIN_COUNT,
+    DECORATOR_MAX_COUNT,
+    DECORATOR_MAX_COUNT_UNLIMITED,
+    DECORATOR_VALUE_SEPARATOR,
+    DECORATOR_DEFAULT,
 };
 
 template <typename CHAR_TYPE>
@@ -55,13 +57,15 @@ public:
     const string_type& get_string(usage_dictionary_string_key key) override
     {
         static const std::map<usage_dictionary_string_key, string_type> DICTIONARY = {
-            { usage_dictionary_string_key::USAGE_DEFAULT_NAMED_ARGUMENTS_GROUP_NAME, "Options" },
-            { usage_dictionary_string_key::USAGE_DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME, "Arguments" },
-            { usage_dictionary_string_key::USAGE_DECORATOR_REQUIRED, "required" },
-            { usage_dictionary_string_key::USAGE_DECORATOR_MIN_COUNT, "min" },
-            { usage_dictionary_string_key::USAGE_DECORATOR_MAX_COUNT, "max" },
-            { usage_dictionary_string_key::USAGE_DECORATOR_MAX_COUNT_UNLIMITED, "unlimited" },
-            { usage_dictionary_string_key::USAGE_DECORATOR_VALUE_SEPARATOR, ": " },
+            { usage_dictionary_string_key::USAGE_LEAD, "Usage" },
+            { usage_dictionary_string_key::DEFAULT_NAMED_ARGUMENTS_GROUP_NAME, "Options" },
+            { usage_dictionary_string_key::DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME, "Arguments" },
+            { usage_dictionary_string_key::DECORATOR_REQUIRED, "required" },
+            { usage_dictionary_string_key::DECORATOR_MIN_COUNT, "min" },
+            { usage_dictionary_string_key::DECORATOR_MAX_COUNT, "max" },
+            { usage_dictionary_string_key::DECORATOR_MAX_COUNT_UNLIMITED, "unlimited" },
+            { usage_dictionary_string_key::DECORATOR_VALUE_SEPARATOR, ": " },
+            { usage_dictionary_string_key::DECORATOR_DEFAULT, "default" },
         };
         auto iter = DICTIONARY.find(key);
         if (iter != DICTIONARY.end())
@@ -79,13 +83,15 @@ public:
     const string_type& get_string(usage_dictionary_string_key key) override
     {
         static const std::map<usage_dictionary_string_key, string_type> DICTIONARY = {
-            { usage_dictionary_string_key::USAGE_DEFAULT_NAMED_ARGUMENTS_GROUP_NAME, L"Options" },
-            { usage_dictionary_string_key::USAGE_DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME, L"Arguments" },
-            { usage_dictionary_string_key::USAGE_DECORATOR_REQUIRED, L"required" },
-            { usage_dictionary_string_key::USAGE_DECORATOR_MIN_COUNT, L"min" },
-            { usage_dictionary_string_key::USAGE_DECORATOR_MAX_COUNT, L"max" },
-            { usage_dictionary_string_key::USAGE_DECORATOR_MAX_COUNT_UNLIMITED, L"unlimited" },
-            { usage_dictionary_string_key::USAGE_DECORATOR_VALUE_SEPARATOR, L": " },
+            { usage_dictionary_string_key::USAGE_LEAD, L"Usage" },
+            { usage_dictionary_string_key::DEFAULT_NAMED_ARGUMENTS_GROUP_NAME, L"Options" },
+            { usage_dictionary_string_key::DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME, L"Arguments" },
+            { usage_dictionary_string_key::DECORATOR_REQUIRED, L"required" },
+            { usage_dictionary_string_key::DECORATOR_MIN_COUNT, L"min" },
+            { usage_dictionary_string_key::DECORATOR_MAX_COUNT, L"max" },
+            { usage_dictionary_string_key::DECORATOR_MAX_COUNT_UNLIMITED, L"unlimited" },
+            { usage_dictionary_string_key::DECORATOR_VALUE_SEPARATOR, L": " },
+            { usage_dictionary_string_key::DECORATOR_DEFAULT, L"default" },
         };
         auto iter = DICTIONARY.find(key);
         if (iter != DICTIONARY.end())

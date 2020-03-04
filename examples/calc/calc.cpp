@@ -103,11 +103,11 @@ public:
         {
             oct::args::parser arg_parser;
 
-            arg_parser.set_info_header(
-                "Simple calculator application\n\nPerforms requested operation on given values.");
+            arg_parser.set_usage_oneliner("Simple calculator application");
+            arg_parser.set_usage_header("Performs requested operation on given values.");
 
             arg_parser.add_exclusive({ "--help" }).set_description("display this help and exit");
-            // TODO: change when support for 'allowed values' is added
+            // TODO: change help when support for 'allowed values' is added
             arg_parser.add_valued({ "-o", "--oper", "--operation" })
                 .set_description("operation to perform (sum, mul, min, max), default: sum")
                 .set_min_count(1)

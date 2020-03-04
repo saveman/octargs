@@ -33,8 +33,9 @@ if (ENABLE_COVERAGE AND NOT WIN32)
         # DEPENDENCIES ${PROJECT_NAME}::${PROJECT_NAME} # Dependencies to build first
         # BASE_DIRECTORY "./"                           # Base directory for report
         #                                               #  (defaults to PROJECT_SOURCE_DIR)
-        # EXCLUDE "src/dir1/*" "src/dir2/*"             # Patterns to exclude (can be relative
-        #                                               #  to BASE_DIRECTORY, with CMake 3.4+)
+        EXCLUDE                                         # Patterns to exclude (can be relative
+                                                        # to BASE_DIRECTORY, with CMake 3.4+)
+            "3rdparty/*"
     )
 endif()
 
@@ -68,6 +69,7 @@ set(${PROJECT_NAME}_HEADERS
     include/octargs/positional_argument.hpp
     include/octargs/parser_dictionary.hpp
     include/octargs/results.hpp
+    include/octargs/subparser_argument.hpp
     include/octargs/switch_argument.hpp
     include/octargs/usage_dictionary.hpp
     include/octargs/usage.hpp

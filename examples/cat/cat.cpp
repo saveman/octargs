@@ -148,12 +148,11 @@ public:
 
         try
         {
-            arg_parser
-                .set_info_header("Concatenate FILE(s) to standard output.\n\n"
-                                 "With no FILE, or when FILE is -, read standard input.")
-                .set_info_footer("Examples:\n"
-                                 "cat f - g  Output f's contents, then standard input, then g's contents.\n"
-                                 "cat        Copy standard input to standard output.");
+            arg_parser.set_usage_oneliner("Concatenate FILE(s) to standard output.")
+                .set_usage_header("With no FILE, or when FILE is -, read standard input.")
+                .set_usage_footer("Examples:\n"
+                                  "cat f - g  Output f's contents, then standard input, then g's contents.\n"
+                                  "cat        Copy standard input to standard output.");
             arg_parser.add_exclusive({ "--help" })
                 .set_description("show help information")
                 .set_type_and_storage(&cat_app_settings::m_help_requested);
