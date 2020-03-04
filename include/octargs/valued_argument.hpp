@@ -40,6 +40,11 @@ public:
         return base_type::set_default_values_internal({ value });
     }
 
+    basic_valued_argument& set_allowed_values(const string_vector_type& values)
+    {
+        return base_type::set_allowed_values_internal(values);
+    }
+
     basic_valued_argument& set_value_name(const string_type& name)
     {
         return base_type::set_value_name_internal(name);

@@ -345,6 +345,34 @@ private:
                     }
                     else
                     {
+                        description += ',';
+                        description += ' ';
+                    }
+                    description += value;
+                }
+                description += ']';
+            }
+
+            auto& allowed_values = argument->get_allowed_values();
+            if (!allowed_values.empty())
+            {
+                if (!description.empty())
+                {
+                    description += '\n';
+                }
+                bool first = true;
+                description += '[';
+                description += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_ALLOWED);
+                description += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_VALUE_SEPARATOR);
+                for (auto& value : allowed_values)
+                {
+                    if (first)
+                    {
+                        first = false;
+                    }
+                    else
+                    {
+                        description += ',';
                         description += ' ';
                     }
                     description += value;

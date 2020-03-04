@@ -65,6 +65,11 @@ public:
         return m_default_values;
     }
 
+    const string_vector_type& get_allowed_values() const final
+    {
+        return m_allowed_values;
+    }
+
     std::size_t get_min_count() const final
     {
         return m_min_count;
@@ -132,6 +137,7 @@ protected:
         , m_min_count(0)
         , m_max_count(1)
         , m_default_values()
+        , m_allowed_values()
         , m_handler_ptr()
     {
         // noop
@@ -140,6 +146,12 @@ protected:
     derived_type& set_default_values_internal(const string_vector_type& values)
     {
         m_default_values = values;
+        return cast_this_to_derived();
+    }
+
+    derived_type& set_allowed_values_internal(const string_vector_type& values)
+    {
+        m_allowed_values = values;
         return cast_this_to_derived();
     }
 
@@ -189,8 +201,10 @@ private:
     std::size_t m_min_count;
     /// Maximum number of occurrences in input.
     std::size_t m_max_count;
-    /// Defaults values.
+    /// Default values.
     string_vector_type m_default_values;
+    /// Allowed values.
+    string_vector_type m_allowed_values;
     /// Values storage handler.
     handler_ptr_type m_handler_ptr;
 };

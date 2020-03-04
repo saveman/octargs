@@ -39,6 +39,11 @@ public:
         return base_type::set_default_values_internal({ value });
     }
 
+    basic_positional_argument& set_allowed_values(const string_vector_type& values)
+    {
+        return base_type::set_allowed_values_internal(values);
+    }
+
     basic_positional_argument& set_min_count(std::size_t count)
     {
         return base_type::set_min_count(count);

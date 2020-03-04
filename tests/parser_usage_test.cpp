@@ -51,8 +51,14 @@ TEST(parser_usage_test, test_example)
     parser.set_usage_footer("FOOTER");
     parser.add_switch({ "-n" }).set_description("the n!");
     parser.add_valued({ "-k" }).set_description("the k!");
+    parser.add_valued({ "-p" })
+        .set_description("the p!")
+        .set_min_count(1)
+        .set_max_count(3)
+        .set_default_values({ "a", "b" })
+        .set_allowed_values({ "a", "b", "c", "de", "ef" });
     parser.add_switch({ "-a", "-b" }).set_description("the ab!");
-    parser.add_valued({ "-x", "--thex" }).set_description("the\nmulti\nline!");
+    parser.add_valued({ "-x", "--thex" }).set_description("the\nmulti\nline!").set_min_count(1);
     parser.add_valued({ "-y", "--they" })
         .set_description("the\nmulti\nline!")
         .set_min_count(2)
@@ -75,10 +81,15 @@ TEST(parser_usage_test, test_example)
         "Options:",
         "  -n                    the n!",
         "  -k                    the k!",
+        "  -p                    the p!",
+        "                          [max: 3]",
+        "                          [default: a, b]",
+        "                          [allowed: a, b, c, de, ef]",
         "  -a, -b                the ab!",
         "  -x,    --thex         the",
         "                          multi",
         "                          line!",
+        "                          [required]",
         "  -y,    --they=VAL     the",
         "                          multi",
         "                          line!",

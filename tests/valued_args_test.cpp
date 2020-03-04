@@ -316,5 +316,25 @@ TEST(valued_args_test, test_min_max_count)
     ASSERT_THROW(parser.parse(args), parser_error);
 }
 
+TEST(valued_args_test, test_allowed_values)
+{
+    parser parser;
+    parser.add_valued({ "-v" }).set_allowed_values({ "a", "b", "c" });
+
+    auto results1 = parser.parse(argument_table("app", { "-v", "a" }));
+    ASSERT_EQ(std::size_t(1), results1.count("-v"));
+    ASSERT_EQ(std::string("a"), results1.values("-v")[0]);
+
+    auto results2 = parser.parse(argument_table("app", { "-v", "b" }));
+    ASSERT_EQ(std::size_t(1), results2.count("-v"));
+    ASSERT_EQ(std::string("b"), results2.values("-v")[0]);
+
+    auto results3 = parser.parse(argument_table("app", { "-v", "c" }));
+    ASSERT_EQ(std::size_t(1), results3.count("-v"));
+    ASSERT_EQ(std::string("c"), results3.values("-v")[0]);
+
+    ASSERT_THROW(parser.parse(argument_table("app", { "-v", "d" })), parser_error);
+}
+
 } // namespace args
 } // namespace oct

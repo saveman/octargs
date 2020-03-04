@@ -107,15 +107,15 @@ public:
             arg_parser.set_usage_header("Performs requested operation on given values.");
 
             arg_parser.add_exclusive({ "--help" }).set_description("display this help and exit");
-            // TODO: change help when support for 'allowed values' is added
             arg_parser.add_valued({ "-o", "--oper", "--operation" })
-                .set_description("operation to perform (sum, mul, min, max), default: sum")
+                .set_description("operation to perform")
                 .set_min_count(1)
                 .set_default_value("sum")
-                .set_type<operation_code, operation_code_converter>();
+                .set_allowed_values({ "sum", "mul", "min", "max" });
             arg_parser.add_valued({ "-t", "--type" })
-                .set_description("operand type (int, float, double), default: int")
+                .set_description("operand type")
                 .set_min_count(1)
+                .set_allowed_values({ "int", "float", "double" })
                 .set_default_value("int");
             arg_parser.add_positional("OPERANDS")
                 .set_description("values on which operations will be performed")

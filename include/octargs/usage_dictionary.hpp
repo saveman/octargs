@@ -31,6 +31,7 @@ enum class usage_dictionary_string_key
     DECORATOR_MAX_COUNT_UNLIMITED,
     DECORATOR_VALUE_SEPARATOR,
     DECORATOR_DEFAULT,
+    DECORATOR_ALLOWED,
 };
 
 template <typename CHAR_TYPE>
@@ -66,6 +67,7 @@ public:
             { usage_dictionary_string_key::DECORATOR_MAX_COUNT_UNLIMITED, "unlimited" },
             { usage_dictionary_string_key::DECORATOR_VALUE_SEPARATOR, ": " },
             { usage_dictionary_string_key::DECORATOR_DEFAULT, "default" },
+            { usage_dictionary_string_key::DECORATOR_ALLOWED, "allowed" },
         };
         auto iter = DICTIONARY.find(key);
         if (iter != DICTIONARY.end())
@@ -92,6 +94,7 @@ public:
             { usage_dictionary_string_key::DECORATOR_MAX_COUNT_UNLIMITED, L"unlimited" },
             { usage_dictionary_string_key::DECORATOR_VALUE_SEPARATOR, L": " },
             { usage_dictionary_string_key::DECORATOR_DEFAULT, L"default" },
+            { usage_dictionary_string_key::DECORATOR_ALLOWED, L"allowed" },
         };
         auto iter = DICTIONARY.find(key);
         if (iter != DICTIONARY.end())

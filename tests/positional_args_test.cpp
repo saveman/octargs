@@ -358,5 +358,25 @@ TEST(positional_args_test, test_min_max_count)
     ASSERT_EQ(std::string("value5"), results.values("files")[1]);
 }
 
+TEST(positional_args_test, test_allowed_values)
+{
+    parser parser;
+    parser.add_positional("value").set_allowed_values({ "a", "b", "c" });
+
+    auto results1 = parser.parse(argument_table("app", { "a" }));
+    ASSERT_EQ(std::size_t(1), results1.count("value"));
+    ASSERT_EQ(std::string("a"), results1.values("value")[0]);
+
+    auto results2 = parser.parse(argument_table("app", { "b" }));
+    ASSERT_EQ(std::size_t(1), results2.count("value"));
+    ASSERT_EQ(std::string("b"), results2.values("value")[0]);
+
+    auto results3 = parser.parse(argument_table("app", { "c" }));
+    ASSERT_EQ(std::size_t(1), results3.count("value"));
+    ASSERT_EQ(std::string("c"), results3.values("value")[0]);
+
+    ASSERT_THROW(parser.parse(argument_table("app", { "d" })), parser_error);
+}
+
 } // namespace args
 } // namespace oct

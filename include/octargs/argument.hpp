@@ -34,6 +34,8 @@ public:
 
     virtual const string_vector_type& get_default_values() const = 0;
 
+    virtual const string_vector_type& get_allowed_values() const = 0;
+
     virtual std::size_t get_min_count() const = 0;
 
     virtual std::size_t get_max_count() const = 0;

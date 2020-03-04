@@ -31,7 +31,8 @@ enum class parser_error_code
     UNEXPECTED_VALUE,
     REQUIRED_ARGUMENT_MISSING,
     SUBPARSER_NAME_MISSING,
-    SUBPARSER_NOT_FOUND
+    SUBPARSER_NOT_FOUND,
+    VALUE_NOT_ALLOWED,
 };
 
 class parser_error : public std::runtime_error
@@ -307,6 +308,16 @@ private:
         if (count >= argument->get_max_count())
         {
             throw parser_error_ex<char_type>(parser_error_code::TOO_MANY_OCCURRENCES, arg_name, value_str);
+        }
+
+        // check if the value is among the allowed
+        auto& allowed_values = argument->get_allowed_values();
+        if (!allowed_values.empty())
+        {
+            if (std::find(allowed_values.begin(), allowed_values.end(), value_str) == allowed_values.end())
+            {
+                throw parser_error_ex<char_type>(parser_error_code::VALUE_NOT_ALLOWED, arg_name, value_str);
+            }
         }
 
         // if there is a handler call it first, to make sure the value
