@@ -23,6 +23,7 @@ public:
 enum class usage_dictionary_string_key
 {
     USAGE_LEAD,
+    USAGE_NO_ARGUMENTS,
     DEFAULT_NAMED_ARGUMENTS_GROUP_NAME,
     DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME,
     DECORATOR_REQUIRED,
@@ -59,6 +60,7 @@ public:
     {
         static const std::map<usage_dictionary_string_key, string_type> DICTIONARY = {
             { usage_dictionary_string_key::USAGE_LEAD, "Usage" },
+            { usage_dictionary_string_key::USAGE_NO_ARGUMENTS, "(no arguments available)" },
             { usage_dictionary_string_key::DEFAULT_NAMED_ARGUMENTS_GROUP_NAME, "Options" },
             { usage_dictionary_string_key::DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME, "Arguments" },
             { usage_dictionary_string_key::DECORATOR_REQUIRED, "required" },
@@ -86,6 +88,7 @@ public:
     {
         static const std::map<usage_dictionary_string_key, string_type> DICTIONARY = {
             { usage_dictionary_string_key::USAGE_LEAD, L"Usage" },
+            { usage_dictionary_string_key::USAGE_NO_ARGUMENTS, L"(no arguments available)" },
             { usage_dictionary_string_key::DEFAULT_NAMED_ARGUMENTS_GROUP_NAME, L"Options" },
             { usage_dictionary_string_key::DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME, L"Arguments" },
             { usage_dictionary_string_key::DECORATOR_REQUIRED, L"required" },

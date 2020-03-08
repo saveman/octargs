@@ -49,6 +49,7 @@ target_include_directories(${PROJECT_NAME}
 
 set(${PROJECT_NAME}_HEADERS_INTERNAL
     include/octargs/internal/argument_handler.hpp
+    include/octargs/internal/argument_repository.hpp
     include/octargs/internal/char_utils.hpp
     include/octargs/internal/misc.hpp
     include/octargs/internal/parser_data.hpp
@@ -58,6 +59,7 @@ set(${PROJECT_NAME}_HEADERS_INTERNAL
 
 set(${PROJECT_NAME}_HEADERS
     include/octargs/argument_base.hpp
+    include/octargs/argument_group.hpp
     include/octargs/argument_table.hpp
     include/octargs/argument_type_handler.hpp
     include/octargs/argument.hpp

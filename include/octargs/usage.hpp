@@ -63,7 +63,6 @@ public:
         usage.print_named_arguments(os);
         usage.print_positional_arguments(os);
         usage.print_subparsers(os);
-
         usage.print_footer(os);
 
         return os;
@@ -79,59 +78,100 @@ private:
         string_type m_text;
     };
 
+    enum class arg_type
+    {
+        ALL,
+        NAMED_ONLY,
+        POSITIONAL_ONLY,
+    };
+
     using arg_info_vector = std::vector<arg_info>;
 
     bool has_args() const
     {
-        return !m_data_ptr->m_named_arguments.empty() || !m_data_ptr->m_positional_arguments.empty()
-            || m_data_ptr->m_subparsers_argument;
+        return !m_data_ptr->m_argument_repository.m_arguments.empty()
+            || m_data_ptr->m_argument_repository.m_subparsers_argument;
     }
 
     void print_usage_line(ostream_type& os) const
     {
         os << m_dictionary->get_string(usage_dictionary_string_key::USAGE_LEAD) << ':';
 
-        if (m_data_ptr->m_named_arguments.empty() && m_data_ptr->m_positional_arguments.empty()
-            && m_data_ptr->m_exclusive_arguments.empty())
+        if (m_data_ptr->m_argument_repository.m_arguments.empty()
+            && !m_data_ptr->m_argument_repository.m_subparsers_argument)
         {
-            os << " --" << std::endl;
+            os << ' ' << m_dictionary->get_string(usage_dictionary_string_key::USAGE_NO_ARGUMENTS) << std::endl;
             return;
         }
 
-        if (!m_data_ptr->m_named_arguments.empty())
+        print_usage_line_named_args(os);
+        print_usage_line_positional_args(os);
+        print_usage_line_subparser_args(os);
+
+        os << std::endl;
+    }
+
+    void print_usage_line_named_args(ostream_type& os) const
+    {
+        std::size_t argument_count = 0;
+        std::size_t exclusive_count = 0;
+        bool any_required = false;
+        bool multiple_allowed = false;
+
+        for (auto& argument : m_data_ptr->m_argument_repository.m_arguments)
         {
-            bool any_required = false;
-            bool multiple_allowed = false;
+            if (!argument->is_assignable_by_name())
+            {
+                continue;
+            }
 
-            if (m_data_ptr->m_named_arguments.size() > 1)
+            ++argument_count;
+
+            if (argument->is_exclusive())
+            {
+                ++exclusive_count;
+            }
+
+            if (argument->get_max_count() > 1)
             {
                 multiple_allowed = true;
             }
-            else if (m_data_ptr->m_named_arguments[0]->get_max_count() > 1)
-            {
-                multiple_allowed = true;
-            }
 
-            for (auto& argument : m_data_ptr->m_positional_arguments)
+            if (argument->get_min_count() > 0)
             {
-                if (argument->get_min_count() > 0)
-                {
-                    any_required = true;
-                }
-            }
-
-            const char optreq_open_char = any_required ? '<' : '[';
-            const char optreq_close_char = any_required ? '>' : ']';
-
-            os << ' ' << optreq_open_char << "OPTIONS" << optreq_close_char;
-            if (multiple_allowed)
-            {
-                os << "...";
+                any_required = true;
             }
         }
 
-        for (auto& argument : m_data_ptr->m_positional_arguments)
+        if (argument_count == 0)
         {
+            return;
+        }
+
+        if (argument_count - exclusive_count > 1)
+        {
+            multiple_allowed = true;
+        }
+
+        const char optreq_open_char = any_required ? '<' : '[';
+        const char optreq_close_char = any_required ? '>' : ']';
+
+        os << ' ' << optreq_open_char << "OPTIONS" << optreq_close_char;
+        if (multiple_allowed)
+        {
+            os << "...";
+        }
+    }
+
+    void print_usage_line_positional_args(ostream_type& os) const
+    {
+        for (auto& argument : m_data_ptr->m_argument_repository.m_arguments)
+        {
+            if (argument->is_assignable_by_name())
+            {
+                continue;
+            }
+
             bool is_required = (argument->get_min_count() > 0);
             bool multiple_allowed = (argument->get_max_count() > 1);
 
@@ -144,14 +184,17 @@ private:
                 os << "...";
             }
         }
+    }
 
-        if (m_data_ptr->m_subparsers_argument)
+    void print_usage_line_subparser_args(ostream_type& os) const
+    {
+        if (m_data_ptr->m_argument_repository.m_subparsers_argument)
         {
-            os << ' ' << '<' << m_data_ptr->m_subparsers_argument->get_names()[0] << '>';
+            os << ' ' << '<' << m_data_ptr->m_argument_repository.m_subparsers_argument->get_names()[0] << '>';
 
             bool any_args = false;
 
-            for (auto& iter : m_data_ptr->m_subparsers_argument->get_parsers())
+            for (auto& iter : m_data_ptr->m_argument_repository.m_subparsers_argument->get_parsers())
             {
                 auto subusage = iter.second->usage();
 
@@ -167,8 +210,6 @@ private:
                 os << ' ' << '[' << "ARGS" << ']';
             }
         }
-
-        os << std::endl;
     }
 
     static bool is_short_name(const string_type& name)
@@ -185,61 +226,78 @@ private:
 
     void print_named_arguments(ostream_type& os) const
     {
-        if (!m_data_ptr->m_named_arguments.empty())
+        arg_info_vector infos;
+
+        for (auto& argument : m_data_ptr->m_argument_repository.m_arguments)
         {
-            arg_info_vector infos;
-
-            for (auto& argument : m_data_ptr->m_exclusive_arguments)
+            if (!argument->is_assignable_by_name() || !argument->is_exclusive())
             {
-                // cppcheck-suppress useStlAlgorithm
-                infos.push_back(prepare_info(argument, false));
-            }
-            for (auto& argument : m_data_ptr->m_named_arguments)
-            {
-                // cppcheck-suppress useStlAlgorithm
-                infos.push_back(prepare_info(argument, false));
+                continue;
             }
 
-            build_infos(infos);
-
-            output_infos(
-                os, infos, m_dictionary->get_string(usage_dictionary_string_key::DEFAULT_NAMED_ARGUMENTS_GROUP_NAME));
+            infos.push_back(prepare_info(argument, false));
         }
+
+        for (auto& argument : m_data_ptr->m_argument_repository.m_arguments)
+        {
+            if (!argument->is_assignable_by_name() || argument->is_exclusive())
+            {
+                continue;
+            }
+
+            infos.push_back(prepare_info(argument, false));
+        }
+
+        if (infos.empty())
+        {
+            return;
+        }
+
+        build_infos(infos);
+
+        output_infos(
+            os, infos, m_dictionary->get_string(usage_dictionary_string_key::DEFAULT_NAMED_ARGUMENTS_GROUP_NAME));
     }
 
     void print_positional_arguments(ostream_type& os) const
     {
-        if (!m_data_ptr->m_positional_arguments.empty())
-        {
-            arg_info_vector infos;
+        arg_info_vector infos;
 
-            for (auto& argument : m_data_ptr->m_positional_arguments)
+        for (auto& argument : m_data_ptr->m_argument_repository.m_arguments)
+        {
+            if (argument->is_assignable_by_name())
             {
-                // cppcheck-suppress useStlAlgorithm
-                infos.push_back(prepare_info(argument, true));
+                continue;
             }
 
-            build_infos(infos);
-
-            output_infos(os, infos,
-                m_dictionary->get_string(usage_dictionary_string_key::DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME));
+            infos.push_back(prepare_info(argument, true));
         }
+
+        if (infos.empty())
+        {
+            return;
+        }
+
+        build_infos(infos);
+
+        output_infos(
+            os, infos, m_dictionary->get_string(usage_dictionary_string_key::DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME));
     }
 
     void print_subparsers(ostream_type& os) const
     {
-        if (m_data_ptr->m_subparsers_argument)
+        if (m_data_ptr->m_argument_repository.m_subparsers_argument)
         {
             os << std::endl;
-            os << m_data_ptr->m_subparsers_argument->get_names()[0] << ':' << std::endl;
+            os << m_data_ptr->m_argument_repository.m_subparsers_argument->get_names()[0] << ':' << std::endl;
 
             std::size_t longest_name_len = 0;
-            for (auto& iter : m_data_ptr->m_subparsers_argument->get_parsers())
+            for (auto& iter : m_data_ptr->m_argument_repository.m_subparsers_argument->get_parsers())
             {
                 longest_name_len = std::max(longest_name_len, iter.first.size());
             }
 
-            for (auto& iter : m_data_ptr->m_subparsers_argument->get_parsers())
+            for (auto& iter : m_data_ptr->m_argument_repository.m_subparsers_argument->get_parsers())
             {
                 auto subusage = iter.second->usage();
 

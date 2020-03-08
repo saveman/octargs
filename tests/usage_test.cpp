@@ -22,7 +22,7 @@ TEST(parser_usage_test, test_header_footer)
     out_ostream << parser.usage();
 
     const std::vector<std::string> EXPECTED_RESULT_LINES = {
-        "Usage: --",
+        "Usage: (no arguments available)",
         "",
         "This is oneliner",
         "",
@@ -65,6 +65,7 @@ TEST(parser_usage_test, test_example)
         .set_max_count(5)
         .set_value_name("VAL");
     parser.add_switch({ "--ala", "--tola" }).set_description("alatola check my name");
+    parser.add_positional("PATTERN").set_description("Pattern to find").set_min_count(1);
     parser.add_positional("FILES").set_description("Files to process").set_max_count_unlimited();
 
     std::ostringstream out_ostream;
@@ -72,7 +73,7 @@ TEST(parser_usage_test, test_example)
     out_ostream << parser.usage();
 
     const std::vector<std::string> EXPECTED_RESULT_LINES = {
-        "Usage: [OPTIONS]... [FILES]...",
+        "Usage: <OPTIONS>... <PATTERN> [FILES]...",
         "",
         "ONELINER",
         "",
@@ -97,8 +98,10 @@ TEST(parser_usage_test, test_example)
         "         --ala, --tola  alatola check my name",
         "",
         "Arguments:",
-        "  FILES  Files to process",
-        "           [unlimited]",
+        "  PATTERN  Pattern to find",
+        "             [required]",
+        "  FILES    Files to process",
+        "             [unlimited]",
         "",
         "FOOTER",
     };
@@ -134,7 +137,7 @@ TEST(parser_usage_test, test_example_wchar)
     out_ostream << parser.usage();
 
     const std::vector<std::wstring> EXPECTED_RESULT_LINES = {
-        L"Usage: [OPTIONS]... [FILES]...",
+        L"Usage: <OPTIONS>... [FILES]...",
         L"",
         L"ONELINER",
         L"",
