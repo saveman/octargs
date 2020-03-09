@@ -34,7 +34,7 @@ public:
     using string_vector_type = std::vector<string_type>;
 
     using argument_type = basic_argument<char_type, values_storage_type>;
-    using argument_ptr_type = std::shared_ptr<argument_type>;
+    using const_argument_ptr_type = std::shared_ptr<const argument_type>;
 
     using exclusive_argument_type = basic_exclusive_argument<char_type, values_storage_type>;
     using exclusive_argument_ptr_type = std::shared_ptr<exclusive_argument_type>;
@@ -46,6 +46,7 @@ public:
     using positional_argument_ptr_type = std::shared_ptr<positional_argument_type>;
     using subparser_argument_type = basic_subparser_argument<char_type, values_storage_type>;
     using subparser_argument_ptr_type = std::shared_ptr<subparser_argument_type>;
+    using const_subparser_argument_ptr_type = std::shared_ptr<const subparser_argument_type>;
 
     basic_argument_repository()
         : m_arguments()
@@ -223,9 +224,9 @@ private:
     }
 
 public:
-    std::vector<argument_ptr_type> m_arguments;
-    subparser_argument_ptr_type m_subparsers_argument;
-    std::map<string_type, argument_ptr_type> m_names_repository;
+    std::vector<const_argument_ptr_type> m_arguments;
+    const_subparser_argument_ptr_type m_subparsers_argument;
+    std::map<string_type, const_argument_ptr_type> m_names_repository;
 };
 
 } // namespace internal

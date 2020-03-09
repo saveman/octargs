@@ -23,9 +23,9 @@ public:
     using argument_table_type = basic_argument_table<char_type>;
 
     using results_data_type = internal::basic_results_data<char_type>;
-    using results_data_ptr_type = std::shared_ptr<const results_data_type>;
+    using const_results_data_ptr_type = std::shared_ptr<const results_data_type>;
 
-    basic_results(results_data_ptr_type results_data_ptr)
+    basic_results(const_results_data_ptr_type results_data_ptr)
         : m_results_data_ptr(results_data_ptr)
     {
         // noop
@@ -88,7 +88,7 @@ public:
     }
 
 private:
-    results_data_ptr_type m_results_data_ptr;
+    const_results_data_ptr_type m_results_data_ptr;
 };
 
 } // namespace args

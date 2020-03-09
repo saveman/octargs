@@ -74,21 +74,120 @@ class calc_app
     };
 
     template <class data_T>
-    static data_T execute(const std::vector<data_T>& values, operation_code operation)
+    static void execute_sum(std::ostream& os, const std::vector<data_T>& values, bool show_steps)
     {
         using data_type = data_T;
 
+        if (show_steps)
+        {
+            data_type result = 0;
+
+            os << "Init: " << result << std::endl;
+            for (auto& v : values)
+            {
+                auto prev = result;
+                result += v;
+
+                os << "Step: " << prev << " + " << v << " = " << result << std::endl;
+            }
+            os << "Result: " << result << std::endl;
+        }
+
+        os << std::accumulate(values.begin(), values.end(), data_type(0)) << std::endl;
+    }
+
+    template <class data_T>
+    static void execute_mul(std::ostream& os, const std::vector<data_T>& values, bool show_steps)
+    {
+        using data_type = data_T;
+
+        if (show_steps)
+        {
+            data_type result = 1;
+
+            os << "Init: " << result << std::endl;
+            for (auto& v : values)
+            {
+                auto prev = result;
+                result *= v;
+
+                os << "Step: " << prev << " x " << v << " = " << result << std::endl;
+            }
+            os << "Result: " << result << std::endl;
+        }
+
+        os << std::accumulate(values.begin(), values.end(), data_type(1), [](const data_type& v1, const data_type& v2) {
+            return v1 * v2;
+        }) << std::endl;
+    }
+
+    template <class data_T>
+    static void execute_min(std::ostream& os, const std::vector<data_T>& values, bool show_steps)
+    {
+        using data_type = data_T;
+
+        if (show_steps)
+        {
+            data_type result = values[0];
+
+            os << "Init (first): " << result << std::endl;
+            for (auto& v : values)
+            {
+                auto prev = result;
+                result = std::min(result, v);
+
+                os << "Step: " << prev << " vs. " << v << " => " << result << std::endl;
+            }
+            os << "Result: " << result << std::endl;
+        }
+
+        os << *std::min_element(values.begin(), values.end()) << std::endl;
+    }
+
+    template <class data_T>
+    static void execute_max(std::ostream& os, const std::vector<data_T>& values, bool show_steps)
+    {
+        using data_type = data_T;
+
+        if (show_steps)
+        {
+            data_type result = values[0];
+
+            os << "Init (first): " << result << std::endl;
+            for (auto& v : values)
+            {
+                auto prev = result;
+                result = std::max(result, v);
+
+                os << "Step: " << prev << " vs. " << v << " => " << result << std::endl;
+            }
+            os << "Result: " << result << std::endl;
+        }
+
+        os << *std::max_element(values.begin(), values.end()) << std::endl;
+    }
+
+    template <class data_T>
+    static void execute(std::ostream& os, const std::vector<data_T>& values, operation_code operation, bool show_steps)
+    {
         switch (operation)
         {
         case operation_code::SUM:
-            return std::accumulate(values.begin(), values.end(), data_type(0));
+            execute_sum(os, values, show_steps);
+            break;
+
         case operation_code::MUL:
-            return std::accumulate(values.begin(), values.end(), data_type(1),
-                [](const data_type& v1, const data_type& v2) { return v1 * v2; });
+            execute_mul(os, values, show_steps);
+            break;
+
         case operation_code::MIN:
-            return *std::min_element(values.begin(), values.end());
+            execute_min(os, values, show_steps);
+            break;
+
         case operation_code::MAX:
-            return *std::max_element(values.begin(), values.end());
+            execute_max(os, values, show_steps);
+            break;
+
         default:
             throw std::logic_error("unsupported operation");
         }
@@ -122,7 +221,7 @@ public:
                 .set_min_count(1)
                 .set_max_count_unlimited();
 
-            auto& output_group = arg_parser.add_group("Output");
+            auto& output_group = arg_parser.add_group("Output arguments");
             output_group.add_switch({ "-s", "--steps" }).set_description("show output of steps");
 
             auto results = arg_parser.parse(argc, argv);
@@ -135,22 +234,23 @@ public:
 
             auto operation = results.as<operation_code, operation_code_converter>("-o");
             auto data_type = results.as<data_type_code, data_type_code_converter>("-t");
+            auto show_steps = results.as<bool>("-s");
 
             switch (data_type)
             {
             case data_type_code::INT:
             {
-                std::cout << execute(results.as_vector<int>("OPERANDS"), operation) << std::endl;
+                execute(std::cout, results.as_vector<int>("OPERANDS"), operation, show_steps);
                 break;
             }
             case data_type_code::FLOAT:
             {
-                std::cout << execute(results.as_vector<float>("OPERANDS"), operation) << std::endl;
+                execute(std::cout, results.as_vector<float>("OPERANDS"), operation, show_steps);
                 break;
             }
             case data_type_code::DOUBLE:
             {
-                std::cout << execute(results.as_vector<double>("OPERANDS"), operation) << std::endl;
+                execute(std::cout, results.as_vector<double>("OPERANDS"), operation, show_steps);
                 break;
             }
             default:

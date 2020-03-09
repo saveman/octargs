@@ -79,7 +79,7 @@ TEST(parser_usage_test, test_example)
         "",
         "HEADER",
         "",
-        "Options:",
+        "Optional arguments:",
         "  -n                    the n!",
         "  -k                    the k!",
         "  -p                    the p!",
@@ -97,7 +97,7 @@ TEST(parser_usage_test, test_example)
         "                          [min: 2] [max: 5]",
         "         --ala, --tola  alatola check my name",
         "",
-        "Arguments:",
+        "Positional arguments:",
         "  PATTERN  Pattern to find",
         "             [required]",
         "  FILES    Files to process",
@@ -143,7 +143,7 @@ TEST(parser_usage_test, test_example_wchar)
         L"",
         L"HEADER",
         L"",
-        L"Options:",
+        L"Optional arguments:",
         L"  -n                    the n!",
         L"  -k                    the k!",
         L"  -a, -b                the ab!",
@@ -156,7 +156,7 @@ TEST(parser_usage_test, test_example_wchar)
         L"                          [min: 2] [max: 5]",
         L"         --ala, --tola  alatola check my name",
         L"",
-        L"Arguments:",
+        L"Positional arguments:",
         L"  FILES  Files to process",
         L"           [unlimited]",
         L"",
@@ -205,13 +205,86 @@ TEST(parser_usage_test, test_subparsers)
         "",
         "HEADER",
         "",
-        "Options:",
+        "Optional arguments:",
         "      --help     ",
         "  -v, --verbose  print verbose output",
         "",
         "command:",
         "  get  get file",
         "  put  put file",
+        "",
+        "FOOTER",
+    };
+    std::ostringstream expected_stream;
+    for (auto& line : EXPECTED_RESULT_LINES)
+    {
+        expected_stream << line << std::endl;
+    }
+
+    ASSERT_EQ(expected_stream.str(), out_ostream.str());
+}
+
+TEST(parser_usage_test, test_group)
+{
+    parser parser;
+    parser.set_usage_oneliner("ONELINER");
+    parser.set_usage_header("HEADER");
+    parser.set_usage_footer("FOOTER");
+    auto& group1 = parser.add_group("Group 1");
+    group1.add_switch({ "--verbose" }).set_description("an option");
+    parser.add_switch({ "-n" }).set_description("the n!");
+    parser.add_valued({ "-k" }).set_description("the k!");
+    parser.add_switch({ "-a", "-b" }).set_description("the ab!");
+    parser.add_valued({ "-x", "--thex" }).set_description("the\nmulti\nline!").set_min_count(1);
+    parser.add_switch({ "--ala", "--tola" }).set_description("alatola check my name");
+    parser.add_positional("PATTERN").set_description("Pattern to find").set_min_count(1);
+    auto& group2 = parser.add_group("Group 2");
+    group2.set_description("This is a group with single line description");
+    group2.add_valued({ "--other" }).set_value_name("value").set_description("other value");
+    group2.add_positional("VALUES").set_max_count(2).set_description("Some values");
+    auto& group3 = parser.add_group("Group 3");
+    group3.set_description("This is a group\nwith multiline description.\nSo it is split.");
+    group3.add_valued({ "--another" }).set_value_name("value").set_description("another value");
+
+    std::ostringstream out_ostream;
+
+    out_ostream << parser.usage();
+
+    const std::vector<std::string> EXPECTED_RESULT_LINES = {
+        "Usage: <OPTIONS>... <PATTERN> [VALUES]...",
+        "",
+        "ONELINER",
+        "",
+        "HEADER",
+        "",
+        "Optional arguments:",
+        "  -n                    the n!",
+        "  -k                    the k!",
+        "  -a, -b                the ab!",
+        "  -x,    --thex         the",
+        "                          multi",
+        "                          line!",
+        "                          [required]",
+        "         --ala, --tola  alatola check my name",
+        "",
+        "Positional arguments:",
+        "  PATTERN  Pattern to find",
+        "             [required]",
+        "",
+        "Group 1:",
+        "  --verbose  an option",
+        "",
+        "Group 2:",
+        "  This is a group with single line description",
+        "  --other=value  other value",
+        "  VALUES         Some values",
+        "                   [max: 2]",
+        "",
+        "Group 3:",
+        "  This is a group",
+        "  with multiline description.",
+        "  So it is split.",
+        "  --another=value  another value",
         "",
         "FOOTER",
     };

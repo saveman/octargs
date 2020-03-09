@@ -61,8 +61,8 @@ public:
         static const std::map<usage_dictionary_string_key, string_type> DICTIONARY = {
             { usage_dictionary_string_key::USAGE_LEAD, "Usage" },
             { usage_dictionary_string_key::USAGE_NO_ARGUMENTS, "(no arguments available)" },
-            { usage_dictionary_string_key::DEFAULT_NAMED_ARGUMENTS_GROUP_NAME, "Options" },
-            { usage_dictionary_string_key::DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME, "Arguments" },
+            { usage_dictionary_string_key::DEFAULT_NAMED_ARGUMENTS_GROUP_NAME, "Optional arguments" },
+            { usage_dictionary_string_key::DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME, "Positional arguments" },
             { usage_dictionary_string_key::DECORATOR_REQUIRED, "required" },
             { usage_dictionary_string_key::DECORATOR_MIN_COUNT, "min" },
             { usage_dictionary_string_key::DECORATOR_MAX_COUNT, "max" },
@@ -89,8 +89,8 @@ public:
         static const std::map<usage_dictionary_string_key, string_type> DICTIONARY = {
             { usage_dictionary_string_key::USAGE_LEAD, L"Usage" },
             { usage_dictionary_string_key::USAGE_NO_ARGUMENTS, L"(no arguments available)" },
-            { usage_dictionary_string_key::DEFAULT_NAMED_ARGUMENTS_GROUP_NAME, L"Options" },
-            { usage_dictionary_string_key::DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME, L"Arguments" },
+            { usage_dictionary_string_key::DEFAULT_NAMED_ARGUMENTS_GROUP_NAME, L"Optional arguments" },
+            { usage_dictionary_string_key::DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME, L"Positional arguments" },
             { usage_dictionary_string_key::DECORATOR_REQUIRED, L"required" },
             { usage_dictionary_string_key::DECORATOR_MIN_COUNT, L"min" },
             { usage_dictionary_string_key::DECORATOR_MAX_COUNT, L"max" },

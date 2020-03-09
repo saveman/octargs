@@ -17,6 +17,9 @@ namespace oct
 namespace args
 {
 
+template <typename char_T, typename values_storage_T>
+class basic_parser_usage;
+
 template <typename char_T, typename values_storage_T = internal::null_values_storage>
 class basic_argument_group
 {
@@ -28,7 +31,7 @@ public:
     using string_vector_type = std::vector<string_type>;
 
     using argument_type = basic_argument<char_type, values_storage_type>;
-    using argument_ptr_type = std::shared_ptr<argument_type>;
+    using const_argument_ptr_type = std::shared_ptr<const argument_type>;
 
     using switch_argument_type = basic_switch_argument<char_type, values_storage_type>;
     using valued_argument_type = basic_valued_argument<char_type, values_storage_type>;
@@ -36,6 +39,10 @@ public:
     using exclusive_argument_type = basic_exclusive_argument<char_type, values_storage_type>;
 
     using argument_repository_type = internal::basic_argument_repository<char_type, values_storage_type>;
+
+    using usage_type = basic_parser_usage<char_type, values_storage_type>;
+
+    friend usage_type;
 
     basic_argument_group(argument_repository_type& argument_repository, const string_type& name)
         : m_argument_repository(argument_repository)
@@ -94,7 +101,7 @@ private:
     argument_repository_type& m_argument_repository;
     string_type m_name;
     string_type m_description;
-    std::vector<argument_ptr_type> m_arguments;
+    std::vector<const_argument_ptr_type> m_arguments;
 };
 
 } // namespace args

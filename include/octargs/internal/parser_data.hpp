@@ -32,6 +32,7 @@ public:
     using argument_repository_type = basic_argument_repository<char_type, values_storage_type>;
     using argument_group_type = basic_argument_group<char_type, values_storage_type>;
     using argument_group_ptr_type = std::shared_ptr<argument_group_type>;
+    using const_argument_group_ptr_type = std::shared_ptr<const argument_group_type>;
 
     basic_parser_data()
         : m_argument_repository()
@@ -55,7 +56,7 @@ public:
 
     argument_repository_type m_argument_repository;
     argument_group_type m_default_argument_group;
-    std::vector<argument_group_ptr_type> m_argument_groups;
+    std::vector<const_argument_group_ptr_type> m_argument_groups;
     string_type m_usage_oneliner;
     string_type m_usage_header;
     string_type m_usage_footer;

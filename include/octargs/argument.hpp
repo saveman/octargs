@@ -26,7 +26,7 @@ public:
     using string_type = std::basic_string<char_type>;
     using string_vector_type = std::vector<string_type>;
     using handler_type = internal::basic_argument_handler<char_type, values_storage_type>;
-    using handler_ptr_type = std::shared_ptr<const handler_type>;
+    using const_handler_ptr_type = std::shared_ptr<const handler_type>;
 
     virtual ~basic_argument() = default;
 
@@ -42,7 +42,7 @@ public:
 
     virtual bool is_max_count_unlimited() const = 0;
 
-    virtual const handler_ptr_type& get_handler() const = 0;
+    virtual const const_handler_ptr_type& get_handler() const = 0;
 
     virtual const string_type& get_description() const = 0;
 

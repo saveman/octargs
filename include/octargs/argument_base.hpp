@@ -22,7 +22,7 @@ public:
     using string_vector_type = std::vector<string_type>;
 
     using handler_type = internal::basic_argument_handler<char_type, values_storage_type>;
-    using handler_ptr_type = std::shared_ptr<const handler_type>;
+    using const_handler_ptr_type = std::shared_ptr<const handler_type>;
 
     template <typename data_T>
     using type_handler_type = basic_argument_type_handler<data_T, char_type, values_storage_type>;
@@ -85,7 +85,7 @@ public:
         return get_max_count() == std::numeric_limits<std::size_t>::max();
     }
 
-    const handler_ptr_type& get_handler() const final
+    const const_handler_ptr_type& get_handler() const final
     {
         return m_handler_ptr;
     }
@@ -179,7 +179,7 @@ protected:
     }
 
 private:
-    void set_handler(const handler_ptr_type& handler_ptr)
+    void set_handler(const const_handler_ptr_type& handler_ptr)
     {
         m_handler_ptr = handler_ptr;
     }
@@ -206,7 +206,7 @@ private:
     /// Allowed values.
     string_vector_type m_allowed_values;
     /// Values storage handler.
-    handler_ptr_type m_handler_ptr;
+    const_handler_ptr_type m_handler_ptr;
 };
 
 } // namespace args

@@ -22,7 +22,7 @@ public:
     using string_vector_type = std::vector<string_type>;
 
     using argument_tag_type = basic_argument_tag;
-    using argument_tag_ptr_type = std::shared_ptr<argument_tag_type>;
+    using const_argument_tag_ptr_type = std::shared_ptr<const argument_tag_type>;
 
     basic_results_data()
         : m_app_name()
@@ -42,12 +42,12 @@ public:
         this->m_app_name = app_name;
     }
 
-    bool has_value(const argument_tag_ptr_type& arg_ptr) const
+    bool has_value(const const_argument_tag_ptr_type& arg_ptr) const
     {
         return this->m_argument_values.find(arg_ptr) != this->m_argument_values.end();
     }
 
-    std::size_t value_count(const argument_tag_ptr_type& arg_ptr) const
+    std::size_t value_count(const const_argument_tag_ptr_type& arg_ptr) const
     {
         auto arg_values_iter = this->m_argument_values.find(arg_ptr);
         if (arg_values_iter != this->m_argument_values.end())
@@ -60,7 +60,7 @@ public:
         }
     }
 
-    void append_value(const argument_tag_ptr_type& arg_ptr, const string_type& value)
+    void append_value(const const_argument_tag_ptr_type& arg_ptr, const string_type& value)
     {
         auto arg_values_iter = this->m_argument_values.find(arg_ptr);
         if (arg_values_iter != this->m_argument_values.end())
@@ -73,7 +73,7 @@ public:
         }
     }
 
-    argument_tag_ptr_type find_argument(const string_type& arg_name) const
+    const_argument_tag_ptr_type find_argument(const string_type& arg_name) const
     {
         auto name_arg_iter = m_names_repository.find(arg_name);
         if (name_arg_iter == m_names_repository.end())
@@ -112,7 +112,7 @@ public:
         }
     }
 
-    void add_name(const string_type& name, argument_tag_ptr_type tag)
+    void add_name(const string_type& name, const_argument_tag_ptr_type tag)
     {
         m_names_repository.emplace(name, tag);
     }
@@ -125,8 +125,8 @@ private:
     }
 
     string_type m_app_name;
-    std::map<string_type, argument_tag_ptr_type> m_names_repository;
-    std::map<argument_tag_ptr_type, string_vector_type> m_argument_values;
+    std::map<string_type, const_argument_tag_ptr_type> m_names_repository;
+    std::map<const_argument_tag_ptr_type, string_vector_type> m_argument_values;
 };
 
 } // namespace internal

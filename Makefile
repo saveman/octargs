@@ -138,6 +138,13 @@ run_examples_calc:
 	@echo "----------------------------"
 	(cd $(EXEDIR) && ./$(EXENAME) --operation min -t float 1.1 1.3 1.0 0.7 1.25 )
 	@echo "----------------------------"
+	@echo "CALC STEPS"
+	@echo "----------------------------"
+	(cd $(EXEDIR) && ./$(EXENAME) -s -o sum 1 2 3 4 5 -3 )
+	(cd $(EXEDIR) && ./$(EXENAME) -s -o mul 1 2 3 4 5 -3 )
+	(cd $(EXEDIR) && ./$(EXENAME) -s -o min 1 2 3 4 5 -3 )
+	(cd $(EXEDIR) && ./$(EXENAME) -s -o max 1 2 3 4 5 -3 )
+	@echo "----------------------------"
 	@echo "CALC HELP"
 	@echo "----------------------------"
 	@(cd $(EXEDIR) && ./$(EXENAME) --help)

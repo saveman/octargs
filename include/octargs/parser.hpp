@@ -189,6 +189,7 @@ public:
 private:
     using argument_table_iterator = basic_argument_table_iterator<char_type>;
     using argument_ptr_type = std::shared_ptr<argument_type>;
+    using const_argument_ptr_type = std::shared_ptr<const argument_type>;
     using parser_data_type = internal::basic_parser_data<char_type, values_storage_type>;
     using parser_data_ptr_type = std::shared_ptr<parser_data_type>;
     using results_data_type = internal::basic_results_data<char_type>;
@@ -265,7 +266,7 @@ private:
     }
 
     static void parse_argument_value(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
-        const argument_ptr_type& argument, const string_type& arg_name, const string_type& value_str)
+        const const_argument_ptr_type& argument, const string_type& arg_name, const string_type& value_str)
     {
         auto count = results_data_ptr->value_count(argument);
         if (count >= argument->get_max_count())
@@ -303,7 +304,7 @@ private:
     }
 
     static void parse_default_value(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
-        const argument_ptr_type& argument)
+        const const_argument_ptr_type& argument)
     {
         if (results_data_ptr->value_count(argument) > 0)
         {
