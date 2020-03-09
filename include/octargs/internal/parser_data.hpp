@@ -36,7 +36,7 @@ public:
 
     basic_parser_data()
         : m_argument_repository()
-        , m_default_argument_group(m_argument_repository, string_type()) // TODO: default name
+        , m_default_argument_group(m_argument_repository, string_type())
         , m_argument_groups()
         , m_usage_oneliner()
         , m_usage_header()

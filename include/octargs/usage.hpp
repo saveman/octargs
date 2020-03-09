@@ -106,7 +106,7 @@ private:
         if (mode != print_arg_mode::POSITIONAL_ONLY)
         {
             /* exclusive */
-            for (auto& argument : group.m_arguments)
+            for (auto& argument : group.get_arguments())
             {
                 if (!argument->is_exclusive())
                 {
@@ -117,7 +117,7 @@ private:
             }
 
             /* standard named */
-            for (auto& argument : group.m_arguments)
+            for (auto& argument : group.get_arguments())
             {
                 if (argument->is_exclusive() || !argument->is_assignable_by_name())
                 {
@@ -131,7 +131,7 @@ private:
         if (mode != print_arg_mode::NAMED_ONLY)
         {
             /* positional */
-            for (auto& argument : group.m_arguments)
+            for (auto& argument : group.get_arguments())
             {
                 if (argument->is_assignable_by_name())
                 {
