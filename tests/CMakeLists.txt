@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(octargs-tests)
+project(octargs-tests
+    VERSION ${RELEASE_VERSION}
+)
 
 function(add_gtest_test)
     cmake_parse_arguments(PARSE_ARGV 0

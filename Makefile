@@ -4,16 +4,13 @@ SOURCE_DIR:=$(CURRENT_DIR)
 SOURCE_EXAMPLES_DIR:=$(SOURCE_DIR)/examples
 THIRDPARTY_DIR:=$(SOURCE_DIR)/3rdparty
 
-BUILD_DIR:=$(CURRENT_DIR)/_build
-INSTALL_DIR:=$(CURRENT_DIR)/_install
-PACKAGE_DIR:=$(CURRENT_DIR)/_package
-VERIFY_DIR=$(CURRENT_DIR)/_verify
-DOXYGEN_DIR=$(CURRENT_DIR)/_doxygen
+WORK_DIR:=$(CURRENT_DIR)/_work
+BUILD_DIR:=$(WORK_DIR)/_build
+INSTALL_DIR:=$(WORK_DIR)/_install
+PACKAGE_DIR:=$(WORK_DIR)/_package
+VERIFY_DIR=$(WORK_DIR)/_verify
 
 BUILD_CPPCHECK_DIR:=$(BUILD_DIR)/cppcheck
-
-DOXYGEN_SNIPPET_SRCS=$(wildcard doxygen/examples/*.cpp)
-DOXYGEN_SNIPPET_OBJS=$(DOXYGEN_SNIPPET_SRCS:.cpp=.exe)
 
 CPUCOUNT=$(shell nproc)
 
@@ -42,46 +39,39 @@ CPPCHECK_OPTS=\
 	--force \
 	--inline-suppr
 
+CMAKE_BUILD=cmake --build . -j $(CPUCOUNT)
+
 all: install_verify test
 
-$(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
+$(BUILD_DIR) $(INSTALL_DIR) $(PACKAGE_DIR):
+	mkdir -p $@
 
-${PACKAGE_DIR}:
-	mkdir -p ${PACKAGE_DIR}
-
-prepare: $(BUILD_DIR) ${PACKAGE_DIR}
+prepare: $(BUILD_DIR) $(PACKAGE_DIR) $(INSTALL_DIR)
 	(cd $(BUILD_DIR) && cmake $(CMAKE_OPTS) $(SOURCE_DIR) )
 
 build: prepare
-	(cd $(BUILD_DIR) && cmake --build . -j $(CPUCOUNT))
+	(cd $(BUILD_DIR) && $(CMAKE_BUILD) -- all)
 
 install: build
-	(cd $(BUILD_DIR) && cmake --build . -- install)
+	(cd $(BUILD_DIR) && $(CMAKE_BUILD) -- install)
 
 install_verify: install
 	rm -rf $(VERIFY_DIR)
 	mkdir -p $(VERIFY_DIR)
 	(cd $(VERIFY_DIR) && cmake $(VERIFY_CMAKE_OPTS) $(SOURCE_EXAMPLES_DIR) )
-	(cd $(VERIFY_DIR) && cmake --build . -j $(CPUCOUNT))
+	(cd $(VERIFY_DIR) && $(CMAKE_BUILD))
 
-.PHONY: doxygen
+doxygen: prepare
+	(cd $(BUILD_DIR) && $(CMAKE_BUILD) -- doxygen)
 
-doxygen: $(DOXYGEN_SNIPPET_OBJS)
-	(cd $(BUILD_DIR) && cmake --build . -- doxygen)
-	(cd $(BUILD_DIR) && pdetach xdg-open ./html/index.html)
-
-doxygen/%.exe: doxygen/%.cpp install $(DOXYGEN_DIR)
-	(cd $(DOXYGEN_DIR) && $(CXX) -std=c++11 -o $(notdir $@) -I$(INSTALL_DIR)/include $(SOURCE_DIR)/$<)
-
-$(DOXYGEN_DIR):
-	mkdir -p $@
+doxygen_open: doxygen
+	(cd $(BUILD_DIR) && pdetach xdg-open ./doxygen/html/index.html)
 
 test: build
-	(cd $(BUILD_DIR) && ctest --output-on-failure)
+	(cd $(BUILD_DIR) && $(CMAKE_BUILD) -- test ARGS=--output-on-failure)
 
 package: install
-	(cd $(BUILD_DIR) && cmake --build . -- package)
+	(cd $(BUILD_DIR) && $(CMAKE_BUILD) -- package)
 
 cppcheck: test
 	mkdir -p $(BUILD_CPPCHECK_DIR)
@@ -194,8 +184,6 @@ total_coverage_open: total_coverage
 	(cd $(BUILD_DIR) && pdetach xdg-open ./ctest_coverage/index.html)
 
 clean:
-	rm -rf $(BUILD_DIR)
-	rm -rf $(INSTALL_DIR)
-	rm -rf $(VERIFY_DIR)
-	rm -rf $(PACKAGE_DIR)
-	rm -rf $(DOXYGEN_DIR)
+	rm -rf $(WORK_DIR)
+
+.PHONY: doxygen

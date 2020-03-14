@@ -32,11 +32,8 @@
 *.app
 
 # Development directories & files
-_build
-_install
-_package
+_work
 _release
-_verify
 _win_build
 _win_install
 _win_package
