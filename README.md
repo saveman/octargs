@@ -4,5 +4,24 @@
 [![Build Status](https://travis-ci.org/saveman/octargs.svg?branch=master)](https://travis-ci.org/saveman/octargs)
 [![Coverity Scan](https://scan.coverity.com/projects/20102/badge.svg)](https://scan.coverity.com/projects/saveman-octargs)
 
-# octargs
-C++ command line argument parsing library
+# OCTARGS - Argument Parsing Library
+OCTARGS is a C++ library for parsing command line arguments.
+
+## Features supported:
+
+- Arguments without values (e.g. "--verbose").
+- Arguments with values (e.g. "--level=9", "--jobs 9").
+- Exclusive arguments (e.g. "--help").
+- Positional arguments (e.g. "cat file1.txt file2.txt").
+- Short and long names (e.g. "-j", "--jobs", "--parallel-jobs").
+- Subparsers (e.g. "git add <params>", "git init <params>").
+- Default values
+- Limiting allowed values
+- Converting values to a requested type (with checking)
+- Storing converted values in object variables automatically (with checking and automatic type detection).
+- Automatic usage documentation.
+- Support for char and wchar_t character types (and more with a limited effort).
+
+# Documenentation
+
+Usage documentation could be found here: TODO
