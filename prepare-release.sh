@@ -118,6 +118,10 @@ if [ "$1" == "--dry-run" ]; then
     shift
 fi
 VERSION=$1
+if [ "$1" == "" ]; then
+    echo "Version argument is missing"
+    exit 1
+fi
 
 IFS="." read -ra VERSION_ARRAY <<< "${VERSION}"
 VERSION_MAJOR=${VERSION_ARRAY[0]}
