@@ -1,0 +1,14 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node2" href="$classoct_1_1args_1_1basic__argument.html" title="Argument interface. " alt="" coords="192,298,389,339"/>
+<area shape="rect" id="node3" href="$classoct_1_1args_1_1basic__argument__base.html" title="oct::args::basic_argument\l_base\&lt; basic_exclusive\l_argument\&lt; char_T, values\l_storage_T \&gt;, char_T, values\l_storage_T \&gt;" alt="" coords="444,5,637,91"/>
+<area shape="rect" id="node5" href="$classoct_1_1args_1_1basic__argument__base.html" title="oct::args::basic_argument\l_base\&lt; basic_positional\l_argument\&lt; char_T, values\l_storage_T \&gt;, char_T, values\l_storage_T \&gt;" alt="" coords="444,115,637,200"/>
+<area shape="rect" id="node7" href="$classoct_1_1args_1_1basic__argument__base.html" title="oct::args::basic_argument\l_base\&lt; basic_subparser\l_argument\&lt; char_T, values\l_storage_T \&gt;, char_T, values\l_storage_T \&gt;" alt="" coords="444,224,637,309"/>
+<area shape="rect" id="node9" href="$classoct_1_1args_1_1basic__argument__base.html" title="oct::args::basic_argument\l_base\&lt; basic_switch_argument\l\&lt; char_T, values_storage_T\l \&gt;, char_T, values_storage_T \&gt;" alt="" coords="437,334,644,405"/>
+<area shape="rect" id="node11" href="$classoct_1_1args_1_1basic__argument__base.html" title="oct::args::basic_argument\l_base\&lt; basic_valued_argument\l\&lt; char_T, values_storage_T\l \&gt;, char_T, values_storage_T \&gt;" alt="" coords="437,429,644,499"/>
+<area shape="rect" id="node13" href="$classoct_1_1args_1_1basic__argument__base.html" title="Base class for arguments. " alt="" coords="454,524,627,580"/>
+<area shape="rect" id="node4" href="$classoct_1_1args_1_1basic__exclusive__argument.html" title="Exclusive argument. " alt="" coords="692,20,873,76"/>
+<area shape="rect" id="node6" href="$classoct_1_1args_1_1basic__positional__argument.html" title="Positional argument. " alt="" coords="692,129,873,185"/>
+<area shape="rect" id="node8" href="$classoct_1_1args_1_1basic__subparser__argument.html" title="Subparser argument. " alt="" coords="692,239,873,295"/>
+<area shape="rect" id="node10" href="$classoct_1_1args_1_1basic__switch__argument.html" title="Switch argument. " alt="" coords="692,341,873,397"/>
+<area shape="rect" id="node12" href="$classoct_1_1args_1_1basic__valued__argument.html" title="Subparser argument. " alt="" coords="692,436,873,492"/>
+</map>

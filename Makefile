@@ -67,6 +67,11 @@ doxygen: prepare
 doxygen_open: doxygen
 	(cd $(BUILD_DIR) && pdetach xdg-open ./doxygen/html/index.html)
 
+doxygen_deploy: doxygen
+	rm -rf docs/html
+	mkdir -p docs
+	cp -r $(BUILD_DIR)/doxygen/html docs/
+
 test: build
 	(cd $(BUILD_DIR) && $(CMAKE_BUILD) -- test ARGS=--output-on-failure)
 
