@@ -24,4 +24,10 @@ OCTARGS is a C++ library for parsing command line arguments.
 
 # Documenentation
 
-Usage documentation could be found here: TODO
+Project [documentation](https://saveman.github.io/octargs/) is generated using [Doxygen](http://www.doxygen.nl/) and hosted on GitHub pages.
+
+# Examples
+
+Short code snippets showing general concepts are available in the documentation. For a more complicated examples take a look into [Examples](examples/) folder.
+
+
