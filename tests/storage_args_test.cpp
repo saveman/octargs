@@ -294,9 +294,9 @@ void check_parse_exception(parser_T& parser, const argument_table& args, parser_
     }
     catch (const parser_error_ex<char>& exc)
     {
-        ASSERT_EQ(exc.error_code(), code);
-        ASSERT_EQ(exc.name(), arg_name);
-        ASSERT_EQ(exc.value(), value_str);
+        ASSERT_EQ(exc.get_error_code(), code);
+        ASSERT_EQ(exc.get_name(), arg_name);
+        ASSERT_EQ(exc.get_value(), value_str);
     }
 }
 
@@ -371,14 +371,14 @@ TEST(storage_args_test, test_custom_type)
 
     settings settings1;
     auto results1 = parser.parse(argument_table("appname", { "--format=hex" }), settings1);
-    ASSERT_EQ(std::size_t(1), results1.count("--format"));
-    ASSERT_EQ(std::string("hex"), results1.values("--format")[0]);
+    ASSERT_EQ(std::size_t(1), results1.get_count("--format"));
+    ASSERT_EQ(std::string("hex"), results1.get_values("--format")[0]);
     ASSERT_EQ(format_code::HEX, settings1.m_format);
 
     settings settings2;
     auto results2 = parser.parse(argument_table("appname", { "--format=dec" }), settings2);
-    ASSERT_EQ(std::size_t(1), results2.count("--format"));
-    ASSERT_EQ(std::string("dec"), results2.values("--format")[0]);
+    ASSERT_EQ(std::size_t(1), results2.get_count("--format"));
+    ASSERT_EQ(std::string("dec"), results2.get_values("--format")[0]);
     ASSERT_EQ(format_code::DEC, settings2.m_format);
 
     ASSERT_THROW(parser.parse(argument_table("appname", { "--format=aaa" }), settings1), parser_error);
@@ -386,11 +386,11 @@ TEST(storage_args_test, test_custom_type)
     settings settings3;
     auto results3
         = parser.parse(argument_table("appname", { "--multi=dec", "--multi", "hex", "--multi", "dec" }), settings3);
-    ASSERT_EQ(std::size_t(0), results3.count("--format"));
-    ASSERT_EQ(std::size_t(3), results3.count("--multi"));
-    ASSERT_EQ(std::string("dec"), results3.values("--multi")[0]);
-    ASSERT_EQ(std::string("hex"), results3.values("--multi")[1]);
-    ASSERT_EQ(std::string("dec"), results3.values("--multi")[2]);
+    ASSERT_EQ(std::size_t(0), results3.get_count("--format"));
+    ASSERT_EQ(std::size_t(3), results3.get_count("--multi"));
+    ASSERT_EQ(std::string("dec"), results3.get_values("--multi")[0]);
+    ASSERT_EQ(std::string("hex"), results3.get_values("--multi")[1]);
+    ASSERT_EQ(std::string("dec"), results3.get_values("--multi")[2]);
     ASSERT_EQ(std::size_t(3), settings3.m_multiformat.size());
     ASSERT_EQ(format_code::DEC, settings3.m_multiformat[0]);
     ASSERT_EQ(format_code::HEX, settings3.m_multiformat[1]);

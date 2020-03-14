@@ -16,6 +16,10 @@ namespace oct
 namespace args
 {
 
+/// \brief Argument interface
+///
+/// \tparam char_T              char type (as in std::basic_string)
+/// \tparam values_storage_T    type of object to store parsed values
 template <typename char_T, typename values_storage_T>
 class basic_argument : public internal::basic_argument_tag
 {
@@ -29,6 +33,8 @@ public:
     using const_handler_ptr_type = std::shared_ptr<const handler_type>;
 
     virtual ~basic_argument() = default;
+
+    virtual const string_type& get_first_name() const = 0;
 
     virtual const string_vector_type& get_names() const = 0;
 

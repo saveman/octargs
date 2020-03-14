@@ -8,8 +8,12 @@ BUILD_DIR:=$(CURRENT_DIR)/_build
 INSTALL_DIR:=$(CURRENT_DIR)/_install
 PACKAGE_DIR:=$(CURRENT_DIR)/_package
 VERIFY_DIR=$(CURRENT_DIR)/_verify
+DOXYGEN_DIR=$(CURRENT_DIR)/_doxygen
 
 BUILD_CPPCHECK_DIR:=$(BUILD_DIR)/cppcheck
+
+DOXYGEN_SNIPPET_SRCS=$(wildcard doxygen/examples/*.cpp)
+DOXYGEN_SNIPPET_OBJS=$(DOXYGEN_SNIPPET_SRCS:.cpp=.exe)
 
 CPUCOUNT=$(shell nproc)
 
@@ -40,10 +44,16 @@ CPPCHECK_OPTS=\
 
 all: install_verify test
 
-build:
+$(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
+
+${PACKAGE_DIR}:
 	mkdir -p ${PACKAGE_DIR}
+
+prepare: $(BUILD_DIR) ${PACKAGE_DIR}
 	(cd $(BUILD_DIR) && cmake $(CMAKE_OPTS) $(SOURCE_DIR) )
+
+build: prepare
 	(cd $(BUILD_DIR) && cmake --build . -j $(CPUCOUNT))
 
 install: build
@@ -54,6 +64,18 @@ install_verify: install
 	mkdir -p $(VERIFY_DIR)
 	(cd $(VERIFY_DIR) && cmake $(VERIFY_CMAKE_OPTS) $(SOURCE_EXAMPLES_DIR) )
 	(cd $(VERIFY_DIR) && cmake --build . -j $(CPUCOUNT))
+
+.PHONY: doxygen
+
+doxygen: $(DOXYGEN_SNIPPET_OBJS)
+	(cd $(BUILD_DIR) && cmake --build . -- doxygen)
+	(cd $(BUILD_DIR) && pdetach xdg-open ./html/index.html)
+
+doxygen/%.exe: doxygen/%.cpp install $(DOXYGEN_DIR)
+	(cd $(DOXYGEN_DIR) && $(CXX) -std=c++11 -o $(notdir $@) -I$(INSTALL_DIR)/include $(SOURCE_DIR)/$<)
+
+$(DOXYGEN_DIR):
+	mkdir -p $@
 
 test: build
 	(cd $(BUILD_DIR) && ctest --output-on-failure)
@@ -176,3 +198,4 @@ clean:
 	rm -rf $(INSTALL_DIR)
 	rm -rf $(VERIFY_DIR)
 	rm -rf $(PACKAGE_DIR)
+	rm -rf $(DOXYGEN_DIR)

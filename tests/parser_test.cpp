@@ -59,9 +59,9 @@ TEST(parser_test, test_argc_argv_parse)
     ASSERT_EQ(std::string("appname"), results.get_app_name());
     ASSERT_TRUE(results.has_value("-v"));
     ASSERT_TRUE(!results.has_value("--help"));
-    ASSERT_EQ(std::size_t(2), results.count("values"));
-    ASSERT_EQ(std::string("argument1"), results.values("values")[0]);
-    ASSERT_EQ(std::string("argument2"), results.values("values")[1]);
+    ASSERT_EQ(std::size_t(2), results.get_count("values"));
+    ASSERT_EQ(std::string("argument1"), results.get_values("values")[0]);
+    ASSERT_EQ(std::string("argument2"), results.get_values("values")[1]);
 }
 
 TEST(parser_test, test_argument_table_parse)
@@ -76,9 +76,9 @@ TEST(parser_test, test_argument_table_parse)
     auto results = parser.parse(args);
     ASSERT_TRUE(results.has_value("-v"));
     ASSERT_TRUE(!results.has_value("--help"));
-    ASSERT_EQ(std::size_t(2), results.count("values"));
-    ASSERT_EQ(std::string("argument1"), results.values("values")[0]);
-    ASSERT_EQ(std::string("argument2"), results.values("values")[1]);
+    ASSERT_EQ(std::size_t(2), results.get_count("values"));
+    ASSERT_EQ(std::string("argument1"), results.get_values("values")[0]);
+    ASSERT_EQ(std::string("argument2"), results.get_values("values")[1]);
 }
 
 TEST(parser_test, test_invalid_results_arg)
@@ -110,22 +110,27 @@ TEST(parser_test, test_custom_type)
     parser.add_valued({ "--format" });
     parser.add_valued({ "--multi" }).set_max_count_unlimited();
 
+    auto results0 = parser.parse(argument_table("appname", {}));
+    ASSERT_EQ(std::size_t(0), results0.get_count("--format"));
+    auto format0 = results0.get_first_value_as<format_code, format_code_converter>("--format", format_code::UNKNOWN);
+    ASSERT_EQ(format_code::UNKNOWN, format0);
+
     auto results1 = parser.parse(argument_table("appname", { "--format=hex" }));
-    ASSERT_EQ(std::size_t(1), results1.count("--format"));
-    ASSERT_EQ(std::string("hex"), results1.values("--format")[0]);
-    auto format1 = results1.as<format_code, format_code_converter>("--format");
+    ASSERT_EQ(std::size_t(1), results1.get_count("--format"));
+    ASSERT_EQ(std::string("hex"), results1.get_first_value("--format"));
+    auto format1 = results1.get_first_value_as<format_code, format_code_converter>("--format");
     ASSERT_EQ(format_code::HEX, format1);
 
     auto results2 = parser.parse(argument_table("appname", { "--format=dec" }));
-    ASSERT_EQ(std::size_t(1), results2.count("--format"));
-    ASSERT_EQ(std::string("dec"), results2.values("--format")[0]);
-    auto format2 = results2.as<format_code, format_code_converter>("--format");
+    ASSERT_EQ(std::size_t(1), results2.get_count("--format"));
+    ASSERT_EQ(std::string("dec"), results2.get_first_value("--format"));
+    auto format2 = results2.get_first_value_as<format_code, format_code_converter>("--format");
     ASSERT_EQ(format_code::DEC, format2);
 
     auto results3 = parser.parse(argument_table("appname", { "--format=aaa" }));
     try
     {
-        results3.as<format_code, format_code_converter>("--format");
+        results3.get_values_as<format_code, format_code_converter>("--format");
         ASSERT_TRUE(false);
     }
     catch (const conversion_error&)
@@ -135,15 +140,15 @@ TEST(parser_test, test_custom_type)
 
     auto results4
         = parser.parse(argument_table("appname", { "--multi=dec", "--multi", "hex", "--multi", "dec", "--multi=hex" }));
-    ASSERT_EQ(std::size_t(0), results4.count("--format"));
-    ASSERT_EQ(std::size_t(4), results4.count("--multi"));
-    ASSERT_EQ(std::string("dec"), results4.values("--multi")[0]);
-    ASSERT_EQ(std::string("hex"), results4.values("--multi")[1]);
-    ASSERT_EQ(std::string("dec"), results4.values("--multi")[2]);
-    ASSERT_EQ(std::string("hex"), results4.values("--multi")[3]);
-    auto format4 = results4.as<format_code, format_code_converter>("--multi");
-    ASSERT_EQ(format_code::HEX, format4);
-    auto formats4 = results4.as_vector<format_code, format_code_converter>("--multi");
+    ASSERT_EQ(std::size_t(0), results4.get_count("--format"));
+    ASSERT_EQ(std::size_t(4), results4.get_count("--multi"));
+    ASSERT_EQ(std::string("dec"), results4.get_values("--multi")[0]);
+    ASSERT_EQ(std::string("hex"), results4.get_values("--multi")[1]);
+    ASSERT_EQ(std::string("dec"), results4.get_values("--multi")[2]);
+    ASSERT_EQ(std::string("hex"), results4.get_values("--multi")[3]);
+    auto format4 = results4.get_first_value_as<format_code, format_code_converter>("--multi");
+    ASSERT_EQ(format_code::DEC, format4);
+    auto formats4 = results4.get_values_as<format_code, format_code_converter>("--multi");
     ASSERT_EQ(std::size_t(4), formats4.size());
     ASSERT_EQ(format_code::DEC, formats4[0]);
     ASSERT_EQ(format_code::HEX, formats4[1]);

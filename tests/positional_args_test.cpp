@@ -45,7 +45,7 @@ TEST(positional_args_test, test_allowed_no_arguments)
 
     auto results = parser.parse(args);
 
-    ASSERT_EQ(static_cast<std::size_t>(0), results.count("values"));
+    ASSERT_EQ(static_cast<std::size_t>(0), results.get_count("values"));
 }
 
 TEST(positional_args_test, test_allowed_single_argument)
@@ -57,8 +57,8 @@ TEST(positional_args_test, test_allowed_single_argument)
 
     auto results = parser.parse(args);
 
-    ASSERT_EQ(static_cast<std::size_t>(1), results.count("values"));
-    ASSERT_EQ(std::string("argument1"), results.values("values")[0]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results.get_count("values"));
+    ASSERT_EQ(std::string("argument1"), results.get_values("values")[0]);
 }
 
 TEST(positional_args_test, test_allowed_multi_argument)
@@ -70,10 +70,10 @@ TEST(positional_args_test, test_allowed_multi_argument)
 
     auto results = parser.parse(args);
 
-    ASSERT_EQ(static_cast<std::size_t>(3), results.count("values"));
-    ASSERT_EQ(std::string("argument1"), results.values("values")[0]);
-    ASSERT_EQ(std::string("argument2"), results.values("values")[1]);
-    ASSERT_EQ(std::string("argument3"), results.values("values")[2]);
+    ASSERT_EQ(static_cast<std::size_t>(3), results.get_count("values"));
+    ASSERT_EQ(std::string("argument1"), results.get_values("values")[0]);
+    ASSERT_EQ(std::string("argument2"), results.get_values("values")[1]);
+    ASSERT_EQ(std::string("argument3"), results.get_values("values")[2]);
 }
 
 TEST(positional_args_test, test_allowed_no_arguments_with_switch)
@@ -86,7 +86,7 @@ TEST(positional_args_test, test_allowed_no_arguments_with_switch)
 
     auto results = parser.parse(args);
 
-    ASSERT_EQ(static_cast<std::size_t>(0), results.count("values"));
+    ASSERT_EQ(static_cast<std::size_t>(0), results.get_count("values"));
 }
 
 TEST(positional_args_test, test_allowed_single_argument_with_switch)
@@ -99,8 +99,8 @@ TEST(positional_args_test, test_allowed_single_argument_with_switch)
 
     auto results = parser.parse(args);
 
-    ASSERT_EQ(static_cast<std::size_t>(1), results.count("values"));
-    ASSERT_EQ(std::string("argument1"), results.values("values")[0]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results.get_count("values"));
+    ASSERT_EQ(std::string("argument1"), results.get_values("values")[0]);
 }
 
 TEST(positional_args_test, test_allowed_multi_argument_with_switch)
@@ -113,10 +113,10 @@ TEST(positional_args_test, test_allowed_multi_argument_with_switch)
 
     auto results = parser.parse(args);
 
-    ASSERT_EQ(static_cast<std::size_t>(3), results.count("values"));
-    ASSERT_EQ(std::string("argument1"), results.values("values")[0]);
-    ASSERT_EQ(std::string("argument2"), results.values("values")[1]);
-    ASSERT_EQ(std::string("argument3"), results.values("values")[2]);
+    ASSERT_EQ(static_cast<std::size_t>(3), results.get_count("values"));
+    ASSERT_EQ(std::string("argument1"), results.get_values("values")[0]);
+    ASSERT_EQ(std::string("argument2"), results.get_values("values")[1]);
+    ASSERT_EQ(std::string("argument3"), results.get_values("values")[2]);
 }
 
 TEST(positional_args_test, test_required_bad_config)
@@ -145,12 +145,12 @@ TEST(positional_args_test, test_multiple_required_last_required_singlevalue)
 
     auto results = parser.parse(args_enough);
 
-    ASSERT_EQ(static_cast<std::size_t>(1), results.count("arg1"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results.count("arg2"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results.count("arg3"));
-    ASSERT_EQ(std::string("argument1"), results.values("arg1")[0]);
-    ASSERT_EQ(std::string("argument2"), results.values("arg2")[0]);
-    ASSERT_EQ(std::string("argument3"), results.values("arg3")[0]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results.get_count("arg1"));
+    ASSERT_EQ(static_cast<std::size_t>(1), results.get_count("arg2"));
+    ASSERT_EQ(static_cast<std::size_t>(1), results.get_count("arg3"));
+    ASSERT_EQ(std::string("argument1"), results.get_values("arg1")[0]);
+    ASSERT_EQ(std::string("argument2"), results.get_values("arg2")[0]);
+    ASSERT_EQ(std::string("argument3"), results.get_values("arg3")[0]);
 
     ASSERT_THROW(parser.parse(args_too_much), parser_error);
 }
@@ -168,20 +168,20 @@ TEST(positional_args_test, test_multiple_required_last_optional_singlevalue)
 
     auto results_empty = parser.parse(args_empty);
 
-    ASSERT_EQ(static_cast<std::size_t>(1), results_empty.count("arg1"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results_empty.count("arg2"));
-    ASSERT_EQ(static_cast<std::size_t>(0), results_empty.count("arg3"));
-    ASSERT_EQ(std::string("argument1"), results_empty.values("arg1")[0]);
-    ASSERT_EQ(std::string("argument2"), results_empty.values("arg2")[0]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results_empty.get_count("arg1"));
+    ASSERT_EQ(static_cast<std::size_t>(1), results_empty.get_count("arg2"));
+    ASSERT_EQ(static_cast<std::size_t>(0), results_empty.get_count("arg3"));
+    ASSERT_EQ(std::string("argument1"), results_empty.get_values("arg1")[0]);
+    ASSERT_EQ(std::string("argument2"), results_empty.get_values("arg2")[0]);
 
     auto results_single = parser.parse(args_single);
 
-    ASSERT_EQ(static_cast<std::size_t>(1), results_single.count("arg1"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results_single.count("arg2"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results_single.count("arg3"));
-    ASSERT_EQ(std::string("argument1"), results_single.values("arg1")[0]);
-    ASSERT_EQ(std::string("argument2"), results_single.values("arg2")[0]);
-    ASSERT_EQ(std::string("argument3"), results_single.values("arg3")[0]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results_single.get_count("arg1"));
+    ASSERT_EQ(static_cast<std::size_t>(1), results_single.get_count("arg2"));
+    ASSERT_EQ(static_cast<std::size_t>(1), results_single.get_count("arg3"));
+    ASSERT_EQ(std::string("argument1"), results_single.get_values("arg1")[0]);
+    ASSERT_EQ(std::string("argument2"), results_single.get_values("arg2")[0]);
+    ASSERT_EQ(std::string("argument3"), results_single.get_values("arg3")[0]);
 
     ASSERT_THROW(parser.parse(args_too_much), parser_error);
 }
@@ -201,23 +201,23 @@ TEST(positional_args_test, test_multiple_required_last_required_multivalue)
 
     auto results_enough = parser.parse(args_enough);
 
-    ASSERT_EQ(static_cast<std::size_t>(1), results_enough.count("arg1"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results_enough.count("arg2"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results_enough.count("arg3"));
-    ASSERT_EQ(std::string("argument1"), results_enough.values("arg1")[0]);
-    ASSERT_EQ(std::string("argument2"), results_enough.values("arg2")[0]);
-    ASSERT_EQ(std::string("argument3"), results_enough.values("arg3")[0]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results_enough.get_count("arg1"));
+    ASSERT_EQ(static_cast<std::size_t>(1), results_enough.get_count("arg2"));
+    ASSERT_EQ(static_cast<std::size_t>(1), results_enough.get_count("arg3"));
+    ASSERT_EQ(std::string("argument1"), results_enough.get_values("arg1")[0]);
+    ASSERT_EQ(std::string("argument2"), results_enough.get_values("arg2")[0]);
+    ASSERT_EQ(std::string("argument3"), results_enough.get_values("arg3")[0]);
 
     auto results_last_multi = parser.parse(args_last_multi);
 
-    ASSERT_EQ(static_cast<std::size_t>(1), results_last_multi.count("arg1"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results_last_multi.count("arg2"));
-    ASSERT_EQ(static_cast<std::size_t>(3), results_last_multi.count("arg3"));
-    ASSERT_EQ(std::string("argument1"), results_last_multi.values("arg1")[0]);
-    ASSERT_EQ(std::string("argument2"), results_last_multi.values("arg2")[0]);
-    ASSERT_EQ(std::string("argument3"), results_last_multi.values("arg3")[0]);
-    ASSERT_EQ(std::string("argument4"), results_last_multi.values("arg3")[1]);
-    ASSERT_EQ(std::string("argument3"), results_last_multi.values("arg3")[2]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results_last_multi.get_count("arg1"));
+    ASSERT_EQ(static_cast<std::size_t>(1), results_last_multi.get_count("arg2"));
+    ASSERT_EQ(static_cast<std::size_t>(3), results_last_multi.get_count("arg3"));
+    ASSERT_EQ(std::string("argument1"), results_last_multi.get_values("arg1")[0]);
+    ASSERT_EQ(std::string("argument2"), results_last_multi.get_values("arg2")[0]);
+    ASSERT_EQ(std::string("argument3"), results_last_multi.get_values("arg3")[0]);
+    ASSERT_EQ(std::string("argument4"), results_last_multi.get_values("arg3")[1]);
+    ASSERT_EQ(std::string("argument3"), results_last_multi.get_values("arg3")[2]);
 }
 
 TEST(positional_args_test, test_multiple_required_last_optional_multivalue)
@@ -233,31 +233,31 @@ TEST(positional_args_test, test_multiple_required_last_optional_multivalue)
 
     auto results_last_empty = parser.parse(args_last_empty);
 
-    ASSERT_EQ(static_cast<std::size_t>(1), results_last_empty.count("arg1"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results_last_empty.count("arg2"));
-    ASSERT_EQ(static_cast<std::size_t>(0), results_last_empty.count("arg3"));
-    ASSERT_EQ(std::string("argument1"), results_last_empty.values("arg1")[0]);
-    ASSERT_EQ(std::string("argument2"), results_last_empty.values("arg2")[0]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results_last_empty.get_count("arg1"));
+    ASSERT_EQ(static_cast<std::size_t>(1), results_last_empty.get_count("arg2"));
+    ASSERT_EQ(static_cast<std::size_t>(0), results_last_empty.get_count("arg3"));
+    ASSERT_EQ(std::string("argument1"), results_last_empty.get_values("arg1")[0]);
+    ASSERT_EQ(std::string("argument2"), results_last_empty.get_values("arg2")[0]);
 
     auto results_last_single = parser.parse(last_single);
 
-    ASSERT_EQ(static_cast<std::size_t>(1), results_last_single.count("arg1"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results_last_single.count("arg2"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results_last_single.count("arg3"));
-    ASSERT_EQ(std::string("argument1"), results_last_single.values("arg1")[0]);
-    ASSERT_EQ(std::string("argument2"), results_last_single.values("arg2")[0]);
-    ASSERT_EQ(std::string("argument3"), results_last_single.values("arg3")[0]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results_last_single.get_count("arg1"));
+    ASSERT_EQ(static_cast<std::size_t>(1), results_last_single.get_count("arg2"));
+    ASSERT_EQ(static_cast<std::size_t>(1), results_last_single.get_count("arg3"));
+    ASSERT_EQ(std::string("argument1"), results_last_single.get_values("arg1")[0]);
+    ASSERT_EQ(std::string("argument2"), results_last_single.get_values("arg2")[0]);
+    ASSERT_EQ(std::string("argument3"), results_last_single.get_values("arg3")[0]);
 
     auto results_last_multi = parser.parse(args_last_multi);
 
-    ASSERT_EQ(static_cast<std::size_t>(1), results_last_multi.count("arg1"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results_last_multi.count("arg2"));
-    ASSERT_EQ(static_cast<std::size_t>(3), results_last_multi.count("arg3"));
-    ASSERT_EQ(std::string("argument1"), results_last_multi.values("arg1")[0]);
-    ASSERT_EQ(std::string("argument2"), results_last_multi.values("arg2")[0]);
-    ASSERT_EQ(std::string("argument3"), results_last_multi.values("arg3")[0]);
-    ASSERT_EQ(std::string("argument4"), results_last_multi.values("arg3")[1]);
-    ASSERT_EQ(std::string("argument3"), results_last_multi.values("arg3")[2]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results_last_multi.get_count("arg1"));
+    ASSERT_EQ(static_cast<std::size_t>(1), results_last_multi.get_count("arg2"));
+    ASSERT_EQ(static_cast<std::size_t>(3), results_last_multi.get_count("arg3"));
+    ASSERT_EQ(std::string("argument1"), results_last_multi.get_values("arg1")[0]);
+    ASSERT_EQ(std::string("argument2"), results_last_multi.get_values("arg2")[0]);
+    ASSERT_EQ(std::string("argument3"), results_last_multi.get_values("arg3")[0]);
+    ASSERT_EQ(std::string("argument4"), results_last_multi.get_values("arg3")[1]);
+    ASSERT_EQ(std::string("argument3"), results_last_multi.get_values("arg3")[2]);
 }
 
 TEST(positional_args_test, test_argument_match_positional_name)
@@ -270,17 +270,17 @@ TEST(positional_args_test, test_argument_match_positional_name)
 
     auto results1 = parser.parse(args1);
 
-    ASSERT_EQ(static_cast<std::size_t>(3), results1.count("files"));
-    ASSERT_EQ(std::string("files"), results1.values("files")[0]);
-    ASSERT_EQ(std::string("argument1"), results1.values("files")[1]);
-    ASSERT_EQ(std::string("argument2"), results1.values("files")[2]);
+    ASSERT_EQ(static_cast<std::size_t>(3), results1.get_count("files"));
+    ASSERT_EQ(std::string("files"), results1.get_values("files")[0]);
+    ASSERT_EQ(std::string("argument1"), results1.get_values("files")[1]);
+    ASSERT_EQ(std::string("argument2"), results1.get_values("files")[2]);
 
     auto results2 = parser.parse(args2);
 
-    ASSERT_EQ(static_cast<std::size_t>(3), results2.count("files"));
-    ASSERT_EQ(std::string("files=111"), results2.values("files")[0]);
-    ASSERT_EQ(std::string("argument1"), results2.values("files")[1]);
-    ASSERT_EQ(std::string("argument2"), results2.values("files")[2]);
+    ASSERT_EQ(static_cast<std::size_t>(3), results2.get_count("files"));
+    ASSERT_EQ(std::string("files=111"), results2.get_values("files")[0]);
+    ASSERT_EQ(std::string("argument1"), results2.get_values("files")[1]);
+    ASSERT_EQ(std::string("argument2"), results2.get_values("files")[2]);
 }
 
 TEST(positional_args_test, test_default_values)
@@ -292,30 +292,30 @@ TEST(positional_args_test, test_default_values)
     auto& arg = parser1.add_positional("files").set_max_count_unlimited().set_default_values({ "one", "two" });
 
     auto results_args_given = parser1.parse(args_given);
-    ASSERT_EQ(std::size_t(2), results_args_given.count("files"));
-    ASSERT_EQ(std::string("value1"), results_args_given.values("files")[0]);
-    ASSERT_EQ(std::string("value2"), results_args_given.values("files")[1]);
+    ASSERT_EQ(std::size_t(2), results_args_given.get_count("files"));
+    ASSERT_EQ(std::string("value1"), results_args_given.get_values("files")[0]);
+    ASSERT_EQ(std::string("value2"), results_args_given.get_values("files")[1]);
 
     auto results = parser1.parse(args_empty);
-    ASSERT_EQ(std::size_t(2), results.count("files"));
-    ASSERT_EQ(std::string("one"), results.values("files")[0]);
-    ASSERT_EQ(std::string("two"), results.values("files")[1]);
+    ASSERT_EQ(std::size_t(2), results.get_count("files"));
+    ASSERT_EQ(std::string("one"), results.get_values("files")[0]);
+    ASSERT_EQ(std::string("two"), results.get_values("files")[1]);
 
     arg.set_default_values({ "one", "two", "three" });
     results = parser1.parse(args_empty);
-    ASSERT_EQ(std::size_t(3), results.count("files"));
-    ASSERT_EQ(std::string("one"), results.values("files")[0]);
-    ASSERT_EQ(std::string("two"), results.values("files")[1]);
-    ASSERT_EQ(std::string("three"), results.values("files")[2]);
+    ASSERT_EQ(std::size_t(3), results.get_count("files"));
+    ASSERT_EQ(std::string("one"), results.get_values("files")[0]);
+    ASSERT_EQ(std::string("two"), results.get_values("files")[1]);
+    ASSERT_EQ(std::string("three"), results.get_values("files")[2]);
 
     arg.set_default_value("oko");
     results = parser1.parse(args_empty);
-    ASSERT_EQ(std::size_t(1), results.count("files"));
-    ASSERT_EQ(std::string("oko"), results.values("files")[0]);
+    ASSERT_EQ(std::size_t(1), results.get_count("files"));
+    ASSERT_EQ(std::string("oko"), results.get_values("files")[0]);
 
     arg.set_default_values({});
     results = parser1.parse(args_empty);
-    ASSERT_EQ(std::size_t(0), results.count("files"));
+    ASSERT_EQ(std::size_t(0), results.get_count("files"));
 
     parser parser_single;
     parser_single.add_positional("files").set_default_values({ "one", "two" });
@@ -333,29 +333,29 @@ TEST(positional_args_test, test_min_max_count)
     auto& arg_files = parser.add_positional("files").set_max_count(2);
 
     auto results = parser.parse(args0);
-    ASSERT_EQ(std::size_t(1), results.count("patterns"));
-    ASSERT_EQ(std::string("value1"), results.values("patterns")[0]);
-    ASSERT_EQ(std::size_t(0), results.count("files"));
+    ASSERT_EQ(std::size_t(1), results.get_count("patterns"));
+    ASSERT_EQ(std::string("value1"), results.get_values("patterns")[0]);
+    ASSERT_EQ(std::size_t(0), results.get_count("files"));
 
     results = parser.parse(args1);
-    ASSERT_EQ(std::size_t(2), results.count("patterns"));
-    ASSERT_EQ(std::string("value1"), results.values("patterns")[0]);
-    ASSERT_EQ(std::string("value2"), results.values("patterns")[1]);
-    ASSERT_EQ(std::size_t(1), results.count("files"));
-    ASSERT_EQ(std::string("value3"), results.values("files")[0]);
+    ASSERT_EQ(std::size_t(2), results.get_count("patterns"));
+    ASSERT_EQ(std::string("value1"), results.get_values("patterns")[0]);
+    ASSERT_EQ(std::string("value2"), results.get_values("patterns")[1]);
+    ASSERT_EQ(std::size_t(1), results.get_count("files"));
+    ASSERT_EQ(std::string("value3"), results.get_values("files")[0]);
 
     ASSERT_THROW(parser.parse(args2), parser_error);
 
     arg_patterns.set_min_count(3).set_max_count(3);
     arg_files.set_min_count(2).set_max_count_unlimited();
     results = parser.parse(args2);
-    ASSERT_EQ(std::size_t(3), results.count("patterns"));
-    ASSERT_EQ(std::string("value1"), results.values("patterns")[0]);
-    ASSERT_EQ(std::string("value2"), results.values("patterns")[1]);
-    ASSERT_EQ(std::string("value3"), results.values("patterns")[2]);
-    ASSERT_EQ(std::size_t(2), results.count("files"));
-    ASSERT_EQ(std::string("value4"), results.values("files")[0]);
-    ASSERT_EQ(std::string("value5"), results.values("files")[1]);
+    ASSERT_EQ(std::size_t(3), results.get_count("patterns"));
+    ASSERT_EQ(std::string("value1"), results.get_values("patterns")[0]);
+    ASSERT_EQ(std::string("value2"), results.get_values("patterns")[1]);
+    ASSERT_EQ(std::string("value3"), results.get_values("patterns")[2]);
+    ASSERT_EQ(std::size_t(2), results.get_count("files"));
+    ASSERT_EQ(std::string("value4"), results.get_values("files")[0]);
+    ASSERT_EQ(std::string("value5"), results.get_values("files")[1]);
 }
 
 TEST(positional_args_test, test_allowed_values)
@@ -364,16 +364,16 @@ TEST(positional_args_test, test_allowed_values)
     parser.add_positional("value").set_allowed_values({ "a", "b", "c" });
 
     auto results1 = parser.parse(argument_table("app", { "a" }));
-    ASSERT_EQ(std::size_t(1), results1.count("value"));
-    ASSERT_EQ(std::string("a"), results1.values("value")[0]);
+    ASSERT_EQ(std::size_t(1), results1.get_count("value"));
+    ASSERT_EQ(std::string("a"), results1.get_values("value")[0]);
 
     auto results2 = parser.parse(argument_table("app", { "b" }));
-    ASSERT_EQ(std::size_t(1), results2.count("value"));
-    ASSERT_EQ(std::string("b"), results2.values("value")[0]);
+    ASSERT_EQ(std::size_t(1), results2.get_count("value"));
+    ASSERT_EQ(std::string("b"), results2.get_values("value")[0]);
 
     auto results3 = parser.parse(argument_table("app", { "c" }));
-    ASSERT_EQ(std::size_t(1), results3.count("value"));
-    ASSERT_EQ(std::string("c"), results3.values("value")[0]);
+    ASSERT_EQ(std::size_t(1), results3.get_count("value"));
+    ASSERT_EQ(std::string("c"), results3.get_values("value")[0]);
 
     ASSERT_THROW(parser.parse(argument_table("app", { "d" })), parser_error);
 }

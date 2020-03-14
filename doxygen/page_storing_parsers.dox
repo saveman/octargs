@@ -1,0 +1,85 @@
+/**
+
+\page page_storing_parsers Storing parsers
+
+\brief Parsers that store parsed values in a user defined storage object
+
+\tableofcontents
+
+
+\section section_help_type_handlers Type handlers
+
+One of the useful features of the library is the ability to store values
+of the parsed arguments in an object provided by the user so a single call
+to parse is often enough to fill the whole data structure and start
+doing the main job.
+
+For each argument is is possible to define its type (see: \ref section_help_type_std).
+Setting the type constructs a type handler object and attaches it to the argument.
+
+\code{.cpp}
+    arg_parser.add_valued({ "--lines" }).set_type<int>();
+\endcode
+
+The handler has three 'hooks' (functions) which could be set.
+
+\li convert - used to convert string representation to the requested type
+\li check   - used to check if the parsed and converted value is correct
+              (e.g. it could check if value is in some predefined range)
+\li store   - used to store the parsed and converted value
+
+When the argument type is set using set_type() method only the convert function
+is set (if not given by the user then default converter class is used). There is
+also a second way to set the type: set_type_and_storage() - this version sets
+both convert and store function. As it uses the automatic type deduction in many
+cases it is enough to provide the storage location (e.g. member of a storage object,
+details described in other section) and the rest is done automatically.
+
+\code{.cpp}
+    arg_parser.add_switch({ "-E", "--show-ends" })
+        .set_description("display $ at end of each line")
+        .set_type_and_storage(&cat_app_settings::m_print_line_ends);
+\endcode
+
+
+\section section_help_storing_parsers Storing parsers
+
+To provide maximum flexibility with minimum amount of code the storing
+parsers were added to the library. While using standard parsers normally the results
+object is used to get the argument values. With the storing parser the standard way
+of handling arguments is to use the set_type_and_storage() method of an argument.
+
+The steps to follow when using storing parsers are described in next sections.
+
+
+\subsection section_help_defining_storage_type Defining the storage type
+
+Storage type is a type that will be used to store the argument values. For example:
+
+\snippet code_storing_parser.cpp Snippet Data Storage
+
+
+\subsection section_help_defining_parser_type Defining the parser type
+
+When the storage type is defined then we are ready to define the parser type:
+
+\snippet code_storing_parser.cpp Snippet Parser Type
+
+
+\subsection section_help_setting_arg_type Settings arguments type and storage
+
+Next step is to tell the arguments where to store the values (and implicitly: what is
+the type of the argument).
+
+\snippet code_storing_parser.cpp Snippet Build Parser
+
+
+\subsection section_help_parsing_storage Parsing and storing the results
+
+With the parser prepared as described above the usage is very simple:
+
+\snippet code_storing_parser.cpp Snippet Parse
+
+And if there were no errors the data object is now filled with the values and ready to use!
+
+*/

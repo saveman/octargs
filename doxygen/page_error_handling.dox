@@ -1,0 +1,60 @@
+/**
+
+\page page_error_handling Error Handling
+
+\brief Handling configuration and parsing errors
+
+\tableofcontents
+
+
+\section section_help_errors_overview Error handling
+
+The library uses exceptions to report errors. All exceptions are derived
+from std::exception subclasses and try to follow the C++ standard.
+
+First type of exceptions thrown are these related to invalid use of the API or
+bad setup of the parser. Such exception in normal case mean that the application
+code must be fixed:
+
+\li \ref oct::args::invalid_argument_name -
+    thrown when given argument name is invalid (is duplicated,
+    contains invalid characters, etc.).
+\li \ref oct::args::conversion_error -
+    thrown when conversion failed (and was requested by the user;
+    when parser is converting the value it wraps this exception with parser_error)
+\li \ref oct::args::missing_converter -
+    thrown when conversion function is missing (and parser needs
+    to convert the value provided by user)
+\li \ref oct::args::subparser_positional_conflict -
+    thrown when there is a conflict between positional and/or subparser
+    arguments (by design parser does not handle both subparser and
+    positional arguments, or two subparsers in a single instance)
+\li \ref oct::args::unknown_argument -
+    thrown when unknown argument was requested (e.g. results were
+    requested for argument that was never registered)
+
+Second type of exception are these thrown by parser when input cannot be parsed correctly, because
+for example it contains invalid arguments names or required values are missing.
+The \ref oct::args::parser_error has a member with \ref oct::args::parser_error_code describing
+what exactly happened.
+
+\li \ref oct::args::parser_error -
+    thrown when parsing cannot be performed
+
+As parser supports different types of character types (char, wchar_t, ...) to provide easy to use
+and valuable exceptions the details like the invalid argument name is also stored in the exception.
+To make it possible the extended exceptions were created which are templates. For example:
+
+\li \ref oct::args::parser_error_ex -
+    contains name and value members that are used to store the name and value that
+    caused the problem.
+
+Example of error handling:
+
+\snippet code_error_handling.cpp Snippet
+
+Full code:
+
+\include code_error_handling.cpp
+
+*/

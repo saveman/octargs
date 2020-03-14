@@ -10,6 +10,13 @@ namespace oct
 namespace args
 {
 
+/// \brief String wrapper using shared pointer
+///
+/// This class wraps std::basic_string stored using shared pointer.
+/// It is used to store strings safely in exceptions as shared pointer
+/// copy construction does not throw exceptions.
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename char_T>
 class basic_shared_string
 {
@@ -34,6 +41,7 @@ private:
 
 //---------------------------------
 
+/// \brief Exception thrown when conversion function is missing.
 class missing_converter : public std::logic_error
 {
 public:
@@ -44,8 +52,35 @@ public:
     }
 };
 
+/// \brief Exception thrown when conversion function is missing.
+///
+/// \tparam char_T      char type (as in std::basic_string)
+template <class char_T>
+class missing_converter_ex : public missing_converter
+{
+public:
+    using char_type = char_T;
+    using string_type = std::basic_string<char_type>;
+
+    missing_converter_ex(const string_type& value)
+        : missing_converter()
+        , m_value(value)
+    {
+        // noop
+    }
+
+    const string_type& get_value() const
+    {
+        return m_value;
+    }
+
+private:
+    basic_shared_string<char_type> m_value;
+};
+
 //---------------------------------
 
+/// \brief Exception thrown when conversion failed
 class conversion_error : public std::runtime_error
 {
 public:
@@ -56,6 +91,9 @@ public:
     }
 };
 
+/// \brief Exception thrown when conversion failed
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <class char_T>
 class conversion_error_ex : public conversion_error
 {
@@ -70,7 +108,7 @@ public:
         // noop
     }
 
-    const string_type& value() const
+    const string_type& get_value() const
     {
         return m_value;
     }
@@ -81,6 +119,7 @@ private:
 
 //---------------------------------
 
+/// \brief Exception thrown when unknown argument was requested
 class unknown_argument : public std::logic_error
 {
 public:
@@ -91,6 +130,9 @@ public:
     }
 };
 
+/// \brief Exception thrown when unknown argument was requested
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <class char_T>
 class unknown_argument_ex : public unknown_argument
 {
@@ -105,7 +147,7 @@ public:
         // noop
     }
 
-    const string_type& name() const
+    const string_type& get_name() const
     {
         return m_name;
     }
@@ -116,6 +158,7 @@ private:
 
 //---------------------------------
 
+/// \brief Exception thrown when given argument name is invalid
 class invalid_argument_name : public std::logic_error
 {
 public:
@@ -126,6 +169,9 @@ public:
     }
 };
 
+/// \brief Exception thrown when given argument name is invalid
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <class char_T>
 class invalid_argument_name_ex : public invalid_argument_name
 {
@@ -140,7 +186,7 @@ public:
         // noop
     }
 
-    const string_type& name() const
+    const string_type& get_name() const
     {
         return m_name;
     }
@@ -151,6 +197,9 @@ private:
 
 //---------------------------------
 
+/// \brief Exception thrown when there is a conflict between positional and/or subparser arguments
+///
+/// \tparam char_T      char type (as in std::basic_string)
 class subparser_positional_conflict : public std::logic_error
 {
 public:

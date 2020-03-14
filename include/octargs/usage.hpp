@@ -22,6 +22,10 @@ namespace oct
 namespace args
 {
 
+/// \brief Parser usage output generator
+///
+/// \tparam char_T              char type (as in std::basic_string)
+/// \tparam values_storage_T    type of class uses as a storage for parsed values
 template <typename char_T, typename values_storage_T = internal::null_values_storage>
 class basic_parser_usage
 {
@@ -149,7 +153,7 @@ private:
 
         build_infos(infos);
 
-        output_infos(os, infos, title, description);
+        print_infos(os, infos, title, description);
     }
 
     void print_default_named_arguments(ostream_type& os) const
@@ -265,7 +269,7 @@ private:
             const char optreq_open_char = is_required ? '<' : '[';
             const char optreq_close_char = is_required ? '>' : ']';
 
-            os << ' ' << optreq_open_char << argument->get_names()[0] << optreq_close_char;
+            os << ' ' << optreq_open_char << argument->get_first_name() << optreq_close_char;
             if (multiple_allowed)
             {
                 os << "...";
@@ -277,13 +281,13 @@ private:
     {
         if (m_data_ptr->m_argument_repository.m_subparsers_argument)
         {
-            os << ' ' << '<' << m_data_ptr->m_argument_repository.m_subparsers_argument->get_names()[0] << '>';
+            os << ' ' << '<' << m_data_ptr->m_argument_repository.m_subparsers_argument->get_first_name() << '>';
 
             bool any_args = false;
 
             for (auto& iter : m_data_ptr->m_argument_repository.m_subparsers_argument->get_parsers())
             {
-                auto subusage = iter.second->usage();
+                auto subusage = iter.second->get_usage();
 
                 if (subusage.has_args())
                 {
@@ -316,7 +320,7 @@ private:
         if (m_data_ptr->m_argument_repository.m_subparsers_argument)
         {
             os << std::endl;
-            os << m_data_ptr->m_argument_repository.m_subparsers_argument->get_names()[0] << ':' << std::endl;
+            os << m_data_ptr->m_argument_repository.m_subparsers_argument->get_first_name() << ':' << std::endl;
 
             std::size_t longest_name_len = 0;
             for (auto& iter : m_data_ptr->m_argument_repository.m_subparsers_argument->get_parsers())
@@ -326,7 +330,7 @@ private:
 
             for (auto& iter : m_data_ptr->m_argument_repository.m_subparsers_argument->get_parsers())
             {
-                auto subusage = iter.second->usage();
+                auto subusage = iter.second->get_usage();
 
                 auto this_name_len = iter.first.size();
 
@@ -611,7 +615,7 @@ private:
         }
     }
 
-    void output_infos(
+    void print_infos(
         ostream_type& os, arg_info_vector& infos, const string_type& header, const string_type& description) const
     {
         os << std::endl;
@@ -657,7 +661,7 @@ private:
     std::size_t m_multiline_indent;
     std::size_t m_arg_line_indent;
     dictionary_ptr_type m_dictionary;
-}; // namespace args
+};
 
 } // namespace args
 } // namespace oct

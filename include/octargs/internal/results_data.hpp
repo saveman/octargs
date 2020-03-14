@@ -84,7 +84,7 @@ public:
         return name_arg_iter->second;
     }
 
-    std::size_t count(const string_type& arg_name) const
+    std::size_t get_count(const string_type& arg_name) const
     {
         auto name_arg_iter = find_argument(arg_name);
         auto values_iter = m_argument_values.find(name_arg_iter);
@@ -98,7 +98,7 @@ public:
         }
     }
 
-    const string_vector_type& values(const string_type& arg_name) const
+    const string_vector_type& get_values(const string_type& arg_name) const
     {
         auto name_arg_iter = find_argument(arg_name);
         auto values_iter = m_argument_values.find(name_arg_iter);

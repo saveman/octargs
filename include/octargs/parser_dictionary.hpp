@@ -9,12 +9,21 @@ namespace oct
 namespace args
 {
 
-template <typename CHAR_TYPE>
+/// \brief Parser literals dictionary
+///
+/// \tparam char_T              char type (as in std::basic_string)
+template <typename char_T>
 class parser_dictionary
 {
-    // noop
+private:
+    parser_dictionary()
+    {
+        // noop
+    }
 };
 
+/// \brief Parser literals dictionary (specialization for char type)
+///
 template <>
 class parser_dictionary<char>
 {
@@ -55,6 +64,8 @@ public:
     }
 };
 
+/// \brief Parser literals dictionary (specialization for wchar_t type)
+///
 template <>
 class parser_dictionary<wchar_t>
 {

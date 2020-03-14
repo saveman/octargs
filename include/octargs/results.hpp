@@ -11,6 +11,10 @@ namespace oct
 {
 namespace args
 {
+
+/// \brief Argument parsing results
+///
+/// \tparam char_T              char type (as in std::basic_string)
 template <typename char_T>
 class basic_results
 {
@@ -38,39 +42,49 @@ public:
 
     bool has_value(const string_type& arg_name) const
     {
-        return count(arg_name) > 0;
+        return get_count(arg_name) > 0;
     }
 
-    std::size_t count(const string_type& arg_name) const
+    std::size_t get_count(const string_type& arg_name) const
     {
-        return m_results_data_ptr->count(arg_name);
+        return m_results_data_ptr->get_count(arg_name);
     }
 
-    const string_vector_type& values(const string_type& arg_name) const
+    const string_type& get_first_value(const string_type& arg_name) const
     {
-        return m_results_data_ptr->values(arg_name);
+        auto& values = get_values(arg_name);
+        if (values.size() == 0)
+        {
+            throw std::logic_error("values collection is empty");
+        }
+        return values[0];
+    }
+
+    const string_vector_type& get_values(const string_type& arg_name) const
+    {
+        return m_results_data_ptr->get_values(arg_name);
     }
 
     template <typename data_T, typename converter_T = basic_converter<char_type, data_T>>
-    data_T as(const string_type& arg_name, const data_T& default_value = data_T()) const
+    data_T get_first_value_as(const string_type& arg_name, const data_T& default_value = data_T()) const
     {
-        using data_type = data_T;
         using converter_type = converter_T;
 
-        data_type data(default_value);
-
-        converter_type converter;
-
-        for (const auto& value_str : values(arg_name))
+        auto& values = get_values(arg_name);
+        if (values.size() == 0)
         {
-            data = converter(value_str);
+            return default_value;
         }
+        else
+        {
+            converter_type converter;
 
-        return data;
+            return converter(values[0]);
+        }
     }
 
     template <typename data_T, typename converter_T = basic_converter<char_type, data_T>>
-    std::vector<data_T> as_vector(const string_type& arg_name) const
+    std::vector<data_T> get_values_as(const string_type& arg_name) const
     {
         using data_type = data_T;
         using converter_type = converter_T;
@@ -79,7 +93,7 @@ public:
 
         converter_type converter;
 
-        for (const auto& value_str : values(arg_name))
+        for (const auto& value_str : get_values(arg_name))
         {
             data_vector.emplace_back(converter(value_str));
         }

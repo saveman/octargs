@@ -20,13 +20,13 @@ TEST(switch_args_test, test_happy_hapth)
 
     auto results = parser.parse(args);
     ASSERT_TRUE(results.has_value("-a"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results.values("-a").size());
-    ASSERT_EQ(dictionary_type::get_switch_enabled_literal(), results.values("-a")[0]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results.get_values("-a").size());
+    ASSERT_EQ(dictionary_type::get_switch_enabled_literal(), results.get_values("-a")[0]);
     ASSERT_TRUE(!results.has_value("-b"));
-    ASSERT_EQ(static_cast<std::size_t>(0), results.values("-b").size());
+    ASSERT_EQ(static_cast<std::size_t>(0), results.get_values("-b").size());
     ASSERT_TRUE(results.has_value("-c"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results.values("-c").size());
-    ASSERT_EQ(dictionary_type::get_switch_enabled_literal(), results.values("-c")[0]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results.get_values("-c").size());
+    ASSERT_EQ(dictionary_type::get_switch_enabled_literal(), results.get_values("-c")[0]);
 }
 
 TEST(switch_args_test, test_no_names)
@@ -106,14 +106,14 @@ TEST(switch_args_test, test_multiple_values)
     parser.add_switch({ "-a" }).set_max_count(2);
 
     auto results1 = parser.parse(args1);
-    ASSERT_EQ(static_cast<std::size_t>(1), results1.count("-v"));
-    ASSERT_EQ(static_cast<std::size_t>(0), results1.count("-a"));
+    ASSERT_EQ(static_cast<std::size_t>(1), results1.get_count("-v"));
+    ASSERT_EQ(static_cast<std::size_t>(0), results1.get_count("-a"));
     auto results2 = parser.parse(args2);
-    ASSERT_EQ(static_cast<std::size_t>(2), results2.count("-v"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results2.count("-a"));
+    ASSERT_EQ(static_cast<std::size_t>(2), results2.get_count("-v"));
+    ASSERT_EQ(static_cast<std::size_t>(1), results2.get_count("-a"));
     auto results4 = parser.parse(args4);
-    ASSERT_EQ(static_cast<std::size_t>(4), results4.count("-v"));
-    ASSERT_EQ(static_cast<std::size_t>(0), results4.count("-a"));
+    ASSERT_EQ(static_cast<std::size_t>(4), results4.get_count("-v"));
+    ASSERT_EQ(static_cast<std::size_t>(0), results4.get_count("-a"));
 }
 
 TEST(switch_args_test, test_more_values_than_count)
@@ -135,7 +135,7 @@ TEST(switch_args_test, test_unlimited_values)
     parser.add_switch({ "--arg" }).set_max_count_unlimited();
 
     auto results = parser.parse(args);
-    ASSERT_EQ(COUNT, results.count("--arg"));
+    ASSERT_EQ(COUNT, results.get_count("--arg"));
 }
 
 TEST(switch_args_test, test_default_values)
@@ -147,21 +147,21 @@ TEST(switch_args_test, test_default_values)
     auto& arg = parser.add_switch({ "-v" }).set_max_count(3).set_default_values_count(2);
 
     auto results_one = parser.parse(args_one);
-    ASSERT_EQ(std::size_t(1), results_one.count("-v"));
+    ASSERT_EQ(std::size_t(1), results_one.get_count("-v"));
 
     auto results = parser.parse(args_empty);
-    ASSERT_EQ(std::size_t(2), results.count("-v"));
+    ASSERT_EQ(std::size_t(2), results.get_count("-v"));
 
     arg.set_default_values_count(4);
     ASSERT_THROW(parser.parse(args_empty), parser_error);
 
     arg.set_default_values_count(3);
     results = parser.parse(args_empty);
-    ASSERT_EQ(std::size_t(3), results.count("-v"));
+    ASSERT_EQ(std::size_t(3), results.get_count("-v"));
 
     arg.set_default_values_count(0);
     results = parser.parse(args_empty);
-    ASSERT_EQ(std::size_t(0), results.count("-v"));
+    ASSERT_EQ(std::size_t(0), results.get_count("-v"));
 }
 
 } // namespace args

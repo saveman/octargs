@@ -11,29 +11,16 @@ namespace oct
 namespace args
 {
 
-template <class char_T>
-class missing_converter_ex : public missing_converter
-{
-public:
-    using char_type = char_T;
-    using string_type = std::basic_string<char_type>;
-
-    missing_converter_ex(const string_type& value)
-        : missing_converter()
-        , m_value(value)
-    {
-        // noop
-    }
-
-    const string_type& value() const
-    {
-        return m_value;
-    }
-
-private:
-    basic_shared_string<char_type> m_value;
-};
-
+/// \brief Handler for processing argument values in a type-specific way
+///
+/// The handler has following "hooks" (functions):
+/// - convert - used to convert the string representation to data type
+/// - check   - used to check if the data after conversion is valid
+/// - store   - used to store the data
+///
+/// \tparam data_T              argument value data type
+/// \tparam char_T              char type (as in std::basic_string)
+/// \tparam values_storage_T    type of object to store parsed values
 template <typename data_T, typename char_T, typename values_storage_T>
 class basic_argument_type_handler : public internal::basic_argument_handler<char_T, values_storage_T>
 {
@@ -51,6 +38,7 @@ public:
 
     basic_argument_type_handler(const convert_function_type& convert_func = basic_converter<char_type, data_type>())
         : m_convert_function(convert_func)
+        , m_check_function()
         , m_store_function()
     {
         // noop

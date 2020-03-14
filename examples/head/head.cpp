@@ -69,7 +69,7 @@ public:
 
             if (results.has_value("--help"))
             {
-                std::cout << arg_parser.usage() << std::endl;
+                std::cout << arg_parser.get_usage() << std::endl;
                 return EXIT_SUCCESS;
             }
 
@@ -80,29 +80,29 @@ public:
             m_print_header = results.has_value("--header");
             if (results.has_value("--bytes"))
             {
-                m_bytes_limit = parse_limit(results.values("--bytes")[0]);
+                m_bytes_limit = parse_limit(results.get_values("--bytes")[0]);
             }
             if (results.has_value("--lines"))
             {
-                m_lines_limit = parse_limit(results.values("--lines")[0]);
+                m_lines_limit = parse_limit(results.get_values("--lines")[0]);
             }
             if ((m_bytes_limit < 0) && (m_lines_limit < 0))
             {
                 m_lines_limit = DEFAULT_LINES_LIMIT;
             }
 
-            if (results.count("FILES") == 0)
+            if (results.get_count("FILES") == 0)
             {
                 process_inputs({ STANDARD_INPUT_NAME });
             }
             else
             {
-                process_inputs(results.values("FILES"));
+                process_inputs(results.get_values("FILES"));
             }
         }
         catch (const oct::args::parser_error_ex<char>& exc)
         {
-            std::cerr << "Argument parsing error near: " << exc.name() << " " << exc.value() << std::endl;
+            std::cerr << "Argument parsing error near: " << exc.get_name() << " " << exc.get_value() << std::endl;
             std::cerr << "Run " << argv[0] << " --help to see usage information" << std::endl;
             return EXIT_FAILURE;
         }

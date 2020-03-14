@@ -32,7 +32,7 @@ public:
 
             if (settings.m_help_requested)
             {
-                std::cout << m_parser.usage() << std::endl;
+                std::cout << m_parser.get_usage() << std::endl;
                 return EXIT_SUCCESS;
             }
             if (settings.m_protocol == "file")
@@ -46,7 +46,7 @@ public:
         }
         catch (const oct::args::parser_error_ex<char>& exc)
         {
-            std::cerr << "Argument parsing error near: " << exc.name() << " " << exc.value() << std::endl;
+            std::cerr << "Argument parsing error near: " << exc.get_name() << " " << exc.get_value() << std::endl;
             std::cerr << "Run " << m_input_args.get_app_name() << " --help to see usage information" << std::endl;
             return EXIT_FAILURE;
         }
@@ -66,7 +66,7 @@ private:
     {
         if (file_settings.m_help_requested)
         {
-            std::cout << m_file_parser.usage() << std::endl;
+            std::cout << m_file_parser.get_usage() << std::endl;
             return EXIT_SUCCESS;
         }
 
@@ -78,7 +78,7 @@ private:
     {
         if (http_settings.m_help_requested)
         {
-            std::cout << m_http_parser.usage() << std::endl;
+            std::cout << m_http_parser.get_usage() << std::endl;
             return EXIT_SUCCESS;
         }
 

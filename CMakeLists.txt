@@ -7,6 +7,9 @@ if("${RELEASE_VERSION}" STREQUAL "")
     set(RELEASE_VERSION "0.0.0")
 endif()
 
+# Require dot, treat the other components as optional
+find_package(Doxygen)
+
 project(octargs
     VERSION ${RELEASE_VERSION}
     DESCRIPTION "C++ command line argument parsing library"
@@ -17,6 +20,20 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(CTest)
 include(GNUInstallDirs)
+
+if (DOXYGEN_FOUND)
+    set(DOXYGEN_RECURSIVE NO)
+    set(DOXYGEN_WARN_IF_UNDOCUMENTED NO)
+    set(DOXYGEN_REPEAT_BRIEF YES)
+    set(DOXYGEN_ENUM_VALUES_PER_LINE 1)
+    
+    set(DOXYGEN_EXAMPLE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/doxygen/examples")
+
+    doxygen_add_docs(doxygen
+        include/octargs
+        doxygen
+    )
+endif()
 
 if (ENABLE_COVERAGE AND NOT WIN32)
     include(CodeCoverage)
@@ -68,6 +85,7 @@ set(${PROJECT_NAME}_HEADERS
     include/octargs/exclusive_argument.hpp
     include/octargs/octargs.hpp
     include/octargs/parser.hpp
+    include/octargs/parser_error.hpp
     include/octargs/positional_argument.hpp
     include/octargs/parser_dictionary.hpp
     include/octargs/results.hpp

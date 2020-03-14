@@ -24,14 +24,14 @@ TEST(subparser_test, test_basic)
     argument_table args1("appname", { "-v", "add", "2", "4", "18" });
 
     auto results1 = parser.parse(args1);
-    ASSERT_EQ(std::size_t(1), results1.count("--verbose"));
-    ASSERT_EQ(std::size_t(1), results1.count("command"));
-    ASSERT_EQ(std::string("add"), results1.values("command")[0]);
-    ASSERT_EQ(std::size_t(0), results1.count("add -s"));
-    ASSERT_EQ(std::size_t(3), results1.count("add values"));
-    ASSERT_EQ(std::string("2"), results1.values("add values")[0]);
-    ASSERT_EQ(std::string("4"), results1.values("add values")[1]);
-    ASSERT_EQ(std::string("18"), results1.values("add values")[2]);
+    ASSERT_EQ(std::size_t(1), results1.get_count("--verbose"));
+    ASSERT_EQ(std::size_t(1), results1.get_count("command"));
+    ASSERT_EQ(std::string("add"), results1.get_values("command")[0]);
+    ASSERT_EQ(std::size_t(0), results1.get_count("add -s"));
+    ASSERT_EQ(std::size_t(3), results1.get_count("add values"));
+    ASSERT_EQ(std::string("2"), results1.get_values("add values")[0]);
+    ASSERT_EQ(std::string("4"), results1.get_values("add values")[1]);
+    ASSERT_EQ(std::string("18"), results1.get_values("add values")[2]);
 }
 
 namespace

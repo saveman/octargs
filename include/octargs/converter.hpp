@@ -13,6 +13,12 @@ namespace oct
 namespace args
 {
 
+/// \brief Base converter template
+///
+/// The base template does not allow any conversion.
+///
+/// \tparam char_T      char type (as in std::basic_string)
+/// \tparam data_T      data type
 template <typename char_T, typename data_T>
 class basic_converter
 {
@@ -20,6 +26,9 @@ public:
     basic_converter() = delete;
 };
 
+/// \brief Converter for string type
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename char_T>
 class basic_converter<char_T, std::basic_string<char_T>>
 {
@@ -34,6 +43,9 @@ public:
     }
 };
 
+/// \brief Converter for bool type
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename char_T>
 class basic_converter<char_T, bool>
 {
@@ -61,6 +73,15 @@ public:
     }
 };
 
+/// \brief Converter for integer types
+///
+/// This converter catch std::exception exceptions thrown by convert function and
+/// throws conversion_error exception instead that wraps the original exception.
+///
+/// \tparam char_T      char type (as in std::basic_string)
+/// \tparam data_T      data type (integer)
+/// \tparam convert_T   conversion function used to perform conversion
+///
 template <typename char_T, typename data_T, data_T (*convert_F)(const std::basic_string<char_T>&, std::size_t*, int)>
 class basic_integer_converter
 {
@@ -91,6 +112,15 @@ public:
     }
 };
 
+/// \brief Converter for floating types
+///
+/// This converter catch std::exception exceptions thrown by convert function and
+/// throws conversion_error exception instead that wraps the original exception.
+///
+/// \tparam char_T      char type (as in std::basic_string)
+/// \tparam data_T      data type (floating)
+/// \tparam convert_T   conversion function used to perform conversion
+///
 template <typename char_T, typename data_T, data_T (*convert_F)(const std::basic_string<char_T>&, std::size_t*)>
 class basic_floating_point_converter
 {
@@ -121,59 +151,92 @@ public:
     }
 };
 
+/// \brief Converter for float type
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename char_T>
 class basic_converter<char_T, float> : public basic_floating_point_converter<char_T, float, std::stof>
 {
 };
 
+/// \brief Converter for double type
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename char_T>
 class basic_converter<char_T, double> : public basic_floating_point_converter<char_T, double, std::stod>
 {
 };
 
+/// \brief Converter for long double type
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename char_T>
 class basic_converter<char_T, long double> : public basic_floating_point_converter<char_T, long double, std::stold>
 {
 };
 
+/// \brief Converter for short type
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename char_T>
 class basic_converter<char_T, short>
     : public basic_integer_converter<char_T, short, internal::stox<std::basic_string<char_T>, short>>
 {
 };
 
+/// \brief Converter for unsigned short type
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename char_T>
 class basic_converter<char_T, unsigned short>
     : public basic_integer_converter<char_T, unsigned short, internal::stox<std::basic_string<char_T>, unsigned short>>
 {
 };
 
+/// \brief Converter for int type
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename char_T>
 class basic_converter<char_T, int> : public basic_integer_converter<char_T, int, std::stoi>
 {
 };
 
+/// \brief Converter for unsigned int type
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename char_T>
 class basic_converter<char_T, unsigned int>
     : public basic_integer_converter<char_T, unsigned int, internal::stox<std::basic_string<char_T>, unsigned int>>
 {
 };
 
+/// \brief Converter for long type
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename char_T>
 class basic_converter<char_T, long> : public basic_integer_converter<char_T, long, std::stol>
 {
 };
 
+/// \brief Converter for unsigned long type
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename char_T>
 class basic_converter<char_T, unsigned long> : public basic_integer_converter<char_T, unsigned long, std::stoul>
 {
 };
 
+/// \brief Converter for long long type
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename char_T>
 class basic_converter<char_T, long long> : public basic_integer_converter<char_T, long long, std::stoll>
 {
 };
 
+/// \brief Converter for unsigned long long type
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename char_T>
 class basic_converter<char_T, unsigned long long>
     : public basic_integer_converter<char_T, unsigned long long, std::stoull>

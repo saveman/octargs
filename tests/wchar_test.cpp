@@ -30,10 +30,10 @@ TEST(wchar_test, test_basic)
     parser.add_positional(L"values").set_max_count_unlimited();
 
     auto results = parser.parse(test_argc, test_argv);
-    ASSERT_EQ(static_cast<size_t>(3), results.count(L"values"));
-    ASSERT_TRUE(results.values(L"values")[0] == test_argv[2]);
-    ASSERT_TRUE(results.values(L"values")[1] == test_argv[3]);
-    ASSERT_TRUE(results.values(L"values")[2] == test_argv[4]);
+    ASSERT_EQ(static_cast<size_t>(3), results.get_count(L"values"));
+    ASSERT_TRUE(results.get_values(L"values")[0] == test_argv[2]);
+    ASSERT_TRUE(results.get_values(L"values")[1] == test_argv[3]);
+    ASSERT_TRUE(results.get_values(L"values")[2] == test_argv[4]);
     ASSERT_TRUE(results.has_value(L"--version"));
 }
 

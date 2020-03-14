@@ -1,0 +1,66 @@
+/**
+
+\page page_usage_documentation Usage documentation
+
+\brief Providing and printing usage documentation
+
+\tableofcontents
+
+
+\section section_help_usage Application usage information
+
+Most command line applications provide documentation how user could
+use them. There are often man or web pages with all the details but
+there is also a shorter info available when application is started with
+arguments like "--help" (Unix) or "/?" (Windows).
+
+To provide documentation for the arguments and the application it must
+be first attached to parser elements. General info is set on the parser
+object:
+
+\snippet code_usage.cpp Snippet Parser Info
+
+Details about arguments are provided by setting info on registered argument objects:
+
+\snippet code_usage.cpp Snippet Argument Info
+
+To make the documentation easier to read argument grouping could be used:
+
+\snippet code_usage.cpp Snippet Group
+
+The remaining element is how to allow the user to request the usage information:
+
+\snippet code_usage.cpp Snippet Switch
+
+And when the above exclusive argument is used by the user the usage information
+must be printed on the console. For example this way:
+
+\snippet code_usage.cpp Snippet Print
+
+Full code:
+
+\include code_usage.cpp
+
+Output:
+
+\code{.unparsed}
+Usage: [OPTIONS]... [URLs]
+
+Get file from HTTP server
+
+More information could be found on http://example.com/
+
+Optional arguments:
+  -h, --help     print usage information
+      --verbose  print verbose debug messages
+
+Positional arguments:
+  URLs  URLs of files to download
+
+Protocol arguments::
+  -0, --use-http-1.0      use HTTP/1.0 instead of default HTTP/1.1
+  -a, --user-agent=agent  user agent sent in the request
+                            by default it is empty
+\endcode
+
+*/

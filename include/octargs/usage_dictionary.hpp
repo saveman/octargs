@@ -10,6 +10,7 @@ namespace oct
 namespace args
 {
 
+/// \brief Exception thrown when unsupported key is used with usage dictionary.
 class invalid_usage_dictionary_key : public std::logic_error
 {
 public:
@@ -20,6 +21,7 @@ public:
     }
 };
 
+/// \brief Usage dictionary keys
 enum class usage_dictionary_string_key
 {
     USAGE_LEAD,
@@ -35,23 +37,33 @@ enum class usage_dictionary_string_key
     DECORATOR_ALLOWED,
 };
 
-template <typename CHAR_TYPE>
+/// \brief Usage terms dictionary
+///
+/// \tparam char_T              char type (as in std::basic_string)
+template <typename char_T>
 class usage_dictionary
 {
 public:
-    using char_type = CHAR_TYPE;
+    using char_type = char_T;
     using string_type = std::basic_string<char_type>;
 
     virtual ~usage_dictionary() = default;
     virtual const string_type& get_string(usage_dictionary_string_key key) = 0;
 };
 
-template <typename CHAR_TYPE>
+/// \brief Usage terms dictionary
+///
+/// \tparam char_T              char type (as in std::basic_string)
+template <typename char_T>
 class default_usage_dictionary
 {
-    // noop
+public:
+    default_usage_dictionary() = delete;
 };
 
+/// \brief Usage terms dictionary (specialization for char type)
+///
+/// \tparam char_T              char type (as in std::basic_string)
 template <>
 class default_usage_dictionary<char> : public usage_dictionary<char>
 {
@@ -80,6 +92,9 @@ public:
     }
 };
 
+/// \brief Usage terms dictionary (specialization for wchar_t type)
+///
+/// \tparam char_T              char type (as in std::basic_string)
 template <>
 class default_usage_dictionary<wchar_t> : public usage_dictionary<wchar_t>
 {

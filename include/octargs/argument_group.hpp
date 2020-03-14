@@ -17,6 +17,13 @@ namespace oct
 namespace args
 {
 
+/// \brief Arguments group
+///
+/// This class allows grouping arguments. It is used currently only for documentation
+/// purpose (usage automatic documentation).
+///
+/// \tparam derived_T   derived type
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename char_T, typename values_storage_T = internal::null_values_storage>
 class basic_argument_group
 {

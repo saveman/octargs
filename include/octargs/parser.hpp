@@ -11,6 +11,7 @@
 #include "exception.hpp"
 #include "exclusive_argument.hpp"
 #include "parser_dictionary.hpp"
+#include "parser_error.hpp"
 #include "positional_argument.hpp"
 #include "results.hpp"
 #include "subparser_argument.hpp"
@@ -18,73 +19,17 @@
 #include "usage.hpp"
 #include "valued_argument.hpp"
 
+/// \brief OCTAEDR Software
 namespace oct
 {
+/// \brief Argument parsing library
 namespace args
 {
 
-enum class parser_error_code
-{
-    CONVERSION_FAILED,
-    TOO_MANY_OCCURRENCES,
-    SYNTAX_ERROR,
-    VALUE_MISSING,
-    UNEXPECTED_VALUE,
-    REQUIRED_ARGUMENT_MISSING,
-    SUBPARSER_NAME_MISSING,
-    SUBPARSER_NOT_FOUND,
-    VALUE_NOT_ALLOWED,
-};
-
-class parser_error : public std::runtime_error
-{
-public:
-    explicit parser_error(parser_error_code code)
-        : std::runtime_error("parsing error occurred")
-        , m_error_code(code)
-    {
-        // noop
-    }
-
-    parser_error_code error_code() const
-    {
-        return m_error_code;
-    }
-
-private:
-    parser_error_code m_error_code;
-};
-
-template <class char_T>
-class parser_error_ex : public parser_error
-{
-public:
-    using char_type = char_T;
-    using string_type = std::basic_string<char_type>;
-
-    explicit parser_error_ex(parser_error_code code, const string_type& name, const string_type& value)
-        : parser_error(code)
-        , m_name(name)
-        , m_value(value)
-    {
-        // noop
-    }
-
-    const string_type& name() const
-    {
-        return m_name;
-    }
-
-    const string_type& value() const
-    {
-        return m_value;
-    }
-
-private:
-    basic_shared_string<char_type> m_name;
-    basic_shared_string<char_type> m_value;
-};
-
+/// \brief Arguments parser
+///
+/// \tparam char_T              char type (as in std::basic_string)
+/// \tparam values_storage_T    type of class uses as a storage for parsed values
 template <typename char_T, typename values_storage_T = internal::null_values_storage>
 class basic_parser
 {
@@ -116,7 +61,7 @@ public:
         // noop
     }
 
-    parser_usage_type usage() const
+    parser_usage_type get_usage() const
     {
         return parser_usage_type(m_data_ptr);
     }
@@ -223,22 +168,84 @@ private:
 
         results_data_ptr->set_app_name(arg_table.get_app_name());
 
-        argument_table_iterator input_iterator(arg_table);
+        argument_table_iterator exclusive_input_iterator(arg_table);
 
-        return parse_internal(results_data_ptr, values_storage, input_iterator);
+        if (parse_exclusive_recursively(results_data_ptr, values_storage, exclusive_input_iterator))
+        {
+            return results_type(results_data_ptr);
+        }
+        else
+        {
+            argument_table_iterator regular_input_iterator(arg_table);
+
+            return parse_regular(results_data_ptr, values_storage, regular_input_iterator);
+        }
     }
 
-    results_type parse_internal(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+    bool parse_exclusive_recursively(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
         argument_table_iterator& input_iterator) const
     {
-        if (input_iterator.get_remaining_count() == 1)
+        if (input_iterator.get_remaining_count() == 0)
         {
-            if (parse_exclusive_argument(results_data_ptr, values_storage, input_iterator.peek_next()))
-            {
-                return results_type(results_data_ptr);
-            }
+            // no arguments - exit
+            return false;
         }
+        else if (input_iterator.get_remaining_count() == 1)
+        {
+            auto& arg_name = input_iterator.take_next();
 
+            auto arg_iter = m_data_ptr->m_argument_repository.m_names_repository.find(arg_name);
+            if (arg_iter == m_data_ptr->m_argument_repository.m_names_repository.end())
+            {
+                // not an argument name
+                return false;
+            }
+
+            auto& arg_object_ptr = arg_iter->second;
+
+            if (!arg_object_ptr->is_exclusive())
+            {
+                // not exclusive
+                return false;
+            }
+
+            auto& value_str = dictionary_type::get_switch_enabled_literal();
+
+            parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, arg_name, value_str);
+
+            return true;
+        }
+        else
+        {
+            if (!m_data_ptr->m_argument_repository.m_subparsers_argument)
+            {
+                // no subparsers
+                return false;
+            }
+
+            auto& arg_name = input_iterator.take_next();
+
+            auto arg_iter = m_data_ptr->m_argument_repository.m_names_repository.find(arg_name);
+            if (arg_iter != m_data_ptr->m_argument_repository.m_names_repository.end())
+            {
+                // argument name, subparser expected
+                return false;
+            }
+
+            auto subparser = m_data_ptr->m_argument_repository.m_subparsers_argument->get_parser(arg_name);
+            if (!subparser)
+            {
+                // not a subparser name
+                return false;
+            }
+
+            return subparser->parse_exclusive_recursively(results_data_ptr, values_storage, input_iterator);
+        }
+    }
+
+    results_type parse_regular(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+        argument_table_iterator& input_iterator) const
+    {
         parse_named_arguments(values_storage, results_data_ptr, input_iterator);
         if (m_data_ptr->m_argument_repository.m_subparsers_argument)
         {
@@ -320,7 +327,7 @@ private:
         for (auto& value : values)
         {
             // TODO: should we throw logic_error instead of runtime_error if value is invalid?
-            parse_argument_value(results_data_ptr, values_storage, argument, argument->get_names()[0], value);
+            parse_argument_value(results_data_ptr, values_storage, argument, argument->get_first_name(), value);
         }
     }
 
@@ -330,31 +337,6 @@ private:
         {
             parse_default_value(results_data_ptr, values_storage, argument);
         }
-    }
-
-    bool parse_exclusive_argument(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
-        const string_type& arg_name) const
-    {
-        auto arg_iter = m_data_ptr->m_argument_repository.m_names_repository.find(arg_name);
-        if (arg_iter == m_data_ptr->m_argument_repository.m_names_repository.end())
-        {
-            // not an argument name
-            return false;
-        }
-
-        auto& arg_object_ptr = arg_iter->second;
-
-        if (!arg_object_ptr->is_exclusive())
-        {
-            // not exclusive
-            return false;
-        }
-
-        auto& value_str = dictionary_type::get_switch_enabled_literal();
-
-        parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, arg_name, value_str);
-
-        return true;
     }
 
     bool parse_named_argument(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
@@ -462,7 +444,7 @@ private:
     results_type parse_subparsers_argument(values_storage_type& values_storage,
         const results_data_ptr_type& results_data_ptr, argument_table_iterator& input_iterator) const
     {
-        auto& name = m_data_ptr->m_argument_repository.m_subparsers_argument->get_names()[0];
+        auto& name = m_data_ptr->m_argument_repository.m_subparsers_argument->get_first_name();
 
         if (!input_iterator.has_more())
         {
@@ -478,9 +460,9 @@ private:
             throw parser_error_ex<char_type>(parser_error_code::SUBPARSER_NOT_FOUND, name, string_type());
         }
 
-        parse_argument_value(results_data_ptr, values_storage, argument, argument->get_names()[0], value_str);
+        parse_argument_value(results_data_ptr, values_storage, argument, argument->get_first_name(), value_str);
 
-        return subparser->parse_internal(results_data_ptr, values_storage, input_iterator);
+        return subparser->parse_regular(results_data_ptr, values_storage, input_iterator);
     }
 
     void parse_positional_arguments(values_storage_type& values_storage, const results_data_ptr_type& results_data_ptr,
@@ -497,7 +479,7 @@ private:
             {
                 const auto& value_str = input_iterator.take_next();
 
-                parse_argument_value(results_data_ptr, values_storage, argument, argument->get_names()[0], value_str);
+                parse_argument_value(results_data_ptr, values_storage, argument, argument->get_first_name(), value_str);
             }
         }
     }
@@ -509,7 +491,7 @@ private:
             if (results_data_ptr->value_count(argument) < argument->get_min_count())
             {
                 throw parser_error_ex<char_type>(
-                    parser_error_code::REQUIRED_ARGUMENT_MISSING, argument->get_names()[0], string_type());
+                    parser_error_code::REQUIRED_ARGUMENT_MISSING, argument->get_first_name(), string_type());
             }
         }
     }

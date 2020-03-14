@@ -87,7 +87,7 @@ TEST(converter_test, test_bool_converter)
     }
     catch (const conversion_error_ex<wchar_t>& exc)
     {
-        ASSERT_TRUE(std::wstring(L"a") == exc.value());
+        ASSERT_TRUE(std::wstring(L"a") == exc.get_value());
     }
 }
 
@@ -135,7 +135,7 @@ void test_integer_converter()
     }
     catch (const conversion_error_ex<char_type>& exc)
     {
-        ASSERT_EQ(std::string("0xfg"), exc.value());
+        ASSERT_EQ(std::string("0xfg"), exc.get_value());
     }
 }
 
@@ -167,7 +167,7 @@ void test_float_converter()
     }
     catch (const conversion_error_ex<char_type>& exc)
     {
-        ASSERT_EQ(std::string("15 15"), exc.value());
+        ASSERT_EQ(std::string("15 15"), exc.get_value());
     }
 }
 

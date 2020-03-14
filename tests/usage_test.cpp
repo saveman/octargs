@@ -19,7 +19,7 @@ TEST(parser_usage_test, test_header_footer)
 
     std::ostringstream out_ostream;
 
-    out_ostream << parser.usage();
+    out_ostream << parser.get_usage();
 
     const std::vector<std::string> EXPECTED_RESULT_LINES = {
         "Usage: (no arguments available)",
@@ -70,7 +70,7 @@ TEST(parser_usage_test, test_example)
 
     std::ostringstream out_ostream;
 
-    out_ostream << parser.usage();
+    out_ostream << parser.get_usage();
 
     const std::vector<std::string> EXPECTED_RESULT_LINES = {
         "Usage: <OPTIONS>... <PATTERN> [FILES]...",
@@ -134,7 +134,7 @@ TEST(parser_usage_test, test_example_wchar)
 
     std::wostringstream out_ostream;
 
-    out_ostream << parser.usage();
+    out_ostream << parser.get_usage();
 
     const std::vector<std::wstring> EXPECTED_RESULT_LINES = {
         L"Usage: <OPTIONS>... [FILES]...",
@@ -196,7 +196,7 @@ TEST(parser_usage_test, test_subparsers)
 
     std::ostringstream out_ostream;
 
-    out_ostream << parser.usage();
+    out_ostream << parser.get_usage();
 
     const std::vector<std::string> EXPECTED_RESULT_LINES = {
         "Usage: [OPTIONS] <command> [ARGS]",
@@ -248,7 +248,7 @@ TEST(parser_usage_test, test_group)
 
     std::ostringstream out_ostream;
 
-    out_ostream << parser.usage();
+    out_ostream << parser.get_usage();
 
     const std::vector<std::string> EXPECTED_RESULT_LINES = {
         "Usage: <OPTIONS>... <PATTERN> [VALUES]...",

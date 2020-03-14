@@ -228,29 +228,29 @@ public:
 
             if (results.has_value("--help"))
             {
-                std::cout << arg_parser.usage() << std::endl;
+                std::cout << arg_parser.get_usage() << std::endl;
                 return EXIT_SUCCESS;
             }
 
-            auto operation = results.as<operation_code, operation_code_converter>("-o");
-            auto data_type = results.as<data_type_code, data_type_code_converter>("-t");
-            auto show_steps = results.as<bool>("-s");
+            auto operation = results.get_first_value_as<operation_code, operation_code_converter>("-o");
+            auto data_type = results.get_first_value_as<data_type_code, data_type_code_converter>("-t");
+            auto show_steps = results.get_first_value_as<bool>("-s");
 
             switch (data_type)
             {
             case data_type_code::INT:
             {
-                execute(std::cout, results.as_vector<int>("OPERANDS"), operation, show_steps);
+                execute(std::cout, results.get_values_as<int>("OPERANDS"), operation, show_steps);
                 break;
             }
             case data_type_code::FLOAT:
             {
-                execute(std::cout, results.as_vector<float>("OPERANDS"), operation, show_steps);
+                execute(std::cout, results.get_values_as<float>("OPERANDS"), operation, show_steps);
                 break;
             }
             case data_type_code::DOUBLE:
             {
-                execute(std::cout, results.as_vector<double>("OPERANDS"), operation, show_steps);
+                execute(std::cout, results.get_values_as<double>("OPERANDS"), operation, show_steps);
                 break;
             }
             default:
@@ -259,13 +259,13 @@ public:
         }
         catch (const oct::args::parser_error_ex<char>& exc)
         {
-            std::cerr << "Argument parsing error near: " << exc.name() << " " << exc.value() << std::endl;
+            std::cerr << "Argument parsing error near: " << exc.get_name() << " " << exc.get_value() << std::endl;
             std::cerr << "Run " << argv[0] << " --help to see usage information" << std::endl;
             return EXIT_FAILURE;
         }
         catch (const oct::args::conversion_error_ex<char>& exc)
         {
-            std::cerr << "Incorrect value: " << exc.value() << std::endl;
+            std::cerr << "Incorrect value: " << exc.get_value() << std::endl;
             return EXIT_FAILURE;
         }
         catch (const std::exception& exc)

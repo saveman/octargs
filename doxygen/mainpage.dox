@@ -1,0 +1,28 @@
+/**
+
+\mainpage OCTARGS - Argument Parsing Library
+
+OCTARGS is a C++ library for parsing command line arguments.
+
+Features supported:
+\li Arguments without values (e.g. "--verbose").
+\li Arguments with values (e.g. "--level=9", "--jobs 9").
+\li Exclusive arguments (e.g. "--help").
+\li Positional arguments (e.g. "cat file1.txt file2.txt").
+\li Short and long names (e.g. "-j", "--jobs", "--parallel-jobs").
+\li Subparsers (e.g. "git add <params>", "git init <params>").
+\li Default values
+\li Limiting allowed values
+\li Converting values to a requested type (with checking)
+\li Storing converted values in object variables automatically (with checking and automatic type detection).
+\li Automatic usage documentation.
+\li Support for char and wchar_t character types (and more with a limited effort).
+
+More details about using the application could be found here:
+\li \ref page_argument_types         "Argument types"
+\li \ref page_argument_configuration "Argument configuration"
+\li \ref page_storing_parsers        "Parser with storage objects"
+\li \ref page_error_handling         "Error handling"
+\li \ref page_usage_documentation    "Automatic usage documentation"
+
+*/

@@ -175,14 +175,14 @@ public:
 
             if (settings.m_help_requested)
             {
-                std::cout << arg_parser.usage() << std::endl;
+                std::cout << arg_parser.get_usage() << std::endl;
                 return EXIT_SUCCESS;
             }
             cat_app_engine(settings).execute();
         }
         catch (const oct::args::parser_error_ex<char>& exc)
         {
-            std::cerr << "Argument parsing error near: " << exc.name() << " " << exc.value() << std::endl;
+            std::cerr << "Argument parsing error near: " << exc.get_name() << " " << exc.get_value() << std::endl;
             std::cerr << "Run " << m_input_args.get_app_name() << " --help to see usage information" << std::endl;
             return EXIT_FAILURE;
         }

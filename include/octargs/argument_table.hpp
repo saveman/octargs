@@ -11,6 +11,12 @@ namespace oct
 namespace args
 {
 
+/// \brief Input arguments table
+///
+/// Simple input arguments wrapper class encapsulating arguments given to
+/// to application (e.g. argc + argv passed to main function).
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename char_T>
 class basic_argument_table
 {
@@ -68,6 +74,9 @@ private:
     string_vector_type m_arguments;
 };
 
+/// \brief Iterator over input arguments table
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename char_T>
 class basic_argument_table_iterator
 {

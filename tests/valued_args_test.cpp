@@ -19,16 +19,16 @@ TEST(valued_args_test, test_happy_hapth)
     auto results = parser.parse(args);
 
     ASSERT_TRUE(results.has_value("-a"));
-    ASSERT_EQ(static_cast<std::size_t>(2), results.values("-a").size());
-    ASSERT_EQ(std::string("valuea"), results.values("-a")[0]);
-    ASSERT_EQ(std::string("valueb"), results.values("-a")[1]);
+    ASSERT_EQ(static_cast<std::size_t>(2), results.get_values("-a").size());
+    ASSERT_EQ(std::string("valuea"), results.get_values("-a")[0]);
+    ASSERT_EQ(std::string("valueb"), results.get_values("-a")[1]);
 
     ASSERT_TRUE(!results.has_value("-b"));
-    ASSERT_EQ(static_cast<std::size_t>(0), results.values("-b").size());
+    ASSERT_EQ(static_cast<std::size_t>(0), results.get_values("-b").size());
 
     ASSERT_TRUE(results.has_value("-c"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results.values("-c").size());
-    ASSERT_EQ(std::string("valuec"), results.values("-c")[0]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results.get_values("-c").size());
+    ASSERT_EQ(std::string("valuec"), results.get_values("-c")[0]);
 }
 
 TEST(valued_args_test, test_no_names)
@@ -104,14 +104,14 @@ TEST(valued_args_test, test_multiple_values)
     parser.add_valued({ "-a" }).set_max_count(2);
 
     auto results1 = parser.parse(args1);
-    ASSERT_EQ(static_cast<std::size_t>(1), results1.count("-v"));
-    ASSERT_EQ(static_cast<std::size_t>(0), results1.count("-a"));
+    ASSERT_EQ(static_cast<std::size_t>(1), results1.get_count("-v"));
+    ASSERT_EQ(static_cast<std::size_t>(0), results1.get_count("-a"));
     auto results2 = parser.parse(args2);
-    ASSERT_EQ(static_cast<std::size_t>(2), results2.count("-v"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results2.count("-a"));
+    ASSERT_EQ(static_cast<std::size_t>(2), results2.get_count("-v"));
+    ASSERT_EQ(static_cast<std::size_t>(1), results2.get_count("-a"));
     auto results4 = parser.parse(args4);
-    ASSERT_EQ(static_cast<std::size_t>(4), results4.count("-v"));
-    ASSERT_EQ(static_cast<std::size_t>(0), results4.count("-a"));
+    ASSERT_EQ(static_cast<std::size_t>(4), results4.get_count("-v"));
+    ASSERT_EQ(static_cast<std::size_t>(0), results4.get_count("-a"));
 }
 
 TEST(valued_args_test, test_more_values_than_count)
@@ -133,7 +133,7 @@ TEST(valued_args_test, test_unlimited_values)
     parser.add_valued({ "--arg" }).set_max_count_unlimited();
 
     auto results = parser.parse(args);
-    ASSERT_EQ(COUNT, results.count("--arg"));
+    ASSERT_EQ(COUNT, results.get_count("--arg"));
 }
 
 TEST(valued_args_test, test_missing_value)
@@ -160,12 +160,12 @@ TEST(valued_args_test, test_value_is_arg_name)
     auto results = parser.parse(args);
 
     ASSERT_TRUE(results.has_value("-a"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results.values("-a").size());
-    ASSERT_EQ(std::string("-v"), results.values("-a")[0]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results.get_values("-a").size());
+    ASSERT_EQ(std::string("-v"), results.get_values("-a")[0]);
 
     ASSERT_TRUE(results.has_value("-v"));
-    ASSERT_EQ(static_cast<std::size_t>(1), results.values("-v").size());
-    ASSERT_EQ(std::string("-a"), results.values("-v")[0]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results.get_values("-v").size());
+    ASSERT_EQ(std::string("-a"), results.get_values("-v")[0]);
 }
 
 TEST(valued_args_test, test_switch_valarg_name_conflict)
@@ -188,12 +188,12 @@ TEST(valued_args_test, test_equal_mode_value_valid)
     parser.add_valued({ "-v" });
 
     auto results1 = parser.parse(args1);
-    ASSERT_EQ(static_cast<std::size_t>(1), results1.count("-v"));
-    ASSERT_EQ(std::string("0"), results1.values("-v")[0]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results1.get_count("-v"));
+    ASSERT_EQ(std::string("0"), results1.get_values("-v")[0]);
 
     auto results2 = parser.parse(args2);
-    ASSERT_EQ(static_cast<std::size_t>(1), results2.count("-v"));
-    ASSERT_EQ(std::string("value"), results2.values("-v")[0]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results2.get_count("-v"));
+    ASSERT_EQ(std::string("value"), results2.get_values("-v")[0]);
 }
 
 TEST(valued_args_test, test_equal_mode_value_mixed)
@@ -206,15 +206,15 @@ TEST(valued_args_test, test_equal_mode_value_mixed)
     parser.add_switch({ "-a" });
 
     auto results1 = parser.parse(args1);
-    ASSERT_EQ(static_cast<std::size_t>(2), results1.count("-v"));
-    ASSERT_EQ(std::string("0"), results1.values("-v")[0]);
-    ASSERT_EQ(std::string("1"), results1.values("-v")[1]);
+    ASSERT_EQ(static_cast<std::size_t>(2), results1.get_count("-v"));
+    ASSERT_EQ(std::string("0"), results1.get_values("-v")[0]);
+    ASSERT_EQ(std::string("1"), results1.get_values("-v")[1]);
 
     auto results2 = parser.parse(args2);
-    ASSERT_EQ(static_cast<std::size_t>(3), results2.count("-v"));
-    ASSERT_EQ(std::string("value1"), results2.values("-v")[0]);
-    ASSERT_EQ(std::string("value2"), results2.values("-v")[1]);
-    ASSERT_EQ(std::string("value3"), results2.values("-v")[2]);
+    ASSERT_EQ(static_cast<std::size_t>(3), results2.get_count("-v"));
+    ASSERT_EQ(std::string("value1"), results2.get_values("-v")[0]);
+    ASSERT_EQ(std::string("value2"), results2.get_values("-v")[1]);
+    ASSERT_EQ(std::string("value3"), results2.get_values("-v")[2]);
 }
 
 TEST(valued_args_test, test_equal_value_invalid)
@@ -242,16 +242,16 @@ TEST(valued_args_test, test_equal_value_with_equal)
     parser.add_valued({ "-v" });
 
     auto results1 = parser.parse(args1);
-    ASSERT_EQ(static_cast<std::size_t>(1), results1.count("-v"));
-    ASSERT_EQ(std::string("=0"), results1.values("-v")[0]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results1.get_count("-v"));
+    ASSERT_EQ(std::string("=0"), results1.get_values("-v")[0]);
 
     auto results2 = parser.parse(args2);
-    ASSERT_EQ(static_cast<std::size_t>(1), results2.count("-v"));
-    ASSERT_EQ(std::string("=value"), results2.values("-v")[0]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results2.get_count("-v"));
+    ASSERT_EQ(std::string("=value"), results2.get_values("-v")[0]);
 
     auto results3 = parser.parse(args3);
-    ASSERT_EQ(static_cast<std::size_t>(1), results3.count("-v"));
-    ASSERT_EQ(std::string("a==b"), results3.values("-v")[0]);
+    ASSERT_EQ(static_cast<std::size_t>(1), results3.get_count("-v"));
+    ASSERT_EQ(std::string("a==b"), results3.get_values("-v")[0]);
 }
 
 TEST(valued_args_test, test_default_values)
@@ -263,32 +263,32 @@ TEST(valued_args_test, test_default_values)
     auto& arg = parser.add_valued({ "-v" }).set_max_count(3).set_default_values({ "one", "two" });
 
     auto results_one = parser.parse(args_one);
-    ASSERT_EQ(std::size_t(1), results_one.count("-v"));
-    ASSERT_EQ(std::string("value"), results_one.values("-v")[0]);
+    ASSERT_EQ(std::size_t(1), results_one.get_count("-v"));
+    ASSERT_EQ(std::string("value"), results_one.get_values("-v")[0]);
 
     auto results = parser.parse(args_empty);
-    ASSERT_EQ(std::size_t(2), results.count("-v"));
-    ASSERT_EQ(std::string("one"), results.values("-v")[0]);
-    ASSERT_EQ(std::string("two"), results.values("-v")[1]);
+    ASSERT_EQ(std::size_t(2), results.get_count("-v"));
+    ASSERT_EQ(std::string("one"), results.get_values("-v")[0]);
+    ASSERT_EQ(std::string("two"), results.get_values("-v")[1]);
 
     arg.set_default_values({ "one", "two", "three", "four" });
     ASSERT_THROW(parser.parse(args_empty), parser_error);
 
     arg.set_default_values({ "one", "two", "three" });
     results = parser.parse(args_empty);
-    ASSERT_EQ(std::size_t(3), results.count("-v"));
-    ASSERT_EQ(std::string("one"), results.values("-v")[0]);
-    ASSERT_EQ(std::string("two"), results.values("-v")[1]);
-    ASSERT_EQ(std::string("three"), results.values("-v")[2]);
+    ASSERT_EQ(std::size_t(3), results.get_count("-v"));
+    ASSERT_EQ(std::string("one"), results.get_values("-v")[0]);
+    ASSERT_EQ(std::string("two"), results.get_values("-v")[1]);
+    ASSERT_EQ(std::string("three"), results.get_values("-v")[2]);
 
     arg.set_default_value("oko");
     results = parser.parse(args_empty);
-    ASSERT_EQ(std::size_t(1), results.count("-v"));
-    ASSERT_EQ(std::string("oko"), results.values("-v")[0]);
+    ASSERT_EQ(std::size_t(1), results.get_count("-v"));
+    ASSERT_EQ(std::string("oko"), results.get_values("-v")[0]);
 
     arg.set_default_values({});
     results = parser.parse(args_empty);
-    ASSERT_EQ(std::size_t(0), results.count("-v"));
+    ASSERT_EQ(std::size_t(0), results.get_count("-v"));
 }
 
 TEST(valued_args_test, test_min_max_count)
@@ -299,15 +299,15 @@ TEST(valued_args_test, test_min_max_count)
     auto& arg = parser.add_valued({ "-v" }).set_max_count_unlimited();
 
     auto results = parser.parse(args);
-    ASSERT_EQ(std::size_t(2), results.count("-v"));
+    ASSERT_EQ(std::size_t(2), results.get_count("-v"));
 
     arg.set_min_count(1).set_max_count(2);
     results = parser.parse(args);
-    ASSERT_EQ(std::size_t(2), results.count("-v"));
+    ASSERT_EQ(std::size_t(2), results.get_count("-v"));
 
     arg.set_min_count(2).set_max_count(2);
     results = parser.parse(args);
-    ASSERT_EQ(std::size_t(2), results.count("-v"));
+    ASSERT_EQ(std::size_t(2), results.get_count("-v"));
 
     arg.set_min_count(3);
     ASSERT_THROW(parser.parse(args), parser_error);
@@ -322,16 +322,16 @@ TEST(valued_args_test, test_allowed_values)
     parser.add_valued({ "-v" }).set_allowed_values({ "a", "b", "c" });
 
     auto results1 = parser.parse(argument_table("app", { "-v", "a" }));
-    ASSERT_EQ(std::size_t(1), results1.count("-v"));
-    ASSERT_EQ(std::string("a"), results1.values("-v")[0]);
+    ASSERT_EQ(std::size_t(1), results1.get_count("-v"));
+    ASSERT_EQ(std::string("a"), results1.get_values("-v")[0]);
 
     auto results2 = parser.parse(argument_table("app", { "-v", "b" }));
-    ASSERT_EQ(std::size_t(1), results2.count("-v"));
-    ASSERT_EQ(std::string("b"), results2.values("-v")[0]);
+    ASSERT_EQ(std::size_t(1), results2.get_count("-v"));
+    ASSERT_EQ(std::string("b"), results2.get_values("-v")[0]);
 
     auto results3 = parser.parse(argument_table("app", { "-v", "c" }));
-    ASSERT_EQ(std::size_t(1), results3.count("-v"));
-    ASSERT_EQ(std::string("c"), results3.values("-v")[0]);
+    ASSERT_EQ(std::size_t(1), results3.get_count("-v"));
+    ASSERT_EQ(std::string("c"), results3.get_values("-v")[0]);
 
     ASSERT_THROW(parser.parse(argument_table("app", { "-v", "d" })), parser_error);
 }

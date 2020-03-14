@@ -1,0 +1,97 @@
+/**
+
+\page page_argument_types Argument types
+
+\brief Examples showing different argument types and how to use them
+
+\tableofcontents
+
+
+\section section_help_simple Simple usage
+
+To just consume all input the arguments and collect them together
+a positional argument with unlimited maximum count could be used.
+
+\snippet code_simple.cpp Snippet
+
+Full code:
+
+\include code_simple.cpp
+
+
+\section section_help_switches Switch arguments
+
+Switch arguments are arguments without values. They are normally used to enable
+or disable features (like verbose output or test mode).
+
+\note Switch arguments have implicit 'bool' type.
+
+\snippet code_switches.cpp Snippet
+
+Full code:
+
+\include code_switches.cpp
+
+
+\section section_help_exclusive Exclusive arguments
+
+Exclusive arguments are switch arguments that could only be specified alone in the input.
+The two best examples that are commonly used are: "--help" (print information about
+application usage) and "--version" (print application version).
+
+\note Exclusive arguments have implicit 'bool' type.
+
+\snippet code_exclusive.cpp Snippet
+
+Full code:
+
+\include code_exclusive.cpp
+
+
+\section section_help_valued Valued arguments
+
+Valued arguments are specified as a pair "key value" (or key=value). That allows
+to provide the user a way to parameterize application behavior.
+
+\snippet code_valued.cpp Snippet
+
+Full code:
+
+\include code_valued.cpp
+
+
+\section section_help_positional Positional arguments
+
+Positional arguments are arguments that are used without specifying the names - they
+are just assigned to specific positions (ordered) in input values. An example could be
+"cat" command which defines some switches and then accepts multiple file names and produce
+concatenated output.
+
+\snippet code_positional.cpp Snippet
+
+Full code:
+
+\include code_positional.cpp
+
+
+\section section_help_subparsers Sub-parsers
+
+Sometimes the application offers multiple functionalities which are separate from each
+other. For example the "git": you could add a file to a change set using "git add <paths>" or
+check current modified that are not yet committed using "git diff", or create a new branch
+with "git branch <name>".
+
+To allow using such behavior subparsers could be used. Adding subparsers is done in two steps.
+First a special positional-like argument is defined:
+
+\snippet code_subparsers.cpp Snippet Add
+
+And then the subparsers are added and configured as a standard parsers:
+
+\snippet code_subparsers.cpp Snippet Configure
+
+Full code:
+
+\include code_subparsers.cpp
+
+*/
