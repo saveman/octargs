@@ -7,6 +7,10 @@
 # OCTARGS - Argument Parsing Library
 OCTARGS is a C++ library for parsing command line arguments.
 
+* Header-only library.
+* Requires C++11.
+* Released under MIT license.
+
 ## Features supported:
 
 - Arguments without values (e.g. "--verbose").
@@ -29,5 +33,3 @@ Project [documentation](https://saveman.github.io/octargs/) is generated using [
 # Examples
 
 Short code snippets showing general concepts are available in the documentation. For a more complicated examples take a look into [Examples](examples/) folder.
-
-
