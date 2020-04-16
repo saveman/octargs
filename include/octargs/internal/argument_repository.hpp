@@ -74,7 +74,7 @@ public:
     {
         check_names(names);
 
-        auto new_argument = std::make_shared<switch_argument_type>(m_dictionary, names);
+        auto new_argument = std::make_shared<switch_argument_type>(names);
 
         add_to_names_repository(new_argument);
         m_arguments.emplace_back(new_argument);

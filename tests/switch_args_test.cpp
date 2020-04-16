@@ -146,23 +146,12 @@ TEST(switch_args_test, test_default_values)
     argument_table args_one("appname", { "-v" });
 
     parser parser;
-    auto& arg = parser.add_switch({ "-v" }).set_max_count(3).set_default_values_count(2);
+    parser.add_switch({ "-v" }).set_max_count(3);
 
     auto results_one = parser.parse(args_one);
     ASSERT_EQ(std::size_t(1), results_one.get_count("-v"));
 
     auto results = parser.parse(args_empty);
-    ASSERT_EQ(std::size_t(2), results.get_count("-v"));
-
-    arg.set_default_values_count(4);
-    ASSERT_THROW(parser.parse(args_empty), parser_error);
-
-    arg.set_default_values_count(3);
-    results = parser.parse(args_empty);
-    ASSERT_EQ(std::size_t(3), results.get_count("-v"));
-
-    arg.set_default_values_count(0);
-    results = parser.parse(args_empty);
     ASSERT_EQ(std::size_t(0), results.get_count("-v"));
 }
 

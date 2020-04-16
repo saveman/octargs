@@ -30,10 +30,8 @@ using dictionary_type = default_parser_dictionary<char>;
 
 TEST(argument_test, test_single_name)
 {
-    auto dictionary = std::make_shared<dictionary_type>();
-
     string_vector_type names = { "a" };
-    switch_argument_type arg(dictionary, names);
+    switch_argument_type arg(names);
     ASSERT_EQ(std::size_t(0), arg.get_min_count());
     ASSERT_EQ(std::size_t(1), arg.get_max_count());
     ASSERT_EQ(names.size(), arg.get_names().size());
@@ -45,10 +43,8 @@ TEST(argument_test, test_single_name)
 
 TEST(argument_test, test_multi_name)
 {
-    auto dictionary = std::make_shared<dictionary_type>();
-
     string_vector_type names = { "a", "bbb", "cc" };
-    switch_argument_type arg(dictionary, names);
+    switch_argument_type arg(names);
     ASSERT_EQ(std::size_t(0), arg.get_min_count());
     ASSERT_EQ(std::size_t(1), arg.get_max_count());
     ASSERT_EQ(names.size(), arg.get_names().size());
@@ -60,11 +56,9 @@ TEST(argument_test, test_multi_name)
 
 TEST(argument_test, test_switch_type)
 {
-    auto dictionary = std::make_shared<dictionary_type>();
-
     string_vector_type names = { "a" };
 
-    switch_argument_type arg1(dictionary, names);
+    switch_argument_type arg1(names);
     ASSERT_EQ(false, arg1.is_exclusive());
     ASSERT_EQ(true, arg1.is_assignable_by_name());
     ASSERT_EQ(false, arg1.is_accepting_immediate_value());
