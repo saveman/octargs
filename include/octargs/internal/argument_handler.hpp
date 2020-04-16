@@ -17,8 +17,12 @@ public:
 
     using string_type = std::basic_string<char_T>;
 
+    using dictionary_type = parser_dictionary<char_type>;
+
     virtual ~basic_argument_handler() = default;
-    virtual void parse(values_storage_type& storage, const string_type& value_str) const = 0;
+
+    virtual void parse(
+        values_storage_type& storage, const dictionary_type& dictionary, const string_type& value_str) const = 0;
 };
 
 } // namespace internal

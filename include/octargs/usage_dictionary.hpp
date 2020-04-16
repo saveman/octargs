@@ -48,7 +48,7 @@ public:
     using string_type = std::basic_string<char_type>;
 
     virtual ~usage_dictionary() = default;
-    virtual const string_type& get_string(usage_dictionary_string_key key) = 0;
+    virtual const string_type& get_string(usage_dictionary_string_key key) const = 0;
 };
 
 /// \brief Usage terms dictionary
@@ -68,7 +68,7 @@ template <>
 class default_usage_dictionary<char> : public usage_dictionary<char>
 {
 public:
-    const string_type& get_string(usage_dictionary_string_key key) override
+    const string_type& get_string(usage_dictionary_string_key key) const override
     {
         static const std::map<usage_dictionary_string_key, string_type> DICTIONARY = {
             { usage_dictionary_string_key::USAGE_LEAD, "Usage" },
@@ -99,7 +99,7 @@ template <>
 class default_usage_dictionary<wchar_t> : public usage_dictionary<wchar_t>
 {
 public:
-    const string_type& get_string(usage_dictionary_string_key key) override
+    const string_type& get_string(usage_dictionary_string_key key) const override
     {
         static const std::map<usage_dictionary_string_key, string_type> DICTIONARY = {
             { usage_dictionary_string_key::USAGE_LEAD, L"Usage" },

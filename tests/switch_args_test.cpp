@@ -9,7 +9,9 @@ namespace args
 
 TEST(switch_args_test, test_happy_hapth)
 {
-    using dictionary_type = parser_dictionary<char>;
+    using dictionary_type = default_parser_dictionary<char>;
+
+    dictionary_type dictionary;
 
     argument_table args("appname", { "-a", "-c" });
 
@@ -21,12 +23,12 @@ TEST(switch_args_test, test_happy_hapth)
     auto results = parser.parse(args);
     ASSERT_TRUE(results.has_value("-a"));
     ASSERT_EQ(static_cast<std::size_t>(1), results.get_values("-a").size());
-    ASSERT_EQ(dictionary_type::get_switch_enabled_literal(), results.get_values("-a")[0]);
+    ASSERT_EQ(dictionary.get_switch_enabled_literal(), results.get_values("-a")[0]);
     ASSERT_TRUE(!results.has_value("-b"));
     ASSERT_EQ(static_cast<std::size_t>(0), results.get_values("-b").size());
     ASSERT_TRUE(results.has_value("-c"));
     ASSERT_EQ(static_cast<std::size_t>(1), results.get_values("-c").size());
-    ASSERT_EQ(dictionary_type::get_switch_enabled_literal(), results.get_values("-c")[0]);
+    ASSERT_EQ(dictionary.get_switch_enabled_literal(), results.get_values("-c")[0]);
 }
 
 TEST(switch_args_test, test_no_names)

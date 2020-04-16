@@ -41,6 +41,7 @@ public:
     using string_vector_type = std::vector<string_type>;
 
     using dictionary_type = parser_dictionary<char_type>;
+    using dictionary_ptr_type = std::shared_ptr<dictionary_type>;
 
     using argument_type = basic_argument<char_type, values_storage_type>;
     using switch_argument_type = basic_switch_argument<char_type, values_storage_type>;
@@ -57,6 +58,12 @@ public:
 
     basic_parser()
         : m_data_ptr(std::make_shared<parser_data_type>())
+    {
+        // noop
+    }
+
+    basic_parser(dictionary_ptr_type dictionary)
+        : m_data_ptr(std::make_shared<parser_data_type>(dictionary))
     {
         // noop
     }
@@ -172,7 +179,7 @@ private:
 
         if (parse_exclusive_recursively(results_data_ptr, values_storage, exclusive_input_iterator))
         {
-            return results_type(results_data_ptr);
+            return results_type(m_data_ptr->m_dictionary, results_data_ptr);
         }
         else
         {
@@ -209,7 +216,7 @@ private:
                 return false;
             }
 
-            auto& value_str = dictionary_type::get_switch_enabled_literal();
+            auto& value_str = m_data_ptr->m_dictionary->get_switch_enabled_literal();
 
             parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, arg_name, value_str);
 
@@ -268,12 +275,12 @@ private:
             parse_default_values(results_data_ptr, values_storage);
             check_values_count(results_data_ptr);
 
-            return results_type(results_data_ptr);
+            return results_type(m_data_ptr->m_dictionary, results_data_ptr);
         }
     }
 
-    static void parse_argument_value(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
-        const const_argument_ptr_type& argument, const string_type& arg_name, const string_type& value_str)
+    void parse_argument_value(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+        const const_argument_ptr_type& argument, const string_type& arg_name, const string_type& value_str) const
     {
         auto count = results_data_ptr->value_count(argument);
         if (count >= argument->get_max_count())
@@ -298,7 +305,7 @@ private:
         {
             try
             {
-                handler->parse(values_storage, value_str);
+                handler->parse(values_storage, *m_data_ptr->m_dictionary, value_str);
             }
             catch (const conversion_error&)
             {
@@ -310,8 +317,8 @@ private:
         results_data_ptr->append_value(argument, value_str);
     }
 
-    static void parse_default_value(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
-        const const_argument_ptr_type& argument)
+    void parse_default_value(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+        const const_argument_ptr_type& argument) const
     {
         if (results_data_ptr->value_count(argument) > 0)
         {
@@ -373,7 +380,7 @@ private:
         }
         else
         {
-            value_str = dictionary_type::get_switch_enabled_literal();
+            value_str = m_data_ptr->m_dictionary->get_switch_enabled_literal();
         }
 
         parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, arg_name, value_str);
@@ -415,7 +422,7 @@ private:
     {
         auto& input_value = input_iterator.peek_next();
 
-        auto equal_char_pos = input_value.find(dictionary_type::get_equal_literal());
+        auto equal_char_pos = input_value.find(m_data_ptr->m_dictionary->get_equal_literal());
         if (equal_char_pos == string_type::npos)
         {
             return parse_named_argument(results_data_ptr, values_storage, input_iterator, input_value);

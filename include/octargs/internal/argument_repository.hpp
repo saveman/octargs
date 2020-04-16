@@ -29,6 +29,7 @@ public:
     using values_storage_type = values_storage_T;
 
     using dictionary_type = parser_dictionary<char_type>;
+    using const_dictionary_ptr_type = std::shared_ptr<const dictionary_type>;
 
     using string_type = std::basic_string<char_type>;
     using string_vector_type = std::vector<string_type>;
@@ -48,8 +49,9 @@ public:
     using subparser_argument_ptr_type = std::shared_ptr<subparser_argument_type>;
     using const_subparser_argument_ptr_type = std::shared_ptr<const subparser_argument_type>;
 
-    basic_argument_repository()
-        : m_arguments()
+    basic_argument_repository(const_dictionary_ptr_type dictionary)
+        : m_dictionary(dictionary)
+        , m_arguments()
         , m_subparsers_argument()
         , m_names_repository()
     {
@@ -72,7 +74,7 @@ public:
     {
         check_names(names);
 
-        auto new_argument = std::make_shared<switch_argument_type>(names);
+        auto new_argument = std::make_shared<switch_argument_type>(m_dictionary, names);
 
         add_to_names_repository(new_argument);
         m_arguments.emplace_back(new_argument);
@@ -179,7 +181,7 @@ private:
         ensure_names_not_registered(names);
     }
 
-    static void ensure_names_characters_valid(const string_vector_type& names)
+    void ensure_names_characters_valid(const string_vector_type& names) const
     {
         for (const auto& name : names)
         {
@@ -187,7 +189,7 @@ private:
         }
     }
 
-    static void ensure_name_characters_valid(const string_type& name)
+    void ensure_name_characters_valid(const string_type& name) const
     {
         if (name.empty())
         {
@@ -200,7 +202,7 @@ private:
             {
                 throw invalid_argument_name_ex<char_type>("argument name must not contain whitespace characters", name);
             }
-            if (c == dictionary_type::get_equal_literal())
+            if (c == m_dictionary->get_equal_literal())
             {
                 throw invalid_argument_name_ex<char_type>("argument name must not contain equal characters", name);
             }
@@ -224,6 +226,7 @@ private:
     }
 
 public:
+    const_dictionary_ptr_type m_dictionary;
     std::vector<const_argument_ptr_type> m_arguments;
     const_subparser_argument_ptr_type m_subparsers_argument;
     std::map<string_type, const_argument_ptr_type> m_names_repository;

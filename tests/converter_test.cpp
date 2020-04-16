@@ -45,22 +45,24 @@ template <typename char_T>
 void test_bool_converter_helper()
 {
     using char_type = char_T;
-    using dictionary_type = parser_dictionary<char_type>;
+    using dictionary_type = default_parser_dictionary<char_type>;
+
+    dictionary_type dictionary;
 
     basic_converter<char_type, bool> char_converter;
 
-    ASSERT_EQ(true, char_converter(dictionary_type::get_switch_enabled_literal()));
+    ASSERT_EQ(true, char_converter(dictionary, dictionary.get_switch_enabled_literal()));
 
-    auto true_values = dictionary_type::get_true_literals();
+    auto true_values = dictionary.get_true_literals();
     for (auto value : true_values)
     {
-        ASSERT_EQ(true, char_converter(value));
+        ASSERT_EQ(true, char_converter(dictionary, value));
     }
 
-    auto false_values = dictionary_type::get_false_literals();
+    auto false_values = dictionary.get_false_literals();
     for (auto value : false_values)
     {
-        ASSERT_EQ(false, char_converter(value));
+        ASSERT_EQ(false, char_converter(dictionary, value));
     }
 }
 
@@ -69,20 +71,23 @@ TEST(converter_test, test_bool_converter)
     test_bool_converter_helper<char>();
 
     basic_converter<char, bool> char_converter;
-    ASSERT_THROW(char_converter(""), conversion_error);
-    ASSERT_THROW(char_converter("a"), conversion_error);
-    ASSERT_THROW(char_converter(" 1"), conversion_error);
+    default_parser_dictionary<char> char_dictionary;
+
+    ASSERT_THROW(char_converter(char_dictionary, ""), conversion_error);
+    ASSERT_THROW(char_converter(char_dictionary, "a"), conversion_error);
+    ASSERT_THROW(char_converter(char_dictionary, " 1"), conversion_error);
 
     test_bool_converter_helper<wchar_t>();
+    default_parser_dictionary<wchar_t> wchart_dictionary;
 
     basic_converter<wchar_t, bool> wchart_converter;
-    ASSERT_THROW(wchart_converter(L""), conversion_error);
-    ASSERT_THROW(wchart_converter(L"a"), conversion_error);
-    ASSERT_THROW(wchart_converter(L" 1"), conversion_error);
+    ASSERT_THROW(wchart_converter(wchart_dictionary, L""), conversion_error);
+    ASSERT_THROW(wchart_converter(wchart_dictionary, L"a"), conversion_error);
+    ASSERT_THROW(wchart_converter(wchart_dictionary, L" 1"), conversion_error);
 
     try
     {
-        wchart_converter(L"a");
+        wchart_converter(wchart_dictionary, L"a");
         ASSERT_TRUE(false);
     }
     catch (const conversion_error_ex<wchar_t>& exc)

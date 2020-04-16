@@ -34,23 +34,24 @@ public:
     template <typename data_T, typename converter_T = basic_converter<char_type, data_T>>
     type_handler_type<data_T>& set_type()
     {
-        auto handler_ptr = std::make_shared<type_handler_type<data_T>>(converter_T());
+        auto handler_ptr = std::make_shared<type_handler_type<data_T>>();
+        handler_ptr->set_convert_function(converter_T());
 
         set_handler(handler_ptr);
 
         return *handler_ptr;
     }
 
-    template <typename DATA>
-    type_handler_type<DATA>& set_type_and_storage(DATA values_storage_type::*member_ptr)
+    template <typename data_T>
+    type_handler_type<data_T>& set_type_and_storage(data_T values_storage_type::*member_ptr)
     {
-        return set_type<DATA>().set_storage(member_ptr);
+        return set_type<data_T>().set_storage(member_ptr);
     }
 
-    template <typename DATA>
-    type_handler_type<DATA>& set_type_and_storage(std::vector<DATA> values_storage_type::*member_ptr)
+    template <typename data_T>
+    type_handler_type<data_T>& set_type_and_storage(std::vector<data_T> values_storage_type::*member_ptr)
     {
-        return set_type<DATA>().set_storage(member_ptr);
+        return set_type<data_T>().set_storage(member_ptr);
     }
 
     derived_type& set_description(const string_type& text)

@@ -18,6 +18,7 @@ set(${PROJECT_NAME}_HEADERS_INTERNAL
     octargs/internal/argument_handler.hpp
     octargs/internal/argument_repository.hpp
     octargs/internal/char_utils.hpp
+    octargs/internal/function_helpers.hpp
     octargs/internal/misc.hpp
     octargs/internal/parser_data.hpp
     octargs/internal/results_data.hpp

@@ -5,6 +5,7 @@
 
 #include "converter.hpp"
 #include "internal/argument_handler.hpp"
+#include "internal/function_helpers.hpp"
 
 namespace oct
 {
@@ -29,42 +30,43 @@ public:
     using char_type = char_T;
     using values_storage_type = values_storage_T;
 
-    using string_type = std::basic_string<char_T>;
+    using string_type = std::basic_string<char_type>;
 
-    using convert_function_type = std::function<data_type(const string_type&)>;
+    using dictionary_type = parser_dictionary<char_type>;
+
+    using convert_function_type = std::function<data_type(const dictionary_type& dictionary, const string_type&)>;
     using check_function_type = std::function<void(const data_type& data)>;
-    using direct_store_function_type = std::function<void(const data_type& data)>;
     using store_function_type = std::function<void(values_storage_type& storage, const data_type& data)>;
 
-    basic_argument_type_handler(const convert_function_type& convert_func = basic_converter<char_type, data_type>())
-        : m_convert_function(convert_func)
+    basic_argument_type_handler()
+        : m_convert_function()
         , m_check_function()
         , m_store_function()
     {
         // noop
     }
 
-    basic_argument_type_handler& set_convert_function(const convert_function_type& convert_func)
+    template <typename function_T>
+    basic_argument_type_handler& set_convert_function(const function_T& func)
     {
-        m_convert_function = convert_func;
+        using helper = internal::convert_function_helper<char_type, data_type>;
+        m_convert_function = helper::prepare(func);
         return *this;
     }
 
-    basic_argument_type_handler& set_check_function(const check_function_type& check_func)
+    template <typename function_T>
+    basic_argument_type_handler& set_check_function(const function_T& func)
     {
-        m_check_function = check_func;
+        using helper = internal::check_function_helper<char_type, data_type>;
+        m_check_function = helper::prepare(func);
         return *this;
     }
 
-    basic_argument_type_handler& set_store_function(const store_function_type& store_func)
+    template <typename function_T>
+    basic_argument_type_handler& set_store_function(const function_T& func)
     {
-        m_store_function = store_func;
-        return *this;
-    }
-
-    basic_argument_type_handler& set_store_function(const direct_store_function_type& store_func)
-    {
-        m_store_function = [store_func](values_storage_type& /*storage*/, const data_type& data) { store_func(data); };
+        using helper = internal::store_function_helper<char_type, data_type, values_storage_type>;
+        m_store_function = helper::prepare(func);
         return *this;
     }
 
@@ -81,14 +83,15 @@ public:
         });
     }
 
-    void parse(values_storage_type& storage, const string_type& value_str) const final
+    void parse(
+        values_storage_type& storage, const dictionary_type& dictionary, const string_type& value_str) const final
     {
         if (!m_convert_function)
         {
             throw missing_converter_ex<char_type>(value_str);
         }
 
-        data_type value = m_convert_function(value_str);
+        data_type value = m_convert_function(dictionary, value_str);
 
         if (m_check_function)
         {

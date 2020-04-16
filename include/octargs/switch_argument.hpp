@@ -27,19 +27,24 @@ public:
         = basic_argument_base<basic_switch_argument<char_type, values_storage_type>, char_type, values_storage_type>;
 
     using dictionary_type = parser_dictionary<char_type>;
+    using const_dictionary_ptr_type = std::shared_ptr<const dictionary_type>;
     using string_type = std::basic_string<char_type>;
     using string_vector_type = std::vector<string_type>;
 
-    explicit basic_switch_argument(const string_vector_type& names)
+    explicit basic_switch_argument(const_dictionary_ptr_type dictionary, const string_vector_type& names)
         : base_type(base_type::FLAG_IS_ASSIGNABLE_BY_NAME, names)
+        , m_dictionary(dictionary)
     {
-        // noop
+        if (!m_dictionary)
+        {
+            throw std::invalid_argument("dictionary");
+        }
     }
 
     basic_switch_argument& set_default_values_count(std::size_t count)
     {
         return base_type::set_default_values_internal(
-            string_vector_type(count, dictionary_type::get_switch_enabled_literal()));
+            string_vector_type(count, m_dictionary->get_switch_enabled_literal()));
     }
 
     basic_switch_argument& set_min_count(std::size_t count)
@@ -56,6 +61,9 @@ public:
     {
         return base_type::set_max_count_unlimited();
     }
+
+private:
+    const_dictionary_ptr_type m_dictionary;
 };
 
 } // namespace args

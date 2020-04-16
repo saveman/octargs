@@ -189,14 +189,17 @@ TEST(storage_args_test, test_null_convert_function)
         double m_double;
     };
 
-    storing_parser<settings> parser;
+    using parser_type = storing_parser<settings>;
+
+    parser_type parser;
     auto& handler = parser.add_valued({ "--double" }).set_type<double>();
 
     settings settings1;
     parser.parse(args1, settings1);
 
-    handler.set_convert_function(nullptr);
-    ASSERT_THROW(parser.parse(args1, settings1), missing_converter);
+    handler.set_convert_function(
+        parser_type::valued_argument_type::type_handler_type<double>::convert_function_type(nullptr));
+    ASSERT_THROW(parser.parse(args1), missing_converter);
 }
 
 TEST(storage_args_test, test_convert_function)

@@ -55,15 +55,15 @@ public:
     using string_type = std::basic_string<char_type>;
     using dictionary_type = parser_dictionary<char_type>;
 
-    bool operator()(const string_type& value_str) const
+    bool operator()(const dictionary_type& dictionary, const string_type& value_str) const
     {
-        const auto& true_literals = dictionary_type::get_true_literals();
+        const auto& true_literals = dictionary.get_true_literals();
         if (std::find(true_literals.begin(), true_literals.end(), value_str) != true_literals.end())
         {
             return true;
         }
 
-        const auto& false_literals = dictionary_type::get_false_literals();
+        const auto& false_literals = dictionary.get_false_literals();
         if (std::find(false_literals.begin(), false_literals.end(), value_str) != false_literals.end())
         {
             return false;

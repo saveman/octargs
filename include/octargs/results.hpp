@@ -5,6 +5,7 @@
 
 #include "argument.hpp"
 #include "argument_table.hpp"
+#include "internal/function_helpers.hpp"
 #include "internal/results_data.hpp"
 
 namespace oct
@@ -29,8 +30,12 @@ public:
     using results_data_type = internal::basic_results_data<char_type>;
     using const_results_data_ptr_type = std::shared_ptr<const results_data_type>;
 
-    basic_results(const_results_data_ptr_type results_data_ptr)
-        : m_results_data_ptr(results_data_ptr)
+    using dictionary_type = parser_dictionary<char_type>;
+    using const_dictionary_ptr_type = std::shared_ptr<const dictionary_type>;
+
+    basic_results(const_dictionary_ptr_type dictionary_ptr, const_results_data_ptr_type results_data_ptr)
+        : m_dictionary_ptr(dictionary_ptr)
+        , m_results_data_ptr(results_data_ptr)
     {
         // noop
     }
@@ -68,7 +73,9 @@ public:
     template <typename data_T, typename converter_T = basic_converter<char_type, data_T>>
     data_T get_first_value_as(const string_type& arg_name, const data_T& default_value = data_T()) const
     {
+        using data_type = data_T;
         using converter_type = converter_T;
+        using helper = internal::convert_function_helper<char_type, data_type>;
 
         auto& values = get_values(arg_name);
         if (values.size() == 0)
@@ -77,9 +84,9 @@ public:
         }
         else
         {
-            converter_type converter;
+            auto convert_func = helper::prepare(converter_type());
 
-            return converter(values[0]);
+            return convert_func(*m_dictionary_ptr, values[0]);
         }
     }
 
@@ -88,20 +95,22 @@ public:
     {
         using data_type = data_T;
         using converter_type = converter_T;
+        using helper = internal::convert_function_helper<char_type, data_type>;
 
         std::vector<data_type> data_vector;
 
-        converter_type converter;
+        auto convert_func = helper::prepare(converter_type());
 
         for (const auto& value_str : get_values(arg_name))
         {
-            data_vector.emplace_back(converter(value_str));
+            data_vector.emplace_back(convert_func(*m_dictionary_ptr, value_str));
         }
 
         return data_vector;
     }
 
 private:
+    const_dictionary_ptr_type m_dictionary_ptr;
     const_results_data_ptr_type m_results_data_ptr;
 };
 
