@@ -10,10 +10,6 @@ namespace args
 namespace internal
 {
 
-/// \brief Subparser argument
-///
-/// \tparam char_T              char type (as in std::basic_string)
-/// \tparam values_storage_T    type of class uses as a storage for parsed values
 template <typename char_T, typename values_storage_T = null_values_storage>
 class basic_valued_argument
     : public basic_argument_base<basic_valued_argument<char_T, values_storage_T>, char_T, values_storage_T>

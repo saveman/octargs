@@ -10,6 +10,13 @@ namespace oct
 namespace args
 {
 
+/// \brief Configurator for exclusive argument
+///
+/// Exclusive arguments are switch arguments (arguments without value) that could
+/// be only used alone when specified in input. For example --version or --help.
+///
+/// \tparam char_T              char type (as in std::basic_string)
+/// \tparam values_storage_T    type of class uses as a storage for parsed values
 template <typename char_T, typename values_storage_T, typename data_T = void>
 class basic_exclusive_argument_configurator
     : public basic_argument_configurator<basic_exclusive_argument_configurator<char_T, values_storage_T, data_T>,

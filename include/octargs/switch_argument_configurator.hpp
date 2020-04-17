@@ -10,6 +10,13 @@ namespace oct
 namespace args
 {
 
+/// \brief Configurator for switch argument
+///
+/// Switch arguments are arguments that does not have value, they are mainly to enable
+/// or disable a feature. Example could be "--verbose" or "--dry-run".
+///
+/// \tparam char_T              char type (as in std::basic_string)
+/// \tparam values_storage_T    type of class uses as a storage for parsed values
 template <typename char_T, typename values_storage_T, typename data_T = void>
 class basic_switch_argument_configurator
     : public basic_argument_configurator<basic_switch_argument_configurator<char_T, values_storage_T, data_T>,

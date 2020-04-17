@@ -18,10 +18,6 @@ namespace args
 namespace internal
 {
 
-/// \brief Argument interface
-///
-/// \tparam char_T              char type (as in std::basic_string)
-/// \tparam values_storage_T    type of object to store parsed values
 template <typename char_T, typename values_storage_T>
 class basic_argument : public basic_argument_tag
 {

@@ -160,7 +160,7 @@ private:
         {
             auto new_prefix = prefix + subparser_item.first + char_type(' ');
 
-            subparser_item.second->fill_results_data_names(new_prefix, results_data_ptr);
+            subparser_item.second.fill_results_data_names(new_prefix, results_data_ptr);
         }
     }
 
@@ -236,14 +236,14 @@ private:
                 return false;
             }
 
-            auto subparser = m_data_ptr->m_argument_repository.m_subparsers_argument->get_parser(arg_name);
-            if (!subparser)
+            if (!m_data_ptr->m_argument_repository.m_subparsers_argument->has_parser(arg_name))
             {
                 // not a subparser name
                 return false;
             }
+            auto subparser = m_data_ptr->m_argument_repository.m_subparsers_argument->get_parser(arg_name);
 
-            return subparser->parse_exclusive_recursively(results_data_ptr, values_storage, input_iterator);
+            return subparser.parse_exclusive_recursively(results_data_ptr, values_storage, input_iterator);
         }
     }
 
@@ -458,15 +458,15 @@ private:
         auto& argument = m_data_ptr->m_argument_repository.m_subparsers_argument;
         auto& value_str = input_iterator.take_next();
 
-        auto subparser = argument->get_parser(value_str);
-        if (!subparser)
+        if (!argument->has_parser(value_str))
         {
             throw parser_error_ex<char_type>(parser_error_code::SUBPARSER_NOT_FOUND, name, string_type());
         }
+        auto subparser = argument->get_parser(value_str);
 
         parse_argument_value(results_data_ptr, values_storage, argument, argument->get_first_name(), value_str);
 
-        return subparser->parse_regular(results_data_ptr, values_storage, input_iterator);
+        return subparser.parse_regular(results_data_ptr, values_storage, input_iterator);
     }
 
     void parse_positional_arguments(values_storage_type& values_storage, const results_data_ptr_type& results_data_ptr,

@@ -8,6 +8,10 @@ namespace oct
 namespace args
 {
 
+/// \brief Base configurator for arguments
+///
+/// \tparam derived_T   derived argument class
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename derived_T, typename argument_T, typename char_T, typename values_storage_T, typename data_T>
 class basic_argument_configurator
 {

@@ -287,7 +287,7 @@ private:
 
             for (auto& iter : m_data_ptr->m_argument_repository.m_subparsers_argument->get_parsers())
             {
-                auto subusage = iter.second->get_usage();
+                auto subusage = iter.second.get_usage();
 
                 if (subusage.has_args())
                 {
@@ -330,7 +330,7 @@ private:
 
             for (auto& iter : m_data_ptr->m_argument_repository.m_subparsers_argument->get_parsers())
             {
-                auto subusage = iter.second->get_usage();
+                auto subusage = iter.second.get_usage();
 
                 auto this_name_len = iter.first.size();
 

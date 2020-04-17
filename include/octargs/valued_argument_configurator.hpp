@@ -10,6 +10,15 @@ namespace oct
 namespace args
 {
 
+/// \brief Configurator for valued argument
+///
+/// Value argument is an argument that not only have a name but could
+/// also accept a value - for example it could be "--lines" argument accepting
+/// the number of lines provided by the user, or "--host" argument that is used
+/// to specify name of the server to which connection should be made.
+///
+/// \tparam char_T              char type (as in std::basic_string)
+/// \tparam values_storage_T    type of class uses as a storage for parsed values
 template <typename char_T, typename values_storage_T, typename data_T = void>
 class basic_valued_argument_configurator
     : public basic_argument_configurator<basic_valued_argument_configurator<char_T, values_storage_T, data_T>,

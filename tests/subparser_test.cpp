@@ -13,11 +13,11 @@ TEST(subparser_test, test_basic)
     parser.add_switch({ "-v", "--verbose" });
     auto subparsers = parser.add_subparsers("command");
 
-    auto& add_parser = subparsers.add_parser("add");
+    auto add_parser = subparsers.add_parser("add");
     add_parser.add_switch({ "-s", "--show-steps" });
     add_parser.add_positional("values").set_max_count_unlimited();
 
-    auto& mul_parser = subparsers.add_parser("mul");
+    auto mul_parser = subparsers.add_parser("mul");
     mul_parser.add_switch({ "-s", "--show-steps" });
     mul_parser.add_positional("values").set_max_count_unlimited();
 
@@ -86,11 +86,11 @@ TEST(subparser_test, test_storing)
     auto subparsers = parser.add_subparsers("command");
     subparsers.set_type<command, command_converter>().set_storage(&settings::m_command);
 
-    auto& add_parser = subparsers.add_parser("add");
+    auto add_parser = subparsers.add_parser("add");
     add_parser.add_switch({ "-s", "--show-steps" }).set_type_and_storage(&settings::m_show_steps);
     add_parser.add_positional("values").set_max_count_unlimited().set_type_and_storage(&settings::m_values);
 
-    auto& mul_parser = subparsers.add_parser("mul");
+    auto mul_parser = subparsers.add_parser("mul");
     mul_parser.add_switch({ "-s", "--show-steps" }).set_type_and_storage(&settings::m_show_steps);
     mul_parser.add_positional("values").set_max_count_unlimited().set_type_and_storage(&settings::m_values);
 

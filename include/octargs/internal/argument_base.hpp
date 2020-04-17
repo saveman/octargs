@@ -10,10 +10,6 @@ namespace args
 namespace internal
 {
 
-/// \brief Base class for arguments
-///
-/// \tparam derived_T   derived argument class
-/// \tparam char_T      char type (as in std::basic_string)
 template <typename derived_T, typename char_T, typename values_storage_T = null_values_storage>
 class basic_argument_base : public basic_argument<char_T, values_storage_T>
 {

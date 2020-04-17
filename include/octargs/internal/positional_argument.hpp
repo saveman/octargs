@@ -10,13 +10,6 @@ namespace args
 namespace internal
 {
 
-/// \brief Positional argument
-///
-/// Positional arguments are arguments that are normally given at end of input
-/// without providing argument name - for example paths of files to process.
-///
-/// \tparam char_T              char type (as in std::basic_string)
-/// \tparam values_storage_T    type of class uses as a storage for parsed values
 template <typename char_T, typename values_storage_T = null_values_storage>
 class basic_positional_argument
     : public basic_argument_base<basic_positional_argument<char_T, values_storage_T>, char_T, values_storage_T>

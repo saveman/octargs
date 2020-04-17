@@ -10,6 +10,13 @@ namespace oct
 namespace args
 {
 
+/// \brief Configurator for positional argument
+///
+/// Positional arguments are arguments that are normally given at end of input
+/// without providing argument name - for example paths of files to process.
+///
+/// \tparam char_T              char type (as in std::basic_string)
+/// \tparam values_storage_T    type of class uses as a storage for parsed values
 template <typename char_T, typename values_storage_T, typename data_T = void>
 class basic_positional_argument_configurator
     : public basic_argument_configurator<basic_positional_argument_configurator<char_T, values_storage_T, data_T>,
