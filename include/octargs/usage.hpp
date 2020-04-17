@@ -180,16 +180,16 @@ private:
 
     bool has_args() const
     {
-        return !m_data_ptr->m_argument_repository.m_arguments.empty()
-            || m_data_ptr->m_argument_repository.m_subparsers_argument;
+        return !m_data_ptr->m_argument_repository->m_arguments.empty()
+            || m_data_ptr->m_argument_repository->m_subparsers_argument;
     }
 
     void print_usage_line(ostream_type& os) const
     {
         os << m_dictionary->get_string(usage_dictionary_string_key::USAGE_LEAD) << ':';
 
-        if (m_data_ptr->m_argument_repository.m_arguments.empty()
-            && !m_data_ptr->m_argument_repository.m_subparsers_argument)
+        if (m_data_ptr->m_argument_repository->m_arguments.empty()
+            && !m_data_ptr->m_argument_repository->m_subparsers_argument)
         {
             os << ' ' << m_dictionary->get_string(usage_dictionary_string_key::USAGE_NO_ARGUMENTS) << std::endl;
             return;
@@ -209,7 +209,7 @@ private:
         bool any_required = false;
         bool multiple_allowed = false;
 
-        for (auto& argument : m_data_ptr->m_argument_repository.m_arguments)
+        for (auto& argument : m_data_ptr->m_argument_repository->m_arguments)
         {
             if (!argument->is_assignable_by_name())
             {
@@ -256,7 +256,7 @@ private:
 
     void print_usage_line_positional_args(ostream_type& os) const
     {
-        for (auto& argument : m_data_ptr->m_argument_repository.m_arguments)
+        for (auto& argument : m_data_ptr->m_argument_repository->m_arguments)
         {
             if (argument->is_assignable_by_name())
             {
@@ -279,13 +279,13 @@ private:
 
     void print_usage_line_subparser_args(ostream_type& os) const
     {
-        if (m_data_ptr->m_argument_repository.m_subparsers_argument)
+        if (m_data_ptr->m_argument_repository->m_subparsers_argument)
         {
-            os << ' ' << '<' << m_data_ptr->m_argument_repository.m_subparsers_argument->get_first_name() << '>';
+            os << ' ' << '<' << m_data_ptr->m_argument_repository->m_subparsers_argument->get_first_name() << '>';
 
             bool any_args = false;
 
-            for (auto& iter : m_data_ptr->m_argument_repository.m_subparsers_argument->get_parsers())
+            for (auto& iter : m_data_ptr->m_argument_repository->m_subparsers_argument->get_parsers())
             {
                 auto subusage = iter.second.get_usage();
 
@@ -317,18 +317,18 @@ private:
 
     void print_subparsers(ostream_type& os) const
     {
-        if (m_data_ptr->m_argument_repository.m_subparsers_argument)
+        if (m_data_ptr->m_argument_repository->m_subparsers_argument)
         {
             os << std::endl;
-            os << m_data_ptr->m_argument_repository.m_subparsers_argument->get_first_name() << ':' << std::endl;
+            os << m_data_ptr->m_argument_repository->m_subparsers_argument->get_first_name() << ':' << std::endl;
 
             std::size_t longest_name_len = 0;
-            for (auto& iter : m_data_ptr->m_argument_repository.m_subparsers_argument->get_parsers())
+            for (auto& iter : m_data_ptr->m_argument_repository->m_subparsers_argument->get_parsers())
             {
                 longest_name_len = std::max(longest_name_len, iter.first.size());
             }
 
-            for (auto& iter : m_data_ptr->m_argument_repository.m_subparsers_argument->get_parsers())
+            for (auto& iter : m_data_ptr->m_argument_repository->m_subparsers_argument->get_parsers())
             {
                 auto subusage = iter.second.get_usage();
 

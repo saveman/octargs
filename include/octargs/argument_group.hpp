@@ -48,14 +48,18 @@ public:
     using valued_argument_configurator_type = basic_valued_argument_configurator<char_type, values_storage_type>;
 
     using argument_repository_type = internal::basic_argument_repository<char_type, values_storage_type>;
+    using argument_repository_ptr_type = std::shared_ptr<argument_repository_type>;
 
-    basic_argument_group(argument_repository_type& argument_repository, const string_type& name)
+    basic_argument_group(argument_repository_ptr_type argument_repository, const string_type& name)
         : m_argument_repository(argument_repository)
         , m_name(name)
         , m_description()
         , m_arguments()
     {
-        // noop
+        if (!m_argument_repository)
+        {
+            throw std::invalid_argument("argument_repository");
+        }
     }
 
     const string_type& get_name() const
@@ -76,28 +80,28 @@ public:
 
     exclusive_argument_configurator_type add_exclusive(const string_vector_type& names)
     {
-        auto argument_ptr = m_argument_repository.add_exclusive(names);
+        auto argument_ptr = m_argument_repository->add_exclusive(names);
         m_arguments.push_back(argument_ptr);
         return exclusive_argument_configurator_type(argument_ptr);
     }
 
     switch_argument_configurator_type add_switch(const string_vector_type& names)
     {
-        auto argument_ptr = m_argument_repository.add_switch(names);
+        auto argument_ptr = m_argument_repository->add_switch(names);
         m_arguments.push_back(argument_ptr);
         return switch_argument_configurator_type(argument_ptr);
     }
 
     valued_argument_configurator_type add_valued(const string_vector_type& names)
     {
-        auto argument_ptr = m_argument_repository.add_valued(names);
+        auto argument_ptr = m_argument_repository->add_valued(names);
         m_arguments.push_back(argument_ptr);
         return valued_argument_configurator_type(argument_ptr);
     }
 
     positional_argument_configurator_type add_positional(const string_type& name)
     {
-        auto argument_ptr = m_argument_repository.add_positional(name);
+        auto argument_ptr = m_argument_repository->add_positional(name);
         m_arguments.push_back(argument_ptr);
         return positional_argument_configurator_type(argument_ptr);
     }
@@ -108,7 +112,7 @@ public:
     }
 
 private:
-    argument_repository_type& m_argument_repository;
+    argument_repository_ptr_type m_argument_repository;
     string_type m_name;
     string_type m_description;
     std::vector<const_argument_ptr_type> m_arguments;

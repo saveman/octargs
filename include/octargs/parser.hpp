@@ -115,7 +115,7 @@ public:
 
     subparser_argument_configurator_type add_subparsers(const string_type& name)
     {
-        return subparser_argument_configurator_type(m_data_ptr->m_argument_repository.add_subparsers(name));
+        return subparser_argument_configurator_type(m_data_ptr->m_argument_repository->add_subparsers(name));
     }
 
     results_type parse(int argc, char_type* argv[], values_storage_type& values_storage = get_null_storage()) const
@@ -146,17 +146,17 @@ private:
 
     void fill_results_data_names(const string_type& prefix, const results_data_ptr_type& results_data_ptr) const
     {
-        for (auto& iter : m_data_ptr->m_argument_repository.m_names_repository)
+        for (auto& iter : m_data_ptr->m_argument_repository->m_names_repository)
         {
             results_data_ptr->add_name(prefix + iter.first, iter.second);
         }
 
-        if (!m_data_ptr->m_argument_repository.m_subparsers_argument)
+        if (!m_data_ptr->m_argument_repository->m_subparsers_argument)
         {
             return;
         }
 
-        for (auto& subparser_item : m_data_ptr->m_argument_repository.m_subparsers_argument->get_parsers())
+        for (auto& subparser_item : m_data_ptr->m_argument_repository->m_subparsers_argument->get_parsers())
         {
             auto new_prefix = prefix + subparser_item.first + char_type(' ');
 
@@ -198,8 +198,8 @@ private:
         {
             auto& arg_name = input_iterator.take_next();
 
-            auto arg_iter = m_data_ptr->m_argument_repository.m_names_repository.find(arg_name);
-            if (arg_iter == m_data_ptr->m_argument_repository.m_names_repository.end())
+            auto arg_iter = m_data_ptr->m_argument_repository->m_names_repository.find(arg_name);
+            if (arg_iter == m_data_ptr->m_argument_repository->m_names_repository.end())
             {
                 // not an argument name
                 return false;
@@ -221,7 +221,7 @@ private:
         }
         else
         {
-            if (!m_data_ptr->m_argument_repository.m_subparsers_argument)
+            if (!m_data_ptr->m_argument_repository->m_subparsers_argument)
             {
                 // no subparsers
                 return false;
@@ -229,19 +229,19 @@ private:
 
             auto& arg_name = input_iterator.take_next();
 
-            auto arg_iter = m_data_ptr->m_argument_repository.m_names_repository.find(arg_name);
-            if (arg_iter != m_data_ptr->m_argument_repository.m_names_repository.end())
+            auto arg_iter = m_data_ptr->m_argument_repository->m_names_repository.find(arg_name);
+            if (arg_iter != m_data_ptr->m_argument_repository->m_names_repository.end())
             {
                 // argument name, subparser expected
                 return false;
             }
 
-            if (!m_data_ptr->m_argument_repository.m_subparsers_argument->has_parser(arg_name))
+            if (!m_data_ptr->m_argument_repository->m_subparsers_argument->has_parser(arg_name))
             {
                 // not a subparser name
                 return false;
             }
-            auto subparser = m_data_ptr->m_argument_repository.m_subparsers_argument->get_parser(arg_name);
+            auto subparser = m_data_ptr->m_argument_repository->m_subparsers_argument->get_parser(arg_name);
 
             return subparser.parse_exclusive_recursively(results_data_ptr, values_storage, input_iterator);
         }
@@ -251,7 +251,7 @@ private:
         argument_table_iterator& input_iterator) const
     {
         parse_named_arguments(values_storage, results_data_ptr, input_iterator);
-        if (m_data_ptr->m_argument_repository.m_subparsers_argument)
+        if (m_data_ptr->m_argument_repository->m_subparsers_argument)
         {
             /* all remaining arguments will go to subparser so process this parser defaults & requirements */
             parse_default_values(results_data_ptr, values_storage);
@@ -337,7 +337,7 @@ private:
 
     void parse_default_values(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage) const
     {
-        for (auto& argument : m_data_ptr->m_argument_repository.m_arguments)
+        for (auto& argument : m_data_ptr->m_argument_repository->m_arguments)
         {
             parse_default_value(results_data_ptr, values_storage, argument);
         }
@@ -346,8 +346,8 @@ private:
     bool parse_named_argument(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
         argument_table_iterator& input_iterator, const string_type& arg_name) const
     {
-        auto arg_iter = m_data_ptr->m_argument_repository.m_names_repository.find(arg_name);
-        if (arg_iter == m_data_ptr->m_argument_repository.m_names_repository.end())
+        auto arg_iter = m_data_ptr->m_argument_repository->m_names_repository.find(arg_name);
+        if (arg_iter == m_data_ptr->m_argument_repository->m_names_repository.end())
         {
             // not an argument name, goto positional arguments processing
             return false;
@@ -388,8 +388,8 @@ private:
     bool parse_named_argument(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
         argument_table_iterator& input_iterator, const string_type& arg_name, const string_type& arg_value) const
     {
-        auto arg_iter = m_data_ptr->m_argument_repository.m_names_repository.find(arg_name);
-        if (arg_iter == m_data_ptr->m_argument_repository.m_names_repository.end())
+        auto arg_iter = m_data_ptr->m_argument_repository->m_names_repository.find(arg_name);
+        if (arg_iter == m_data_ptr->m_argument_repository->m_names_repository.end())
         {
             return false;
         }
@@ -448,14 +448,14 @@ private:
     results_type parse_subparsers_argument(values_storage_type& values_storage,
         const results_data_ptr_type& results_data_ptr, argument_table_iterator& input_iterator) const
     {
-        auto& name = m_data_ptr->m_argument_repository.m_subparsers_argument->get_first_name();
+        auto& name = m_data_ptr->m_argument_repository->m_subparsers_argument->get_first_name();
 
         if (!input_iterator.has_more())
         {
             throw parser_error_ex<char_type>(parser_error_code::SUBPARSER_NAME_MISSING, name, string_type());
         }
 
-        auto& argument = m_data_ptr->m_argument_repository.m_subparsers_argument;
+        auto& argument = m_data_ptr->m_argument_repository->m_subparsers_argument;
         auto& value_str = input_iterator.take_next();
 
         if (!argument->has_parser(value_str))
@@ -472,7 +472,7 @@ private:
     void parse_positional_arguments(values_storage_type& values_storage, const results_data_ptr_type& results_data_ptr,
         argument_table_iterator& input_iterator) const
     {
-        for (auto& argument : m_data_ptr->m_argument_repository.m_arguments)
+        for (auto& argument : m_data_ptr->m_argument_repository->m_arguments)
         {
             if (argument->is_assignable_by_name())
             {
@@ -490,7 +490,7 @@ private:
 
     void check_values_count(const results_data_ptr_type& results_data_ptr) const
     {
-        for (auto& argument : m_data_ptr->m_argument_repository.m_arguments)
+        for (auto& argument : m_data_ptr->m_argument_repository->m_arguments)
         {
             if (results_data_ptr->value_count(argument) < argument->get_min_count())
             {
