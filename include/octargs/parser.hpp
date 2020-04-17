@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "argument_group.hpp"
+#include "argument_group_configurator.hpp"
 #include "argument_table.hpp"
 #include "exception.hpp"
 #include "parser_dictionary.hpp"
@@ -39,7 +39,7 @@ public:
     using dictionary_type = parser_dictionary<char_type>;
     using dictionary_ptr_type = std::shared_ptr<dictionary_type>;
 
-    using argument_group_type = basic_argument_group<char_type, values_storage_type>;
+    using argument_group_configurator_type = basic_argument_group_configurator<char_type, values_storage_type>;
 
     using exclusive_argument_configurator_type = basic_exclusive_argument_configurator<char_type, values_storage_type>;
     using positional_argument_configurator_type
@@ -88,7 +88,7 @@ public:
         return *this;
     }
 
-    argument_group_type& add_group(const std::string& name)
+    argument_group_configurator_type add_group(const std::string& name)
     {
         return m_data_ptr->add_group(name);
     }

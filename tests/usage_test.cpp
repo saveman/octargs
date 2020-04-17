@@ -230,7 +230,7 @@ TEST(parser_usage_test, test_group)
     parser.set_usage_oneliner("ONELINER");
     parser.set_usage_header("HEADER");
     parser.set_usage_footer("FOOTER");
-    auto& group1 = parser.add_group("Group 1");
+    auto group1 = parser.add_group("Group 1");
     group1.add_switch({ "--verbose" }).set_description("an option");
     parser.add_switch({ "-n" }).set_description("the n!");
     parser.add_valued({ "-k" }).set_description("the k!");
@@ -238,11 +238,11 @@ TEST(parser_usage_test, test_group)
     parser.add_valued({ "-x", "--thex" }).set_description("the\nmulti\nline!").set_min_count(1);
     parser.add_switch({ "--ala", "--tola" }).set_description("alatola check my name");
     parser.add_positional("PATTERN").set_description("Pattern to find").set_min_count(1);
-    auto& group2 = parser.add_group("Group 2");
+    auto group2 = parser.add_group("Group 2");
     group2.set_description("This is a group with single line description");
     group2.add_valued({ "--other" }).set_value_name("value").set_description("other value");
     group2.add_positional("VALUES").set_max_count(2).set_description("Some values");
-    auto& group3 = parser.add_group("Group 3");
+    auto group3 = parser.add_group("Group 3");
     group3.set_description("This is a group\nwith multiline description.\nSo it is split.");
     group3.add_valued({ "--another" }).set_value_name("value").set_description("another value");
 

@@ -1,33 +1,27 @@
 #ifndef OCTARGS_ARGUMENT_GROUP_HPP_
 #define OCTARGS_ARGUMENT_GROUP_HPP_
 
+#include <exception>
 #include <memory>
 #include <string>
 #include <vector>
 
-#include "exclusive_argument_configurator.hpp"
-#include "positional_argument_configurator.hpp"
-#include "subparser_argument_configurator.hpp"
-#include "switch_argument_configurator.hpp"
-#include "valued_argument_configurator.hpp"
+#include "../exclusive_argument_configurator.hpp"
+#include "../positional_argument_configurator.hpp"
+#include "../subparser_argument_configurator.hpp"
+#include "../switch_argument_configurator.hpp"
+#include "../valued_argument_configurator.hpp"
 
-#include "internal/argument.hpp"
-#include "internal/argument_repository.hpp"
+#include "argument.hpp"
+#include "argument_repository.hpp"
 
 namespace oct
 {
 namespace args
 {
+namespace internal
+{
 
-/// \brief Arguments group
-///
-/// This class allows grouping arguments. It is used currently only for documentation
-/// purpose (usage automatic documentation).
-///
-/// \tparam derived_T   derived type
-/// \tparam char_T      char type (as in std::basic_string)
-
-// TODO: introduce configurator wrapper, to hide e.g. the get_arguments()
 template <typename char_T, typename values_storage_T = internal::null_values_storage>
 class basic_argument_group
 {
@@ -118,6 +112,7 @@ private:
     std::vector<const_argument_ptr_type> m_arguments;
 };
 
+} // namespace internal
 } // namespace args
 } // namespace oct
 

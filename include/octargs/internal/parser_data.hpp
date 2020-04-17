@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "../argument_group.hpp"
+#include "../argument_group_configurator.hpp"
 #include "argument.hpp"
 #include "argument_repository.hpp"
 
@@ -31,6 +31,8 @@ public:
     using argument_group_type = basic_argument_group<char_type, values_storage_type>;
     using argument_group_ptr_type = std::shared_ptr<argument_group_type>;
     using const_argument_group_ptr_type = std::shared_ptr<const argument_group_type>;
+
+    using argument_group_configurator_type = basic_argument_group_configurator<char_type, values_storage_type>;
 
     using dictionary_type = parser_dictionary<char_type>;
     using dictionary_ptr_type = std::shared_ptr<dictionary_type>;
@@ -62,13 +64,13 @@ public:
         }
     }
 
-    argument_group_type& add_group(const std::string& name)
+    argument_group_configurator_type add_group(const std::string& name)
     {
         auto argument_group = std::make_shared<argument_group_type>(m_argument_repository, name);
 
         m_argument_groups.push_back(argument_group);
 
-        return *argument_group;
+        return argument_group_configurator_type(argument_group);
     }
 
     dictionary_ptr_type m_dictionary;

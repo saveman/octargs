@@ -221,7 +221,7 @@ public:
                 .set_min_count(1)
                 .set_max_count_unlimited();
 
-            auto& output_group = arg_parser.add_group("Output arguments");
+            auto output_group = arg_parser.add_group("Output arguments");
             output_group.add_switch({ "-s", "--steps" }).set_description("show output of steps");
 
             auto results = arg_parser.parse(argc, argv);
