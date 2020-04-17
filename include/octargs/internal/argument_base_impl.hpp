@@ -1,5 +1,5 @@
-#ifndef OCTARGS_ARGUMENT_BASE_HPP_
-#define OCTARGS_ARGUMENT_BASE_HPP_
+#ifndef OCTARGS_ARGUMENT_BASE_IMPL_HPP_
+#define OCTARGS_ARGUMENT_BASE_IMPL_HPP_
 
 #include "argument.hpp"
 
@@ -11,7 +11,7 @@ namespace internal
 {
 
 template <typename derived_T, typename char_T, typename values_storage_T = null_values_storage>
-class basic_argument_base : public basic_argument<char_T, values_storage_T>
+class basic_argument_base_impl : public basic_argument<char_T, values_storage_T>
 {
 public:
     using derived_type = derived_T;
@@ -137,7 +137,7 @@ protected:
         FLAG_IS_ACCEPTING_SEPARATE_VALUE = (1 << 3),
     };
 
-    explicit basic_argument_base(std::uint32_t flags, const string_vector_type& names)
+    explicit basic_argument_base_impl(std::uint32_t flags, const string_vector_type& names)
         : base_type()
         , m_flags(flags)
         , m_names(names)
@@ -221,4 +221,4 @@ private:
 } // namespace args
 } // namespace oct
 
-#endif // OCTARGS_ARGUMENT_BASE_HPP_
+#endif // OCTARGS_ARGUMENT_BASE_IMPL_HPP_

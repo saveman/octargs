@@ -8,11 +8,11 @@
 #include <vector>
 
 #include "argument.hpp"
-#include "exclusive_argument.hpp"
-#include "positional_argument.hpp"
-#include "subparser_argument.hpp"
-#include "switch_argument.hpp"
-#include "valued_argument.hpp"
+#include "exclusive_argument_impl.hpp"
+#include "positional_argument_impl.hpp"
+#include "subparser_argument_impl.hpp"
+#include "switch_argument_impl.hpp"
+#include "valued_argument_impl.hpp"
 
 namespace oct
 {
@@ -37,15 +37,15 @@ public:
     using argument_type = basic_argument<char_type, values_storage_type>;
     using const_argument_ptr_type = std::shared_ptr<const argument_type>;
 
-    using exclusive_argument_type = basic_exclusive_argument<char_type, values_storage_type>;
+    using exclusive_argument_type = basic_exclusive_argument_impl<char_type, values_storage_type>;
     using exclusive_argument_ptr_type = std::shared_ptr<exclusive_argument_type>;
-    using switch_argument_type = basic_switch_argument<char_type, values_storage_type>;
+    using switch_argument_type = basic_switch_argument_impl<char_type, values_storage_type>;
     using switch_argument_ptr_type = std::shared_ptr<switch_argument_type>;
-    using valued_argument_type = basic_valued_argument<char_type, values_storage_type>;
+    using valued_argument_type = basic_valued_argument_impl<char_type, values_storage_type>;
     using valued_argument_ptr_type = std::shared_ptr<valued_argument_type>;
-    using positional_argument_type = basic_positional_argument<char_type, values_storage_type>;
+    using positional_argument_type = basic_positional_argument_impl<char_type, values_storage_type>;
     using positional_argument_ptr_type = std::shared_ptr<positional_argument_type>;
-    using subparser_argument_type = basic_subparser_argument<char_type, values_storage_type>;
+    using subparser_argument_type = basic_subparser_argument_impl<char_type, values_storage_type>;
     using subparser_argument_ptr_type = std::shared_ptr<subparser_argument_type>;
     using const_subparser_argument_ptr_type = std::shared_ptr<const subparser_argument_type>;
 

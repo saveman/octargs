@@ -74,7 +74,7 @@ private:
     using dictionary_type = usage_dictionary<char_type>;
     using dictionary_ptr_type = std::shared_ptr<dictionary_type>;
 
-    using argument_group_type = internal::basic_argument_group<char_type, values_storage_type>;
+    using argument_group_type = internal::basic_argument_group_impl<char_type, values_storage_type>;
     using argument_group_ptr_type = std::shared_ptr<argument_group_type>;
 
     struct arg_info

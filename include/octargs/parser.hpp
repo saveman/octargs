@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "argument_group_configurator.hpp"
+#include "argument_group.hpp"
 #include "argument_table.hpp"
 #include "exception.hpp"
 #include "parser_dictionary.hpp"
@@ -39,14 +39,13 @@ public:
     using dictionary_type = parser_dictionary<char_type>;
     using dictionary_ptr_type = std::shared_ptr<dictionary_type>;
 
-    using argument_group_configurator_type = basic_argument_group_configurator<char_type, values_storage_type>;
+    using argument_group_type = basic_argument_group<char_type, values_storage_type>;
 
-    using exclusive_argument_configurator_type = basic_exclusive_argument_configurator<char_type, values_storage_type>;
-    using positional_argument_configurator_type
-        = basic_positional_argument_configurator<char_type, values_storage_type>;
-    using subparser_argument_configurator_type = basic_subparser_argument_configurator<char_type, values_storage_type>;
-    using switch_argument_configurator_type = basic_switch_argument_configurator<char_type, values_storage_type>;
-    using valued_argument_configurator_type = basic_valued_argument_configurator<char_type, values_storage_type>;
+    using exclusive_argument_type = basic_exclusive_argument<char_type, values_storage_type>;
+    using positional_argument_type = basic_positional_argument<char_type, values_storage_type>;
+    using subparser_argument_type = basic_subparser_argument<char_type, values_storage_type>;
+    using switch_argument_type = basic_switch_argument<char_type, values_storage_type>;
+    using valued_argument_type = basic_valued_argument<char_type, values_storage_type>;
 
     using argument_table_type = basic_argument_table<char_type>;
     using results_type = basic_results<char_type>;
@@ -88,34 +87,34 @@ public:
         return *this;
     }
 
-    argument_group_configurator_type add_group(const std::string& name)
+    argument_group_type add_group(const std::string& name)
     {
         return m_data_ptr->add_group(name);
     }
 
-    exclusive_argument_configurator_type add_exclusive(const string_vector_type& names)
+    exclusive_argument_type add_exclusive(const string_vector_type& names)
     {
         return m_data_ptr->m_default_argument_group.add_exclusive(names);
     }
 
-    switch_argument_configurator_type add_switch(const string_vector_type& names)
+    switch_argument_type add_switch(const string_vector_type& names)
     {
         return m_data_ptr->m_default_argument_group.add_switch(names);
     }
 
-    valued_argument_configurator_type add_valued(const string_vector_type& names)
+    valued_argument_type add_valued(const string_vector_type& names)
     {
         return m_data_ptr->m_default_argument_group.add_valued(names);
     }
 
-    positional_argument_configurator_type add_positional(const string_type& name)
+    positional_argument_type add_positional(const string_type& name)
     {
         return m_data_ptr->m_default_argument_group.add_positional(name);
     }
 
-    subparser_argument_configurator_type add_subparsers(const string_type& name)
+    subparser_argument_type add_subparsers(const string_type& name)
     {
-        return subparser_argument_configurator_type(m_data_ptr->m_argument_repository->add_subparsers(name));
+        return subparser_argument_type(m_data_ptr->m_argument_repository->add_subparsers(name));
     }
 
     results_type parse(int argc, char_type* argv[], values_storage_type& values_storage = get_null_storage()) const
