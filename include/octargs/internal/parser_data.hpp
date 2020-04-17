@@ -5,12 +5,8 @@
 #include <string>
 #include <vector>
 
-#include "../argument.hpp"
 #include "../argument_group.hpp"
-#include "../exclusive_argument.hpp"
-#include "../positional_argument.hpp"
-#include "../subparser_argument.hpp"
-#include "../valued_argument.hpp"
+#include "argument.hpp"
 #include "argument_repository.hpp"
 
 namespace oct

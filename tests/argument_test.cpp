@@ -2,11 +2,10 @@
 
 #include <array>
 
-#include "../include/octargs/argument.hpp"
-#include "../include/octargs/exclusive_argument.hpp"
-#include "../include/octargs/positional_argument.hpp"
-#include "../include/octargs/switch_argument.hpp"
-#include "../include/octargs/valued_argument.hpp"
+#include "../include/octargs/exclusive_argument_configurator.hpp"
+#include "../include/octargs/positional_argument_configurator.hpp"
+#include "../include/octargs/switch_argument_configurator.hpp"
+#include "../include/octargs/valued_argument_configurator.hpp"
 
 namespace oct
 {
@@ -19,12 +18,12 @@ namespace
 using string_type = std::string;
 using string_vector_type = std::vector<string_type>;
 
-using basic_argument_type = basic_argument<char, internal::null_values_storage>;
-using switch_argument_type = basic_switch_argument<char>;
-using valued_argument_type = basic_valued_argument<char>;
-using positional_argument_type = basic_positional_argument<char>;
-using exclusive_argument_type = basic_exclusive_argument<char>;
 using dictionary_type = default_parser_dictionary<char>;
+
+using exclusive_argument_type = internal::basic_exclusive_argument<char>;
+using positional_argument_type = internal::basic_positional_argument<char>;
+using switch_argument_type = internal::basic_switch_argument<char>;
+using valued_argument_type = internal::basic_valued_argument<char>;
 
 } // namespace
 

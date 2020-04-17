@@ -6,14 +6,16 @@
 #include <string>
 #include <vector>
 
-#include "argument_type_handler.hpp"
-#include "exception.hpp"
-#include "internal/argument_handler.hpp"
-#include "internal/misc.hpp"
+#include "../argument_type_handler.hpp"
+#include "../exception.hpp"
+#include "argument_handler.hpp"
+#include "misc.hpp"
 
 namespace oct
 {
 namespace args
+{
+namespace internal
 {
 
 /// \brief Argument interface
@@ -21,7 +23,7 @@ namespace args
 /// \tparam char_T              char type (as in std::basic_string)
 /// \tparam values_storage_T    type of object to store parsed values
 template <typename char_T, typename values_storage_T>
-class basic_argument : public internal::basic_argument_tag
+class basic_argument : public basic_argument_tag
 {
 public:
     using char_type = char_T;
@@ -29,7 +31,7 @@ public:
 
     using string_type = std::basic_string<char_type>;
     using string_vector_type = std::vector<string_type>;
-    using handler_type = internal::basic_argument_handler<char_type, values_storage_type>;
+    using handler_type = basic_argument_handler<char_type, values_storage_type>;
     using const_handler_ptr_type = std::shared_ptr<const handler_type>;
 
     virtual ~basic_argument() = default;
@@ -63,6 +65,7 @@ public:
     virtual bool is_accepting_separate_value() const = 0;
 };
 
+} // namespace internal
 } // namespace args
 } // namespace oct
 

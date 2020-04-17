@@ -78,13 +78,13 @@ TEST(exclusive_args_test, test_two_given)
 TEST(exclusive_args_test, test_subparsers)
 {
     parser parser;
-    auto& subparsers_arg = parser.add_subparsers("command");
+    auto subparsers = parser.add_subparsers("command");
     parser.add_exclusive({ "--help" });
     parser.add_switch({ "--verbose" });
-    auto parser_add = subparsers_arg.add_parser("add");
+    auto parser_add = subparsers.add_parser("add");
     parser_add.add_exclusive({ "--help" });
     parser_add.add_switch({ "--verbose" });
-    auto parser_sub = subparsers_arg.add_parser("sub");
+    auto parser_sub = subparsers.add_parser("sub");
     parser_sub.add_exclusive({ "--help" });
     parser_sub.add_switch({ "--verbose" });
 

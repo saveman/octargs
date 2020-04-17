@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
     arg_parser.add_switch({ "--verbose" }); // common argument
 
     //! [Snippet Add]
-    auto& subparsers = arg_parser.add_subparsers("command");
+    auto subparsers = arg_parser.add_subparsers("command");
     //! [Snippet Add]
 
     //! [Snippet Configure]

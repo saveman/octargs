@@ -5,19 +5,15 @@
 #include <string>
 #include <vector>
 
-#include "argument.hpp"
 #include "argument_group.hpp"
 #include "argument_table.hpp"
 #include "exception.hpp"
-#include "exclusive_argument.hpp"
 #include "parser_dictionary.hpp"
 #include "parser_error.hpp"
-#include "positional_argument.hpp"
 #include "results.hpp"
-#include "subparser_argument.hpp"
-#include "switch_argument.hpp"
 #include "usage.hpp"
-#include "valued_argument.hpp"
+
+#include "internal/argument.hpp"
 
 /// \brief OCTAEDR Software
 namespace oct
@@ -43,13 +39,14 @@ public:
     using dictionary_type = parser_dictionary<char_type>;
     using dictionary_ptr_type = std::shared_ptr<dictionary_type>;
 
-    using argument_type = basic_argument<char_type, values_storage_type>;
-    using switch_argument_type = basic_switch_argument<char_type, values_storage_type>;
-    using valued_argument_type = basic_valued_argument<char_type, values_storage_type>;
-    using positional_argument_type = basic_positional_argument<char_type, values_storage_type>;
-    using exclusive_argument_type = basic_exclusive_argument<char_type, values_storage_type>;
-    using subparser_argument_type = basic_subparser_argument<char_type, values_storage_type>;
     using argument_group_type = basic_argument_group<char_type, values_storage_type>;
+
+    using exclusive_argument_configurator_type = basic_exclusive_argument_configurator<char_type, values_storage_type>;
+    using positional_argument_configurator_type
+        = basic_positional_argument_configurator<char_type, values_storage_type>;
+    using subparser_argument_configurator_type = basic_subparser_argument_configurator<char_type, values_storage_type>;
+    using switch_argument_configurator_type = basic_switch_argument_configurator<char_type, values_storage_type>;
+    using valued_argument_configurator_type = basic_valued_argument_configurator<char_type, values_storage_type>;
 
     using argument_table_type = basic_argument_table<char_type>;
     using results_type = basic_results<char_type>;
@@ -96,29 +93,29 @@ public:
         return m_data_ptr->add_group(name);
     }
 
-    exclusive_argument_type& add_exclusive(const string_vector_type& names)
+    exclusive_argument_configurator_type add_exclusive(const string_vector_type& names)
     {
         return m_data_ptr->m_default_argument_group.add_exclusive(names);
     }
 
-    switch_argument_type& add_switch(const string_vector_type& names)
+    switch_argument_configurator_type add_switch(const string_vector_type& names)
     {
         return m_data_ptr->m_default_argument_group.add_switch(names);
     }
 
-    valued_argument_type& add_valued(const string_vector_type& names)
+    valued_argument_configurator_type add_valued(const string_vector_type& names)
     {
         return m_data_ptr->m_default_argument_group.add_valued(names);
     }
 
-    positional_argument_type& add_positional(const string_type& name)
+    positional_argument_configurator_type add_positional(const string_type& name)
     {
         return m_data_ptr->m_default_argument_group.add_positional(name);
     }
 
-    subparser_argument_type& add_subparsers(const string_type& name)
+    subparser_argument_configurator_type add_subparsers(const string_type& name)
     {
-        return *m_data_ptr->m_argument_repository.add_subparsers(name);
+        return subparser_argument_configurator_type(m_data_ptr->m_argument_repository.add_subparsers(name));
     }
 
     results_type parse(int argc, char_type* argv[], values_storage_type& values_storage = get_null_storage()) const
@@ -139,8 +136,8 @@ public:
     }
 
 private:
+    using argument_type = internal::basic_argument<char_type, values_storage_type>;
     using argument_table_iterator = basic_argument_table_iterator<char_type>;
-    using argument_ptr_type = std::shared_ptr<argument_type>;
     using const_argument_ptr_type = std::shared_ptr<const argument_type>;
     using parser_data_type = internal::basic_parser_data<char_type, values_storage_type>;
     using parser_data_ptr_type = std::shared_ptr<parser_data_type>;

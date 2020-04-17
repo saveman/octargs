@@ -289,7 +289,7 @@ TEST(positional_args_test, test_default_values)
     argument_table args_given("appname", { "value1", "value2" });
 
     parser parser1;
-    auto& arg = parser1.add_positional("files").set_max_count_unlimited().set_default_values({ "one", "two" });
+    auto arg = parser1.add_positional("files").set_max_count_unlimited().set_default_values({ "one", "two" });
 
     auto results_args_given = parser1.parse(args_given);
     ASSERT_EQ(std::size_t(2), results_args_given.get_count("files"));
@@ -329,8 +329,8 @@ TEST(positional_args_test, test_min_max_count)
     argument_table args2("appname", { "value1", "value2", "value3", "value4", "value5" });
 
     parser parser;
-    auto& arg_patterns = parser.add_positional("patterns").set_min_count(1).set_max_count(2);
-    auto& arg_files = parser.add_positional("files").set_max_count(2);
+    auto arg_patterns = parser.add_positional("patterns").set_min_count(1).set_max_count(2);
+    auto arg_files = parser.add_positional("files").set_max_count(2);
 
     auto results = parser.parse(args0);
     ASSERT_EQ(std::size_t(1), results.get_count("patterns"));

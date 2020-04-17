@@ -180,7 +180,7 @@ TEST(parser_usage_test, test_subparsers)
     parser.add_exclusive({ "--help" });
     parser.add_switch({ "--verbose", "-v" }).set_description("print verbose output");
 
-    auto& subparsers = parser.add_subparsers("command");
+    auto subparsers = parser.add_subparsers("command");
 
     auto get_parser = subparsers.add_parser("get");
     get_parser.set_usage_oneliner("get file");

@@ -100,7 +100,7 @@ private:
             .set_type<bool>()
             .set_store_function([](app_settings& settings, bool value) { settings.m_common.m_verbose = value; });
 
-        auto& subparsers = m_parser.add_subparsers("PROTOCOL").set_description("Protocol to use to get the file");
+        auto subparsers = m_parser.add_subparsers("PROTOCOL").set_description("Protocol to use to get the file");
 
         subparsers.set_type<std::string>().set_store_function(
             [](app_settings& settings, const std::string& value) { settings.m_protocol = value; });

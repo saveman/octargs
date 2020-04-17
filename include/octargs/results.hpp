@@ -3,8 +3,8 @@
 
 #include <memory>
 
-#include "argument.hpp"
 #include "argument_table.hpp"
+#include "internal/argument.hpp"
 #include "internal/function_helpers.hpp"
 #include "internal/results_data.hpp"
 

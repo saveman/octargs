@@ -11,14 +11,19 @@ namespace oct
 namespace args
 {
 
+// forward
 template <typename char_T, typename values_storage_T>
 class basic_parser;
+
+namespace internal
+{
 
 /// \brief Subparser argument
 ///
 /// \tparam char_T              char type (as in std::basic_string)
 /// \tparam values_storage_T    type of class uses as a storage for parsed values
-template <typename char_T, typename values_storage_T = internal::null_values_storage>
+// TODO: remove internal namespace from base (after argument moved also to internal)
+template <typename char_T, typename values_storage_T = null_values_storage>
 class basic_subparser_argument
     : public basic_argument_base<basic_subparser_argument<char_T, values_storage_T>, char_T, values_storage_T>
 {
@@ -26,6 +31,7 @@ public:
     using char_type = char_T;
     using values_storage_type = values_storage_T;
 
+    // TODO: as above
     using base_type
         = basic_argument_base<basic_subparser_argument<char_type, values_storage_type>, char_type, values_storage_type>;
 
@@ -74,6 +80,7 @@ private:
     std::map<string_type, const_parser_ptr_type> m_subparsers;
 };
 
+} // namespace internal
 } // namespace args
 } // namespace oct
 

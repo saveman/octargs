@@ -8,8 +8,8 @@
 #include <string>
 #include <vector>
 
-#include "argument.hpp"
 #include "argument_table.hpp"
+#include "internal/argument.hpp"
 #include "internal/char_utils.hpp"
 #include "internal/misc.hpp"
 #include "internal/parser_data.hpp"
@@ -33,24 +33,11 @@ public:
     using char_type = char_T;
     using values_storage_type = values_storage_T;
 
-    using argument_type = basic_argument<char_type, values_storage_type>;
-    using const_argument_ptr_type = std::shared_ptr<const argument_type>;
-
     using string_type = std::basic_string<char_type>;
     using ostream_type = std::basic_ostream<char_type>;
 
-    using string_vector_type = std::vector<string_type>;
-
     using parser_data_type = internal::basic_parser_data<char_type, values_storage_type>;
     using const_parser_data_ptr_type = std::shared_ptr<const parser_data_type>;
-
-    using string_utils_type = internal::string_utils<char_type>;
-
-    using dictionary_type = usage_dictionary<char_type>;
-    using dictionary_ptr_type = std::shared_ptr<dictionary_type>;
-
-    using argument_group_type = basic_argument_group<char_type, values_storage_type>;
-    using argument_group_ptr_type = std::shared_ptr<argument_group_type>;
 
     explicit basic_parser_usage(const const_parser_data_ptr_type& parser_data)
         : m_data_ptr(parser_data)
@@ -77,6 +64,19 @@ public:
     }
 
 private:
+    using argument_type = internal::basic_argument<char_type, values_storage_type>;
+    using const_argument_ptr_type = std::shared_ptr<const argument_type>;
+
+    using string_vector_type = std::vector<string_type>;
+
+    using string_utils_type = internal::string_utils<char_type>;
+
+    using dictionary_type = usage_dictionary<char_type>;
+    using dictionary_ptr_type = std::shared_ptr<dictionary_type>;
+
+    using argument_group_type = basic_argument_group<char_type, values_storage_type>;
+    using argument_group_ptr_type = std::shared_ptr<argument_group_type>;
+
     struct arg_info
     {
         arg_info()

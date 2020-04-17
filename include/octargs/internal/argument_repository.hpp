@@ -7,12 +7,12 @@
 #include <string>
 #include <vector>
 
-#include "../argument.hpp"
-#include "../exclusive_argument.hpp"
-#include "../positional_argument.hpp"
-#include "../subparser_argument.hpp"
-#include "../switch_argument.hpp"
-#include "../valued_argument.hpp"
+#include "argument.hpp"
+#include "exclusive_argument.hpp"
+#include "positional_argument.hpp"
+#include "subparser_argument.hpp"
+#include "switch_argument.hpp"
+#include "valued_argument.hpp"
 
 namespace oct
 {
@@ -198,7 +198,7 @@ private:
 
         for (auto c : name)
         {
-            if (internal::is_space(c))
+            if (is_space(c))
             {
                 throw invalid_argument_name_ex<char_type>("argument name must not contain whitespace characters", name);
             }

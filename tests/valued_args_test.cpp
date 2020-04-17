@@ -260,7 +260,7 @@ TEST(valued_args_test, test_default_values)
     argument_table args_one("appname", { "-v", "value" });
 
     parser parser;
-    auto& arg = parser.add_valued({ "-v" }).set_max_count(3).set_default_values({ "one", "two" });
+    auto arg = parser.add_valued({ "-v" }).set_max_count(3).set_default_values({ "one", "two" });
 
     auto results_one = parser.parse(args_one);
     ASSERT_EQ(std::size_t(1), results_one.get_count("-v"));
@@ -296,7 +296,7 @@ TEST(valued_args_test, test_min_max_count)
     argument_table args("appname", { "-v", "value1", "-v", "value2" });
 
     parser parser;
-    auto& arg = parser.add_valued({ "-v" }).set_max_count_unlimited();
+    auto arg = parser.add_valued({ "-v" }).set_max_count_unlimited();
 
     auto results = parser.parse(args);
     ASSERT_EQ(std::size_t(2), results.get_count("-v"));

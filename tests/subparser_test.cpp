@@ -11,7 +11,7 @@ TEST(subparser_test, test_basic)
 {
     parser parser;
     parser.add_switch({ "-v", "--verbose" });
-    auto& subparsers = parser.add_subparsers("command");
+    auto subparsers = parser.add_subparsers("command");
 
     auto& add_parser = subparsers.add_parser("add");
     add_parser.add_switch({ "-s", "--show-steps" });
@@ -83,7 +83,7 @@ TEST(subparser_test, test_storing)
 {
     storing_parser<settings> parser;
     parser.add_switch({ "-v", "--verbose" }).set_type_and_storage(&settings::m_verbose);
-    auto& subparsers = parser.add_subparsers("command");
+    auto subparsers = parser.add_subparsers("command");
     subparsers.set_type<command, command_converter>().set_storage(&settings::m_command);
 
     auto& add_parser = subparsers.add_parser("add");
@@ -138,7 +138,7 @@ TEST(subparser_test, test_errors)
     ASSERT_THROW(parser2.add_subparsers("subparsers"), subparser_positional_conflict);
 
     parser parser3;
-    auto& subparsers = parser3.add_subparsers("commands");
+    auto subparsers = parser3.add_subparsers("commands");
     subparsers.add_parser("add");
     subparsers.add_parser("mul");
 

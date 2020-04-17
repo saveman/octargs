@@ -197,8 +197,9 @@ TEST(storage_args_test, test_null_convert_function)
     settings settings1;
     parser.parse(args1, settings1);
 
-    handler.set_convert_function(
-        parser_type::valued_argument_type::type_handler_type<double>::convert_function_type(nullptr));
+    using convert_function_type = std::function<double(const std::string&)>;
+
+    handler.set_convert_function(convert_function_type());
     ASSERT_THROW(parser.parse(args1), missing_converter);
 }
 
