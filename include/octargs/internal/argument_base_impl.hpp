@@ -128,6 +128,11 @@ public:
         return (m_flags & FLAG_IS_ACCEPTING_SEPARATE_VALUE);
     }
 
+    void set_handler(const const_handler_ptr_type& handler_ptr)
+    {
+        m_handler_ptr = handler_ptr;
+    }
+
 protected:
     enum flags : std::uint32_t
     {
@@ -187,11 +192,6 @@ protected:
     }
 
 private:
-    void set_handler(const const_handler_ptr_type& handler_ptr)
-    {
-        m_handler_ptr = handler_ptr;
-    }
-
     derived_type& cast_this_to_derived()
     {
         return static_cast<derived_type&>(*this);

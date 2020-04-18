@@ -55,7 +55,7 @@ public:
 /// \brief Exception thrown when conversion function is missing.
 ///
 /// \tparam char_T      char type (as in std::basic_string)
-template <class char_T>
+template <typename char_T>
 class missing_converter_ex : public missing_converter
 {
 public:
@@ -94,7 +94,7 @@ public:
 /// \brief Exception thrown when conversion failed
 ///
 /// \tparam char_T      char type (as in std::basic_string)
-template <class char_T>
+template <typename char_T>
 class conversion_error_ex : public conversion_error
 {
 public:
@@ -133,7 +133,7 @@ public:
 /// \brief Exception thrown when unknown argument was requested
 ///
 /// \tparam char_T      char type (as in std::basic_string)
-template <class char_T>
+template <typename char_T>
 class unknown_argument_ex : public unknown_argument
 {
 public:
@@ -172,7 +172,7 @@ public:
 /// \brief Exception thrown when given argument name is invalid
 ///
 /// \tparam char_T      char type (as in std::basic_string)
-template <class char_T>
+template <typename char_T>
 class invalid_argument_name_ex : public invalid_argument_name
 {
 public:

@@ -192,14 +192,14 @@ TEST(storage_args_test, test_null_convert_function)
     using parser_type = storing_parser<settings>;
 
     parser_type parser;
-    auto& handler = parser.add_valued({ "--double" }).set_type<double>();
+    auto arg = parser.add_valued({ "--double" }).set_type<double>();
 
     settings settings1;
     parser.parse(args1, settings1);
 
     using convert_function_type = std::function<double(const std::string&)>;
 
-    handler.set_convert_function(convert_function_type());
+    arg.set_convert_function(convert_function_type());
     ASSERT_THROW(parser.parse(args1), missing_converter);
 }
 
@@ -216,16 +216,16 @@ TEST(storage_args_test, test_convert_function)
     };
 
     storing_parser<settings> parser;
-    auto& handler = parser.add_valued({ "--double" })
-                        .set_type<double>()
-                        .set_convert_function([](const std::string& value_str) { return std::stod(value_str) + 10.0; })
-                        .set_store_function([](settings& settings, double value) { settings.m_double = value; });
+    auto arg = parser.add_valued({ "--double" })
+                   .set_type<double>()
+                   .set_convert_function([](const std::string& value_str) { return std::stod(value_str) + 10.0; })
+                   .set_store_function([](settings& settings, double value) { settings.m_double = value; });
 
     settings settings1;
     parser.parse(args1, settings1);
     ASSERT_EQ(double(-7.43), settings1.m_double);
 
-    handler.set_convert_function(
+    arg.set_convert_function(
         [](const std::string & /*value_str*/) -> double { throw std::invalid_argument("value_str"); });
 
     ASSERT_THROW(parser.parse(args1, settings1), std::invalid_argument);
@@ -367,10 +367,14 @@ TEST(storage_args_test, test_custom_type)
 
     storing_parser<settings> parser;
 
-    parser.add_valued({ "--format" }).set_type<format_code, format_code_converter>().set_storage(&settings::m_format);
+    parser.add_valued({ "--format" })
+        .set_type<format_code>()
+        .set_convert_function(format_code_converter())
+        .set_storage(&settings::m_format);
     parser.add_valued({ "--multi" })
         .set_max_count_unlimited()
-        .set_type<format_code, format_code_converter>()
+        .set_type<format_code>()
+        .set_convert_function(format_code_converter())
         .set_storage(&settings::m_multiformat);
 
     settings settings1;

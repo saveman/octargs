@@ -71,8 +71,8 @@ private:
 
     using string_utils_type = internal::string_utils<char_type>;
 
-    using dictionary_type = usage_dictionary<char_type>;
-    using dictionary_ptr_type = std::shared_ptr<dictionary_type>;
+    using usage_dictionary_type = usage_dictionary<char_type>;
+    using usage_dictionary_ptr_type = std::shared_ptr<usage_dictionary_type>;
 
     using argument_group_type = internal::basic_argument_group_impl<char_type, values_storage_type>;
     using argument_group_ptr_type = std::shared_ptr<argument_group_type>;
@@ -660,7 +660,7 @@ private:
     std::size_t m_description_indent;
     std::size_t m_multiline_indent;
     std::size_t m_arg_line_indent;
-    dictionary_ptr_type m_dictionary;
+    usage_dictionary_ptr_type m_dictionary;
 };
 
 } // namespace args

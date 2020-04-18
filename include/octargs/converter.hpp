@@ -23,6 +23,8 @@ template <typename char_T, typename data_T>
 class basic_converter
 {
 public:
+    using data_type = void;
+
     basic_converter() = delete;
 };
 
@@ -34,10 +36,11 @@ class basic_converter<char_T, std::basic_string<char_T>>
 {
 public:
     using char_type = char_T;
+    using data_type = std::basic_string<char_type>;
 
     using string_type = std::basic_string<char_type>;
 
-    string_type operator()(const string_type& value_str) const
+    data_type operator()(const string_type& value_str) const
     {
         return value_str;
     }
@@ -51,11 +54,12 @@ class basic_converter<char_T, bool>
 {
 public:
     using char_type = char_T;
+    using data_type = bool;
 
     using string_type = std::basic_string<char_type>;
     using dictionary_type = parser_dictionary<char_type>;
 
-    bool operator()(const dictionary_type& dictionary, const string_type& value_str) const
+    data_type operator()(const dictionary_type& dictionary, const string_type& value_str) const
     {
         const auto& true_literals = dictionary.get_true_literals();
         if (std::find(true_literals.begin(), true_literals.end(), value_str) != true_literals.end())

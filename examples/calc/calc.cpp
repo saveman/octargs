@@ -73,7 +73,7 @@ class calc_app
         }
     };
 
-    template <class data_T>
+    template <typename data_T>
     static void execute_sum(std::ostream& os, const std::vector<data_T>& values, bool show_steps)
     {
         using data_type = data_T;
@@ -96,7 +96,7 @@ class calc_app
         os << std::accumulate(values.begin(), values.end(), data_type(0)) << std::endl;
     }
 
-    template <class data_T>
+    template <typename data_T>
     static void execute_mul(std::ostream& os, const std::vector<data_T>& values, bool show_steps)
     {
         using data_type = data_T;
@@ -121,7 +121,7 @@ class calc_app
         }) << std::endl;
     }
 
-    template <class data_T>
+    template <typename data_T>
     static void execute_min(std::ostream& os, const std::vector<data_T>& values, bool show_steps)
     {
         using data_type = data_T;
@@ -144,7 +144,7 @@ class calc_app
         os << *std::min_element(values.begin(), values.end()) << std::endl;
     }
 
-    template <class data_T>
+    template <typename data_T>
     static void execute_max(std::ostream& os, const std::vector<data_T>& values, bool show_steps)
     {
         using data_type = data_T;
@@ -167,7 +167,7 @@ class calc_app
         os << *std::max_element(values.begin(), values.end()) << std::endl;
     }
 
-    template <class data_T>
+    template <typename data_T>
     static void execute(std::ostream& os, const std::vector<data_T>& values, operation_code operation, bool show_steps)
     {
         switch (operation)

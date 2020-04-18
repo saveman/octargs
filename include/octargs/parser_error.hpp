@@ -54,7 +54,7 @@ private:
 };
 
 /// \brief Exception thrown when parsing cannot be performed.
-template <class char_T>
+template <typename char_T>
 class parser_error_ex : public parser_error
 {
 public:
