@@ -30,8 +30,8 @@ public:
     using values_storage_type = values_storage_T;
     using data_type = data_T;
 
-    using base_type = basic_argument_base<basic_valued_argument, internal::basic_valued_argument_impl, char_T,
-        values_storage_T, data_T>;
+    using base_type = basic_argument_base<oct::args::basic_valued_argument, internal::basic_valued_argument_impl,
+        char_T, values_storage_T, data_T>;
 
     using string_type = typename base_type::string_type;
     using string_vector_type = typename base_type::string_vector_type;

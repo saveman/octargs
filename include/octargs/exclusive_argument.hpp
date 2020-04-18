@@ -25,8 +25,8 @@ public:
     using values_storage_type = values_storage_T;
     using data_type = data_T;
 
-    using base_type = basic_argument_base<basic_exclusive_argument, internal::basic_exclusive_argument_impl, char_T,
-        values_storage_T, data_T>;
+    using base_type = basic_argument_base<oct::args::basic_exclusive_argument, internal::basic_exclusive_argument_impl,
+        char_T, values_storage_T, data_T>;
 
     using argument_ptr_type = typename base_type::argument_ptr_type;
 

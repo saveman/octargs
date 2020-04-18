@@ -29,8 +29,8 @@ public:
     using values_storage_type = values_storage_T;
     using data_type = data_T;
 
-    using base_type = basic_argument_base<basic_subparser_argument, internal::basic_subparser_argument_impl, char_T,
-        values_storage_T, data_T>;
+    using base_type = basic_argument_base<oct::args::basic_subparser_argument, internal::basic_subparser_argument_impl,
+        char_T, values_storage_T, data_T>;
 
     using parser_type = basic_parser<char_type, values_storage_type>;
 
