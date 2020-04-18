@@ -1,6 +1,8 @@
 #ifndef OCTARGS_ARGUMENT_HANDLER_HPP_
 #define OCTARGS_ARGUMENT_HANDLER_HPP_
 
+#include "../parser_dictionary.hpp"
+
 namespace oct
 {
 namespace args

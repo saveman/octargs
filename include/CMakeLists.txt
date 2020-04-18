@@ -19,6 +19,7 @@ set(${PROJECT_NAME}_HEADERS_INTERNAL
     octargs/internal/argument_group_impl.hpp
     octargs/internal/argument_handler.hpp
     octargs/internal/argument_repository.hpp
+    octargs/internal/argument_type_handler.hpp
     octargs/internal/argument.hpp
     octargs/internal/char_utils.hpp
     octargs/internal/exclusive_argument_impl.hpp
@@ -37,7 +38,6 @@ set(${PROJECT_NAME}_HEADERS
     octargs/argument_base.hpp
     octargs/argument_group.hpp
     octargs/argument_table.hpp
-    octargs/argument_type_handler.hpp
     octargs/converter.hpp
     octargs/exception.hpp
     octargs/exclusive_argument.hpp

@@ -17,22 +17,28 @@ namespace args
 /// \tparam char_T              char type (as in std::basic_string)
 /// \tparam values_storage_T    type of class uses as a storage for parsed values
 template <typename char_T, typename values_storage_T, typename data_T = void>
-class basic_switch_argument
-    : public basic_argument_base<basic_switch_argument<char_T, values_storage_T, data_T>,
-          internal::basic_switch_argument_impl<char_T, values_storage_T>, char_T, values_storage_T, data_T>
+class basic_switch_argument : public basic_argument_base<basic_switch_argument, internal::basic_switch_argument_impl,
+                                  char_T, values_storage_T, data_T>
 {
 public:
     using char_type = char_T;
     using values_storage_type = values_storage_T;
     using data_type = data_T;
 
-    using base_type = basic_argument_base<basic_switch_argument<char_T, values_storage_T, data_T>,
-        internal::basic_switch_argument_impl<char_T, values_storage_T>, char_T, values_storage_T, data_T>;
+    using base_type = basic_argument_base<basic_switch_argument, internal::basic_switch_argument_impl, char_T,
+        values_storage_T, data_T>;
 
     using argument_ptr_type = typename base_type::argument_ptr_type;
 
     explicit basic_switch_argument(argument_ptr_type argument_ptr)
         : base_type(argument_ptr)
+    {
+        // noop
+    }
+
+    template <typename handler_ptr_T>
+    explicit basic_switch_argument(argument_ptr_type argument_ptr, handler_ptr_T handler_ptr)
+        : base_type(argument_ptr, handler_ptr)
     {
         // noop
     }

@@ -84,7 +84,7 @@ TEST(subparser_test, test_storing)
     storing_parser<settings> parser;
     parser.add_switch({ "-v", "--verbose" }).set_type_and_storage(&settings::m_verbose);
     auto subparsers = parser.add_subparsers("command");
-    subparsers.set_type<command, command_converter>().set_storage(&settings::m_command);
+    subparsers.set_type<command>().set_convert_function(command_converter()).set_storage(&settings::m_command);
 
     auto add_parser = subparsers.add_parser("add");
     add_parser.add_switch({ "-s", "--show-steps" }).set_type_and_storage(&settings::m_show_steps);

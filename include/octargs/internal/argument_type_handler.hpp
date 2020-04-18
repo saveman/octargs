@@ -3,25 +3,17 @@
 
 #include <functional>
 
-#include "converter.hpp"
-#include "internal/argument_handler.hpp"
-#include "internal/function_helpers.hpp"
+#include "../converter.hpp"
+#include "argument_handler.hpp"
+#include "function_helpers.hpp"
 
 namespace oct
 {
 namespace args
 {
+namespace internal
+{
 
-/// \brief Handler for processing argument values in a type-specific way
-///
-/// The handler has following "hooks" (functions):
-/// - convert - used to convert the string representation to data type
-/// - check   - used to check if the data after conversion is valid
-/// - store   - used to store the data
-///
-/// \tparam data_T              argument value data type
-/// \tparam char_T              char type (as in std::basic_string)
-/// \tparam values_storage_T    type of object to store parsed values
 template <typename data_T, typename char_T, typename values_storage_T>
 class basic_argument_type_handler : public internal::basic_argument_handler<char_T, values_storage_T>
 {
@@ -110,6 +102,7 @@ private:
     store_function_type m_store_function;
 };
 
+} // namespace internal
 } // namespace args
 } // namespace oct
 
