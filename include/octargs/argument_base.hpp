@@ -4,6 +4,8 @@
 #include "internal/argument.hpp"
 #include "internal/argument_type_handler.hpp"
 
+#include <type_traits>
+
 namespace oct
 {
 namespace args
@@ -37,12 +39,13 @@ public:
     using check_function_type = typename handler_type::check_function_type;
     using store_function_type = typename handler_type::store_function_type;
 
+    using storage_helper_wrapped_type = typename internal::storage_helper<values_storage_type>::type;
+
     template <typename function_T>
     derived_type& set_convert_function(const function_T& func)
     {
         if (!m_handler)
         {
-            // TODO: proper exception
             throw std::logic_error("Type (handler) not set");
         }
         m_handler->set_convert_function(func);
@@ -54,7 +57,6 @@ public:
     {
         if (!m_handler)
         {
-            // TODO: proper exception
             throw std::logic_error("Type (handler) not set");
         }
         m_handler->set_check_function(func);
@@ -66,20 +68,21 @@ public:
     {
         if (!m_handler)
         {
-            // TODO: proper exception
             throw std::logic_error("Type (handler) not set");
         }
         m_handler->set_store_function(func);
         return cast_this_to_derived();
     }
 
-    derived_type& set_storage(data_type values_storage_type::*member_ptr)
+    // cppcheck-suppress functionStatic
+    derived_type& set_storage(data_type storage_helper_wrapped_type::*member_ptr)
     {
         return set_store_function(
             [member_ptr](values_storage_type& storage, const data_type& value) { storage.*member_ptr = value; });
     }
 
-    derived_type& set_storage(std::vector<data_type> values_storage_type::*member_ptr)
+    // cppcheck-suppress functionStatic
+    derived_type& set_storage(std::vector<data_type> storage_helper_wrapped_type::*member_ptr)
     {
         return set_store_function([member_ptr](values_storage_type& storage, const data_type& value) {
             (storage.*member_ptr).push_back(value);
@@ -93,7 +96,7 @@ protected:
         // noop
     }
 
-    explicit basic_typed_argument_base(handler_ptr_type handler)
+    explicit basic_typed_argument_base(const handler_ptr_type& handler)
         : m_handler(handler)
     {
         if (!handler)
@@ -107,6 +110,7 @@ protected:
         return static_cast<derived_type&>(*this);
     }
 
+    // cppcheck-suppress functionStatic
     void reset_handler()
     {
         m_handler.reset();
@@ -124,7 +128,10 @@ public:
 
     using handler_ptr_type = void;
 
+    using storage_helper_wrapped_type = typename internal::storage_helper<values_storage_T>::type;
+
 protected:
+    // cppcheck-suppress functionStatic
     void reset_handler()
     {
         // noop
@@ -176,6 +183,8 @@ public:
     template <typename new_data_T>
     using casted_derived_type = derived_TT<char_type, values_storage_type, new_data_T>;
 
+    using storage_helper_wrapped_type = typename base_type::storage_helper_wrapped_type;
+
     derived_type& set_description(const string_type& text)
     {
         m_argument->set_description(text);
@@ -196,19 +205,20 @@ public:
     }
 
     template <typename new_data_T>
-    casted_derived_type<new_data_T> set_type_and_storage(new_data_T values_storage_type::*member_ptr)
+    casted_derived_type<new_data_T> set_type_and_storage(new_data_T storage_helper_wrapped_type::*member_ptr)
     {
         return set_type<new_data_T>().set_storage(member_ptr);
     }
 
     template <typename new_data_T>
-    casted_derived_type<new_data_T> set_type_and_storage(std::vector<new_data_T> values_storage_type::*member_ptr)
+    casted_derived_type<new_data_T> set_type_and_storage(
+        std::vector<new_data_T> storage_helper_wrapped_type::*member_ptr)
     {
         return set_type<new_data_T>().set_storage(member_ptr);
     }
 
 protected:
-    explicit basic_argument_base(argument_ptr_type argument)
+    explicit basic_argument_base(const argument_ptr_type& argument)
         : base_type()
         , m_argument(argument)
     {
@@ -219,7 +229,7 @@ protected:
     }
 
     template <typename handler_ptr_T>
-    explicit basic_argument_base(argument_ptr_type argument, handler_ptr_T handler)
+    explicit basic_argument_base(const argument_ptr_type& argument, const handler_ptr_T& handler)
         : base_type(handler)
         , m_argument(argument)
     {
@@ -232,11 +242,6 @@ protected:
     argument_type& get_argument()
     {
         return *m_argument;
-    }
-
-    argument_ptr_type get_argument_ptr()
-    {
-        return m_argument;
     }
 
     derived_type& cast_this_to_derived()

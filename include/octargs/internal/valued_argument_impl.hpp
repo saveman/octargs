@@ -10,7 +10,7 @@ namespace args
 namespace internal
 {
 
-template <typename char_T, typename values_storage_T = null_values_storage>
+template <typename char_T, typename values_storage_T>
 class basic_valued_argument_impl
     : public basic_argument_base_impl<basic_valued_argument_impl<char_T, values_storage_T>, char_T, values_storage_T>
 {
@@ -32,39 +32,39 @@ public:
         // noop
     }
 
-    basic_valued_argument_impl& set_default_values(const string_vector_type& values)
+    void set_default_values(const string_vector_type& values)
     {
-        return base_type::set_default_values_internal(values);
+        base_type::set_default_values_internal(values);
     }
 
-    basic_valued_argument_impl& set_default_value(const string_type& value)
+    void set_default_value(const string_type& value)
     {
-        return base_type::set_default_values_internal({ value });
+        base_type::set_default_values_internal({ value });
     }
 
-    basic_valued_argument_impl& set_allowed_values(const string_vector_type& values)
+    void set_allowed_values(const string_vector_type& values)
     {
-        return base_type::set_allowed_values_internal(values);
+        base_type::set_allowed_values_internal(values);
     }
 
-    basic_valued_argument_impl& set_value_name(const string_type& name)
+    void set_value_name(const string_type& name)
     {
-        return base_type::set_value_name_internal(name);
+        base_type::set_value_name_internal(name);
     }
 
-    basic_valued_argument_impl& set_min_count(std::size_t count)
+    void set_min_count(std::size_t count)
     {
-        return base_type::set_min_count(count);
+        base_type::set_min_count(count);
     }
 
-    basic_valued_argument_impl& set_max_count(std::size_t count)
+    void set_max_count(std::size_t count)
     {
-        return base_type::set_max_count(count);
+        base_type::set_max_count(count);
     }
 
-    basic_valued_argument_impl& set_max_count_unlimited()
+    void set_max_count_unlimited()
     {
-        return base_type::set_max_count_unlimited();
+        base_type::set_max_count_unlimited();
     }
 };
 

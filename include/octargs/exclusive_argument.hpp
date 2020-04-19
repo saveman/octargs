@@ -30,14 +30,14 @@ public:
 
     using argument_ptr_type = typename base_type::argument_ptr_type;
 
-    explicit basic_exclusive_argument(argument_ptr_type argument_ptr)
+    explicit basic_exclusive_argument(const argument_ptr_type& argument_ptr)
         : base_type(argument_ptr)
     {
         // noop
     }
 
     template <typename handler_ptr_T>
-    explicit basic_exclusive_argument(argument_ptr_type argument_ptr, handler_ptr_T handler_ptr)
+    explicit basic_exclusive_argument(const argument_ptr_type& argument_ptr, const handler_ptr_T& handler_ptr)
         : base_type(argument_ptr, handler_ptr)
     {
         // noop

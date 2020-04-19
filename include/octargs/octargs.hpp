@@ -29,10 +29,10 @@ using results = basic_results<char>;
 using wresults = basic_results<wchar_t>;
 
 /// \brief Parser (for char/string)
-using parser = basic_parser<char>;
+using parser = basic_parser<char, void>;
 
 /// \brief Parser (for wchar_t/wstring)
-using wparser = basic_parser<wchar_t>;
+using wparser = basic_parser<wchar_t, void>;
 
 /// \brief Parser with values storage (for char/string)
 template <typename values_storage_T>

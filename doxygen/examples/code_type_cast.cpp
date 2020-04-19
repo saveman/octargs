@@ -28,7 +28,8 @@ int main(int argc, char* argv[])
         .set_min_count(1)
         .set_allowed_values({ "asc", "desc" })
         .set_default_value("asc")
-        .set_type<order, order_converter>();
+        .set_type<order>()
+        .set_convert_function(order_converter());
     arg_parser.add_positional("files").set_max_count_unlimited();
 
     try

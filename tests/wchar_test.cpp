@@ -10,7 +10,7 @@ namespace args
 namespace
 {
 
-using parser_type = basic_parser<wchar_t>;
+using parser_type = basic_parser<wchar_t, void>;
 
 }
 

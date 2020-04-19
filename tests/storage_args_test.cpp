@@ -200,7 +200,7 @@ TEST(storage_args_test, test_null_convert_function)
     using convert_function_type = std::function<double(const std::string&)>;
 
     arg.set_convert_function(convert_function_type());
-    ASSERT_THROW(parser.parse(args1), missing_converter);
+    ASSERT_THROW(parser.parse(args1, settings1), missing_converter);
 }
 
 TEST(storage_args_test, test_convert_function)
@@ -293,7 +293,9 @@ void check_parse_exception(parser_T& parser, const argument_table& args, parser_
 {
     try
     {
-        parser.parse(args);
+        typename parser_T::values_storage_type storage;
+
+        parser.parse(args, storage);
         ASSERT_TRUE(false);
     }
     catch (const parser_error_ex<char>& exc)
@@ -403,6 +405,22 @@ TEST(storage_args_test, test_custom_type)
     ASSERT_EQ(format_code::DEC, settings3.m_multiformat[0]);
     ASSERT_EQ(format_code::HEX, settings3.m_multiformat[1]);
     ASSERT_EQ(format_code::DEC, settings3.m_multiformat[2]);
+}
+
+TEST(storage_args_test, test_non_storing_parser)
+{
+    parser parser;
+
+    parser.add_valued({ "--format" }).set_type<format_code>().set_convert_function(format_code_converter());
+    parser.add_valued({ "--multi" })
+        .set_max_count_unlimited()
+        .set_type<format_code>()
+        .set_convert_function(format_code_converter());
+
+    auto results1 = parser.parse(argument_table("appname", { "--format=hex" }));
+    ASSERT_EQ(std::size_t(1), results1.get_count("--format"));
+    ASSERT_EQ(std::string("hex"), results1.get_values("--format")[0]);
+    ASSERT_EQ(format_code::HEX, (results1.get_values_as<format_code, format_code_converter>("--format")[0]));
 }
 
 } // namespace args

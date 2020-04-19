@@ -11,7 +11,6 @@
 #include "argument_table.hpp"
 #include "internal/argument.hpp"
 #include "internal/char_utils.hpp"
-#include "internal/misc.hpp"
 #include "internal/parser_data.hpp"
 #include "internal/results_data.hpp"
 #include "results.hpp"
@@ -26,7 +25,7 @@ namespace args
 ///
 /// \tparam char_T              char type (as in std::basic_string)
 /// \tparam values_storage_T    type of class uses as a storage for parsed values
-template <typename char_T, typename values_storage_T = internal::null_values_storage>
+template <typename char_T, typename values_storage_T>
 class basic_parser_usage
 {
 public:

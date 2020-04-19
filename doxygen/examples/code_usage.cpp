@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
     //! [Snippet Switch]
 
     //! [Snippet Group]
-    auto& protocol_group = arg_parser.add_group("Protocol arguments:");
+    auto protocol_group = arg_parser.add_group("Protocol arguments:");
     protocol_group.add_switch({ "-0", "--use-http-1.0" }).set_description("use HTTP/1.0 instead of default HTTP/1.1");
     //! [Snippet Argument Info]
     protocol_group.add_valued({ "-a", "--user-agent" })

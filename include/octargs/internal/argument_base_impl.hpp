@@ -10,7 +10,7 @@ namespace args
 namespace internal
 {
 
-template <typename derived_T, typename char_T, typename values_storage_T = null_values_storage>
+template <typename derived_T, typename char_T, typename values_storage_T>
 class basic_argument_base_impl : public basic_argument<char_T, values_storage_T>
 {
 public:
@@ -25,38 +25,6 @@ public:
 
     using handler_type = basic_argument_handler<char_type, values_storage_type>;
     using const_handler_ptr_type = std::shared_ptr<const handler_type>;
-
-    template <typename data_T>
-    using type_handler_type = basic_argument_type_handler<data_T, char_type, values_storage_type>;
-
-    template <typename data_T, typename converter_T = basic_converter<char_type, data_T>>
-    type_handler_type<data_T>& set_type()
-    {
-        auto handler_ptr = std::make_shared<type_handler_type<data_T>>();
-        handler_ptr->set_convert_function(converter_T());
-
-        set_handler(handler_ptr);
-
-        return *handler_ptr;
-    }
-
-    template <typename data_T>
-    type_handler_type<data_T>& set_type_and_storage(data_T values_storage_type::*member_ptr)
-    {
-        return set_type<data_T>().set_storage(member_ptr);
-    }
-
-    template <typename data_T>
-    type_handler_type<data_T>& set_type_and_storage(std::vector<data_T> values_storage_type::*member_ptr)
-    {
-        return set_type<data_T>().set_storage(member_ptr);
-    }
-
-    derived_type& set_description(const string_type& text)
-    {
-        m_description = text;
-        return cast_this_to_derived();
-    }
 
     const string_type& get_first_name() const final
     {
@@ -128,6 +96,11 @@ public:
         return (m_flags & FLAG_IS_ACCEPTING_SEPARATE_VALUE);
     }
 
+    void set_description(const string_type& text)
+    {
+        m_description = text;
+    }
+
     void set_handler(const const_handler_ptr_type& handler_ptr)
     {
         m_handler_ptr = handler_ptr;
@@ -156,47 +129,37 @@ protected:
         // noop
     }
 
-    derived_type& set_default_values_internal(const string_vector_type& values)
+    void set_default_values_internal(const string_vector_type& values)
     {
         m_default_values = values;
-        return cast_this_to_derived();
     }
 
-    derived_type& set_allowed_values_internal(const string_vector_type& values)
+    void set_allowed_values_internal(const string_vector_type& values)
     {
         m_allowed_values = values;
-        return cast_this_to_derived();
     }
 
-    derived_type& set_value_name_internal(const string_type& name)
+    void set_value_name_internal(const string_type& name)
     {
         m_value_name = name;
-        return cast_this_to_derived();
     }
 
-    derived_type& set_min_count(std::size_t count)
+    void set_min_count(std::size_t count)
     {
         m_min_count = count;
-        return cast_this_to_derived();
     }
 
-    derived_type& set_max_count(std::size_t count)
+    void set_max_count(std::size_t count)
     {
         m_max_count = count;
-        return cast_this_to_derived();
     }
 
-    derived_type& set_max_count_unlimited()
+    void set_max_count_unlimited()
     {
-        return set_max_count(std::numeric_limits<std::size_t>::max());
+        set_max_count(std::numeric_limits<std::size_t>::max());
     }
 
 private:
-    derived_type& cast_this_to_derived()
-    {
-        return static_cast<derived_type&>(*this);
-    }
-
     /// Flags
     std::uint32_t m_flags;
     /// Names.

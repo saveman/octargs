@@ -21,7 +21,7 @@ namespace args
 namespace internal
 {
 
-template <typename char_T, typename values_storage_T = internal::null_values_storage>
+template <typename char_T, typename values_storage_T>
 class basic_argument_group_impl
 {
 public:
@@ -31,7 +31,7 @@ public:
     using string_type = std::basic_string<char_type>;
     using string_vector_type = std::vector<string_type>;
 
-    using argument_type = internal::basic_argument<char_type, values_storage_type>;
+    using argument_type = basic_argument<char_type, values_storage_type>;
     using const_argument_ptr_type = std::shared_ptr<const argument_type>;
 
     using exclusive_argument_type = basic_exclusive_argument<char_type, values_storage_type>;
@@ -39,7 +39,7 @@ public:
     using switch_argument_type = basic_switch_argument<char_type, values_storage_type>;
     using valued_argument_type = basic_valued_argument<char_type, values_storage_type>;
 
-    using argument_repository_type = internal::basic_argument_repository<char_type, values_storage_type>;
+    using argument_repository_type = basic_argument_repository<char_type, values_storage_type>;
     using argument_repository_ptr_type = std::shared_ptr<argument_repository_type>;
 
     basic_argument_group_impl(argument_repository_ptr_type argument_repository, const string_type& name)

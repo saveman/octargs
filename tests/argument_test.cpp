@@ -20,10 +20,10 @@ using string_vector_type = std::vector<string_type>;
 
 using dictionary_type = default_parser_dictionary<char>;
 
-using exclusive_argument_type = internal::basic_exclusive_argument_impl<char>;
-using positional_argument_type = internal::basic_positional_argument_impl<char>;
-using switch_argument_type = internal::basic_switch_argument_impl<char>;
-using valued_argument_type = internal::basic_valued_argument_impl<char>;
+using exclusive_argument_type = internal::basic_exclusive_argument_impl<char, void>;
+using positional_argument_type = internal::basic_positional_argument_impl<char, void>;
+using switch_argument_type = internal::basic_switch_argument_impl<char, void>;
+using valued_argument_type = internal::basic_valued_argument_impl<char, void>;
 
 } // namespace
 
@@ -106,7 +106,8 @@ TEST(argument_test, test_positional_type)
     ASSERT_EQ(static_cast<std::size_t>(1), arg1.get_max_count());
 
     positional_argument_type arg2(names);
-    arg2.set_min_count(3).set_max_count(10);
+    arg2.set_min_count(3);
+    arg2.set_max_count(10);
     ASSERT_EQ(false, arg2.is_assignable_by_name());
     ASSERT_EQ(false, arg2.is_accepting_immediate_value());
     ASSERT_EQ(false, arg2.is_accepting_separate_value());

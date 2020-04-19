@@ -16,7 +16,7 @@ namespace args
 /// \tparam derived_T   derived type
 /// \tparam char_T      char type (as in std::basic_string)
 
-template <typename char_T, typename values_storage_T = internal::null_values_storage>
+template <typename char_T, typename values_storage_T>
 class basic_argument_group
 {
 public:

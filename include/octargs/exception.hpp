@@ -210,6 +210,45 @@ public:
     }
 };
 
+//---------------------------------
+
+/// \brief Exception thrown when given parser name is invalid
+class invalid_parser_name : public std::logic_error
+{
+public:
+    explicit invalid_parser_name(const std::string& message)
+        : std::logic_error(message)
+    {
+        // noop
+    }
+};
+
+/// \brief Exception thrown when given parser name is invalid
+///
+/// \tparam char_T      char type (as in std::basic_string)
+template <typename char_T>
+class invalid_parser_name_ex : public invalid_parser_name
+{
+public:
+    using char_type = char_T;
+    using string_type = std::basic_string<char_type>;
+
+    explicit invalid_parser_name_ex(const std::string& message, const string_type& name)
+        : invalid_parser_name(message)
+        , m_name(name)
+    {
+        // noop
+    }
+
+    const string_type& get_name() const
+    {
+        return m_name;
+    }
+
+private:
+    basic_shared_string<char_type> m_name;
+};
+
 } // namespace args
 } // namespace oct
 

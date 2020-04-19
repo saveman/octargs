@@ -26,10 +26,12 @@ namespace args
 ///
 /// \tparam char_T              char type (as in std::basic_string)
 /// \tparam values_storage_T    type of class uses as a storage for parsed values
-template <typename char_T, typename values_storage_T = internal::null_values_storage>
-class basic_parser
+template <typename derived_T, typename char_T, typename values_storage_T>
+class basic_parser_base
 {
 public:
+    using derived_type = derived_T;
+
     using char_type = char_T;
     using values_storage_type = values_storage_T;
 
@@ -37,7 +39,7 @@ public:
     using string_vector_type = std::vector<string_type>;
 
     using dictionary_type = parser_dictionary<char_type>;
-    using dictionary_ptr_type = std::shared_ptr<dictionary_type>;
+    using dictionary_const_ptr_type = std::shared_ptr<const dictionary_type>;
 
     using argument_group_type = basic_argument_group<char_type, values_storage_type>;
 
@@ -52,14 +54,14 @@ public:
 
     using parser_usage_type = basic_parser_usage<char_type, values_storage_type>;
 
-    basic_parser()
+    explicit basic_parser_base()
         : m_data_ptr(std::make_shared<parser_data_type>())
     {
         // noop
     }
 
-    basic_parser(dictionary_ptr_type dictionary)
-        : m_data_ptr(std::make_shared<parser_data_type>(dictionary))
+    explicit basic_parser_base(const dictionary_const_ptr_type& dictionary)
+        : m_data_ptr(dictionary)
     {
         // noop
     }
@@ -69,22 +71,22 @@ public:
         return parser_usage_type(m_data_ptr);
     }
 
-    basic_parser& set_usage_oneliner(const string_type& text)
+    derived_type& set_usage_oneliner(const string_type& text)
     {
         m_data_ptr->m_usage_oneliner = text;
-        return *this;
+        return cast_this_to_derived();
     }
 
-    basic_parser& set_usage_header(const string_type& text)
+    derived_type& set_usage_header(const string_type& text)
     {
         m_data_ptr->m_usage_header = text;
-        return *this;
+        return cast_this_to_derived();
     }
 
-    basic_parser& set_usage_footer(const string_type& text)
+    derived_type& set_usage_footer(const string_type& text)
     {
         m_data_ptr->m_usage_footer = text;
-        return *this;
+        return cast_this_to_derived();
     }
 
     argument_group_type add_group(const std::string& name)
@@ -117,21 +119,30 @@ public:
         return subparser_argument_type(m_data_ptr->m_argument_repository->add_subparsers(name));
     }
 
-    results_type parse(int argc, char_type* argv[], values_storage_type& values_storage = get_null_storage()) const
+protected:
+    using storage_helper_type = internal::storage_handler_helper<char_type, values_storage_type>;
+
+    derived_type& cast_this_to_derived()
     {
-        return parse_internal(argument_table_type(argc, argv), values_storage);
+        return static_cast<derived_T&>(*this);
     }
 
-    results_type parse(
-        int argc, const char_type* argv[], values_storage_type& values_storage = get_null_storage()) const
+    results_type parse_internal(const argument_table_type& arg_table, storage_helper_type& storage_helper) const
     {
-        return parse_internal(argument_table_type(argc, argv), values_storage);
-    }
+        auto results_data_ptr = prepare_results_data(arg_table);
 
-    results_type parse(
-        const argument_table_type& arg_table, values_storage_type& values_storage = get_null_storage()) const
-    {
-        return parse_internal(arg_table, values_storage);
+        argument_table_iterator exclusive_input_iterator(arg_table);
+
+        if (parse_exclusive_recursively(results_data_ptr, storage_helper, exclusive_input_iterator))
+        {
+            return results_type(m_data_ptr->m_dictionary, results_data_ptr);
+        }
+        else
+        {
+            argument_table_iterator regular_input_iterator(arg_table);
+
+            return parse_regular(results_data_ptr, storage_helper, regular_input_iterator);
+        }
     }
 
 private:
@@ -163,7 +174,7 @@ private:
         }
     }
 
-    results_type parse_internal(const argument_table_type& arg_table, values_storage_type& values_storage) const
+    results_data_ptr_type prepare_results_data(const argument_table_type& arg_table) const
     {
         auto results_data_ptr = std::make_shared<results_data_type>();
 
@@ -171,21 +182,10 @@ private:
 
         results_data_ptr->set_app_name(arg_table.get_app_name());
 
-        argument_table_iterator exclusive_input_iterator(arg_table);
-
-        if (parse_exclusive_recursively(results_data_ptr, values_storage, exclusive_input_iterator))
-        {
-            return results_type(m_data_ptr->m_dictionary, results_data_ptr);
-        }
-        else
-        {
-            argument_table_iterator regular_input_iterator(arg_table);
-
-            return parse_regular(results_data_ptr, values_storage, regular_input_iterator);
-        }
+        return results_data_ptr;
     }
 
-    bool parse_exclusive_recursively(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+    bool parse_exclusive_recursively(const results_data_ptr_type& results_data_ptr, storage_helper_type& storage_helper,
         argument_table_iterator& input_iterator) const
     {
         if (input_iterator.get_remaining_count() == 0)
@@ -214,7 +214,7 @@ private:
 
             auto& value_str = m_data_ptr->m_dictionary->get_switch_enabled_literal();
 
-            parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, arg_name, value_str);
+            parse_argument_value(results_data_ptr, storage_helper, arg_object_ptr, arg_name, value_str);
 
             return true;
         }
@@ -242,25 +242,25 @@ private:
             }
             auto subparser = m_data_ptr->m_argument_repository->m_subparsers_argument->get_parser(arg_name);
 
-            return subparser.parse_exclusive_recursively(results_data_ptr, values_storage, input_iterator);
+            return subparser.parse_exclusive_recursively(results_data_ptr, storage_helper, input_iterator);
         }
     }
 
-    results_type parse_regular(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+    results_type parse_regular(const results_data_ptr_type& results_data_ptr, storage_helper_type& storage_helper,
         argument_table_iterator& input_iterator) const
     {
-        parse_named_arguments(values_storage, results_data_ptr, input_iterator);
+        parse_named_arguments(storage_helper, results_data_ptr, input_iterator);
         if (m_data_ptr->m_argument_repository->m_subparsers_argument)
         {
             /* all remaining arguments will go to subparser so process this parser defaults & requirements */
-            parse_default_values(results_data_ptr, values_storage);
+            parse_default_values(results_data_ptr, storage_helper);
             check_values_count(results_data_ptr);
 
-            return parse_subparsers_argument(values_storage, results_data_ptr, input_iterator);
+            return parse_subparsers_argument(storage_helper, results_data_ptr, input_iterator);
         }
         else
         {
-            parse_positional_arguments(values_storage, results_data_ptr, input_iterator);
+            parse_positional_arguments(storage_helper, results_data_ptr, input_iterator);
 
             if (input_iterator.has_more())
             {
@@ -268,14 +268,14 @@ private:
                     parser_error_code::SYNTAX_ERROR, string_type(), input_iterator.peek_next());
             }
 
-            parse_default_values(results_data_ptr, values_storage);
+            parse_default_values(results_data_ptr, storage_helper);
             check_values_count(results_data_ptr);
 
             return results_type(m_data_ptr->m_dictionary, results_data_ptr);
         }
     }
 
-    void parse_argument_value(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+    void parse_argument_value(const results_data_ptr_type& results_data_ptr, storage_helper_type& storage_helper,
         const const_argument_ptr_type& argument, const string_type& arg_name, const string_type& value_str) const
     {
         auto count = results_data_ptr->value_count(argument);
@@ -301,7 +301,7 @@ private:
         {
             try
             {
-                handler->parse(values_storage, *m_data_ptr->m_dictionary, value_str);
+                storage_helper.parse_with_handler(*handler, *m_data_ptr->m_dictionary, value_str);
             }
             catch (const conversion_error&)
             {
@@ -313,7 +313,7 @@ private:
         results_data_ptr->append_value(argument, value_str);
     }
 
-    void parse_default_value(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+    void parse_default_value(const results_data_ptr_type& results_data_ptr, storage_helper_type& storage_helper,
         const const_argument_ptr_type& argument) const
     {
         if (results_data_ptr->value_count(argument) > 0)
@@ -330,19 +330,19 @@ private:
         for (auto& value : values)
         {
             // TODO: should we throw logic_error instead of runtime_error if value is invalid?
-            parse_argument_value(results_data_ptr, values_storage, argument, argument->get_first_name(), value);
+            parse_argument_value(results_data_ptr, storage_helper, argument, argument->get_first_name(), value);
         }
     }
 
-    void parse_default_values(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage) const
+    void parse_default_values(const results_data_ptr_type& results_data_ptr, storage_helper_type& storage_helper) const
     {
         for (auto& argument : m_data_ptr->m_argument_repository->m_arguments)
         {
-            parse_default_value(results_data_ptr, values_storage, argument);
+            parse_default_value(results_data_ptr, storage_helper, argument);
         }
     }
 
-    bool parse_named_argument(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+    bool parse_named_argument(const results_data_ptr_type& results_data_ptr, storage_helper_type& storage_helper,
         argument_table_iterator& input_iterator, const string_type& arg_name) const
     {
         auto arg_iter = m_data_ptr->m_argument_repository->m_names_repository.find(arg_name);
@@ -379,12 +379,12 @@ private:
             value_str = m_data_ptr->m_dictionary->get_switch_enabled_literal();
         }
 
-        parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, arg_name, value_str);
+        parse_argument_value(results_data_ptr, storage_helper, arg_object_ptr, arg_name, value_str);
 
         return true;
     }
 
-    bool parse_named_argument(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+    bool parse_named_argument(const results_data_ptr_type& results_data_ptr, storage_helper_type& storage_helper,
         argument_table_iterator& input_iterator, const string_type& arg_name, const string_type& arg_value) const
     {
         auto arg_iter = m_data_ptr->m_argument_repository->m_names_repository.find(arg_name);
@@ -409,11 +409,11 @@ private:
             throw parser_error_ex<char_type>(parser_error_code::UNEXPECTED_VALUE, arg_name, arg_value);
         }
 
-        parse_argument_value(results_data_ptr, values_storage, arg_object_ptr, arg_name, arg_value);
+        parse_argument_value(results_data_ptr, storage_helper, arg_object_ptr, arg_name, arg_value);
         return true;
     }
 
-    bool parse_named_argument(const results_data_ptr_type& results_data_ptr, values_storage_type& values_storage,
+    bool parse_named_argument(const results_data_ptr_type& results_data_ptr, storage_helper_type& storage_helper,
         argument_table_iterator& input_iterator) const
     {
         auto& input_value = input_iterator.peek_next();
@@ -421,30 +421,30 @@ private:
         auto equal_char_pos = input_value.find(m_data_ptr->m_dictionary->get_equal_literal());
         if (equal_char_pos == string_type::npos)
         {
-            return parse_named_argument(results_data_ptr, values_storage, input_iterator, input_value);
+            return parse_named_argument(results_data_ptr, storage_helper, input_iterator, input_value);
         }
         else
         {
             auto name_str = input_value.substr(0, equal_char_pos);
             auto value_str = input_value.substr(equal_char_pos + 1);
 
-            return parse_named_argument(results_data_ptr, values_storage, input_iterator, name_str, value_str);
+            return parse_named_argument(results_data_ptr, storage_helper, input_iterator, name_str, value_str);
         }
     }
 
-    void parse_named_arguments(values_storage_type& values_storage, const results_data_ptr_type& results_data_ptr,
+    void parse_named_arguments(storage_helper_type& storage_helper, const results_data_ptr_type& results_data_ptr,
         argument_table_iterator& input_iterator) const
     {
         while (input_iterator.has_more())
         {
-            if (!parse_named_argument(results_data_ptr, values_storage, input_iterator))
+            if (!parse_named_argument(results_data_ptr, storage_helper, input_iterator))
             {
                 break;
             }
         }
     }
 
-    results_type parse_subparsers_argument(values_storage_type& values_storage,
+    results_type parse_subparsers_argument(storage_helper_type& storage_helper,
         const results_data_ptr_type& results_data_ptr, argument_table_iterator& input_iterator) const
     {
         auto& name = m_data_ptr->m_argument_repository->m_subparsers_argument->get_first_name();
@@ -463,12 +463,12 @@ private:
         }
         auto subparser = argument->get_parser(value_str);
 
-        parse_argument_value(results_data_ptr, values_storage, argument, argument->get_first_name(), value_str);
+        parse_argument_value(results_data_ptr, storage_helper, argument, argument->get_first_name(), value_str);
 
-        return subparser.parse_regular(results_data_ptr, values_storage, input_iterator);
+        return subparser.parse_regular(results_data_ptr, storage_helper, input_iterator);
     }
 
-    void parse_positional_arguments(values_storage_type& values_storage, const results_data_ptr_type& results_data_ptr,
+    void parse_positional_arguments(storage_helper_type& storage_helper, const results_data_ptr_type& results_data_ptr,
         argument_table_iterator& input_iterator) const
     {
         for (auto& argument : m_data_ptr->m_argument_repository->m_arguments)
@@ -482,7 +482,7 @@ private:
             {
                 const auto& value_str = input_iterator.take_next();
 
-                parse_argument_value(results_data_ptr, values_storage, argument, argument->get_first_name(), value_str);
+                parse_argument_value(results_data_ptr, storage_helper, argument, argument->get_first_name(), value_str);
             }
         }
     }
@@ -499,14 +499,117 @@ private:
         }
     }
 
-    // TODO: try to refactor the way null storage is provided
-    static values_storage_type& get_null_storage()
+    parser_data_ptr_type m_data_ptr;
+};
+
+/// \brief Arguments parser
+///
+/// \tparam char_T              char type (as in std::basic_string)
+/// \tparam values_storage_T    type of class uses as a storage for parsed values
+template <typename char_T, typename values_storage_T>
+class basic_parser : public basic_parser_base<basic_parser<char_T, values_storage_T>, char_T, values_storage_T>
+{
+public:
+    using char_type = char_T;
+    using values_storage_type = values_storage_T;
+
+    using base_type = basic_parser_base<basic_parser<char_T, values_storage_T>, char_T, values_storage_T>;
+
+    using dictionary_type = parser_dictionary<char_type>;
+    using dictionary_const_ptr_type = std::shared_ptr<const dictionary_type>;
+
+    using argument_table_type = basic_argument_table<char_type>;
+
+    using results_type = basic_results<char_type>;
+
+    explicit basic_parser()
+        : base_type()
     {
-        static values_storage_type null_storage;
-        return null_storage;
+        // noop
     }
 
-    parser_data_ptr_type m_data_ptr;
+    explicit basic_parser(const dictionary_const_ptr_type& dictionary)
+        : base_type(dictionary)
+    {
+        // noop
+    }
+
+    results_type parse(int argc, char_type* argv[], values_storage_type& values_storage) const
+    {
+        return this->parse_internal(argument_table_type(argc, argv), values_storage);
+    }
+
+    results_type parse(int argc, const char_type* argv[], values_storage_type& values_storage) const
+    {
+        return this->parse_internal(argument_table_type(argc, argv), values_storage);
+    }
+
+    results_type parse(const argument_table_type& arg_table, values_storage_type& values_storage) const
+    {
+        return this->parse_internal(arg_table, values_storage);
+    }
+
+private:
+    results_type parse_internal(const argument_table_type& arg_table, values_storage_type& values_storage) const
+    {
+        typename base_type::storage_helper_type helper(values_storage);
+        return base_type::parse_internal(arg_table, helper);
+    }
+};
+
+/// \brief Arguments parser
+///
+/// \tparam char_T              char type (as in std::basic_string)
+/// \tparam values_storage_T    type of class uses as a storage for parsed values
+template <typename char_T>
+class basic_parser<char_T, void> : public basic_parser_base<basic_parser<char_T, void>, char_T, void>
+{
+public:
+    using char_type = char_T;
+    using values_storage_type = void;
+
+    using base_type = basic_parser_base<basic_parser<char_T, void>, char_T, void>;
+
+    using dictionary_type = parser_dictionary<char_type>;
+    using dictionary_const_ptr_type = std::shared_ptr<const dictionary_type>;
+
+    using argument_table_type = basic_argument_table<char_type>;
+
+    using results_type = basic_results<char_type>;
+
+    explicit basic_parser()
+        : base_type()
+    {
+        // noop
+    }
+
+    explicit basic_parser(const dictionary_const_ptr_type& dictionary)
+        : base_type(dictionary)
+    {
+        // noop
+    }
+
+    results_type parse(int argc, char_type* argv[]) const
+    {
+        return this->parse_internal(argument_table_type(argc, argv));
+    }
+
+    results_type parse(int argc, const char_type* argv[]) const
+    {
+        return this->parse_internal(argument_table_type(argc, argv));
+    }
+
+    results_type parse(const argument_table_type& arg_table) const
+    {
+        return this->parse_internal(arg_table);
+    }
+
+private:
+    results_type parse_internal(const argument_table_type& arg_table) const
+    {
+        typename base_type::storage_helper_type helper;
+        return base_type::parse_internal(arg_table, helper);
+    }
 };
 
 } // namespace args
