@@ -79,6 +79,7 @@ public:
     using argument_handler_type = basic_argument_handler<char_T, void>;
     using dictionary_type = parser_dictionary<char_type>;
 
+    // cppcheck-suppress functionStatic
     void parse_with_handler(
         const argument_handler_type& handler, const dictionary_type& dictionary, const string_type& value_str)
     {

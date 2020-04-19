@@ -16,6 +16,12 @@ namespace args
 namespace internal
 {
 
+class basic_argument_tag
+{
+public:
+    virtual ~basic_argument_tag() = default;
+};
+
 template <typename char_T, typename values_storage_T>
 class basic_argument : public basic_argument_tag
 {

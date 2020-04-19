@@ -18,9 +18,10 @@ namespace args
 /// - check   - used to check if the data after conversion is valid
 /// - store   - used to store the data
 ///
-/// \tparam data_T              argument value data type
+/// \tparam derived_TT          derived argument class template type
 /// \tparam char_T              char type (as in std::basic_string)
 /// \tparam values_storage_T    type of object to store parsed values
+/// \tparam data_T              argument value data type
 template <template <typename, typename, typename> class derived_TT, typename char_T, typename values_storage_T,
     typename data_T>
 class basic_typed_argument_base
@@ -120,6 +121,11 @@ private:
     handler_ptr_type m_handler;
 };
 
+/// \brief Argument base type handling (limited, void type specialization)
+///
+/// \tparam derived_TT          derived argument class template type
+/// \tparam char_T              char type (as in std::basic_string)
+/// \tparam values_storage_T    type of object to store parsed values
 template <template <typename, typename, typename> class derived_TT, typename char_T, typename values_storage_T>
 class basic_typed_argument_base<derived_TT, char_T, values_storage_T, void>
 {
