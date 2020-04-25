@@ -34,11 +34,11 @@ public:
 
     using argument_group_type = basic_argument_group<char_type, values_storage_type>;
 
-    using dictionary_type = parser_dictionary<char_type>;
-    using dictionary_ptr_type = std::shared_ptr<dictionary_type>;
+    using dictionary_type = dictionary<char_type>;
+    using const_dictionary_ptr_type = std::shared_ptr<const dictionary_type>;
 
     basic_parser_data()
-        : m_dictionary(std::make_shared<default_parser_dictionary<char_type>>())
+        : m_dictionary(std::make_shared<default_dictionary<char_type>>())
         , m_argument_repository(std::make_shared<argument_repository_type>(m_dictionary))
         , m_default_argument_group(m_argument_repository, string_type())
         , m_argument_groups()
@@ -49,7 +49,7 @@ public:
         // noop
     }
 
-    basic_parser_data(dictionary_ptr_type dictionary)
+    basic_parser_data(const const_dictionary_ptr_type& dictionary)
         : m_dictionary(dictionary)
         , m_argument_repository(std::make_shared<argument_repository_type>(m_dictionary))
         , m_default_argument_group(m_argument_repository, string_type())
@@ -68,12 +68,12 @@ public:
     {
         auto argument_group_impl = std::make_shared<argument_group_impl_type>(m_argument_repository, name);
 
-        m_argument_groups.push_back(argument_group_impl);
+        m_argument_groups.emplace_back(argument_group_impl);
 
         return argument_group_type(argument_group_impl);
     }
 
-    dictionary_ptr_type m_dictionary;
+    const_dictionary_ptr_type m_dictionary;
     argument_repository_ptr_type m_argument_repository;
 
     argument_group_impl_type m_default_argument_group;

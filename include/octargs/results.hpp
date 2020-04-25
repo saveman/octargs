@@ -30,7 +30,7 @@ public:
     using results_data_type = internal::basic_results_data<char_type>;
     using const_results_data_ptr_type = std::shared_ptr<const results_data_type>;
 
-    using dictionary_type = parser_dictionary<char_type>;
+    using dictionary_type = dictionary<char_type>;
     using const_dictionary_ptr_type = std::shared_ptr<const dictionary_type>;
 
     basic_results(const_dictionary_ptr_type dictionary_ptr, const_results_data_ptr_type results_data_ptr)

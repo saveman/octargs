@@ -1,7 +1,7 @@
 #ifndef OCTARGS_ARGUMENT_HANDLER_HPP_
 #define OCTARGS_ARGUMENT_HANDLER_HPP_
 
-#include "../parser_dictionary.hpp"
+#include "../dictionary.hpp"
 
 namespace oct
 {
@@ -19,7 +19,7 @@ public:
 
     using string_type = std::basic_string<char_T>;
 
-    using dictionary_type = parser_dictionary<char_type>;
+    using dictionary_type = dictionary<char_type>;
 
     virtual ~basic_argument_handler() = default;
 
@@ -35,7 +35,7 @@ public:
 
     using string_type = std::basic_string<char_T>;
 
-    using dictionary_type = parser_dictionary<char_type>;
+    using dictionary_type = dictionary<char_type>;
 
     virtual ~basic_argument_handler() = default;
 
@@ -51,7 +51,7 @@ public:
 
     using string_type = std::basic_string<char_T>;
     using argument_handler_type = basic_argument_handler<char_T, values_storage_T>;
-    using dictionary_type = parser_dictionary<char_type>;
+    using dictionary_type = dictionary<char_type>;
 
     storage_handler_helper(values_storage_type& storage)
         : m_storage(storage)
@@ -77,7 +77,7 @@ public:
 
     using string_type = std::basic_string<char_T>;
     using argument_handler_type = basic_argument_handler<char_T, void>;
-    using dictionary_type = parser_dictionary<char_type>;
+    using dictionary_type = dictionary<char_type>;
 
     // cppcheck-suppress functionStatic
     void parse_with_handler(

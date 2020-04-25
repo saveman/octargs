@@ -18,7 +18,7 @@ namespace
 using string_type = std::string;
 using string_vector_type = std::vector<string_type>;
 
-using dictionary_type = default_parser_dictionary<char>;
+using dictionary_type = default_dictionary<char>;
 
 using exclusive_argument_type = internal::basic_exclusive_argument_impl<char, void>;
 using positional_argument_type = internal::basic_positional_argument_impl<char, void>;

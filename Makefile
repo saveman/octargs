@@ -26,8 +26,7 @@ CMAKE_OPTS=\
 
 VERIFY_CMAKE_OPTS=\
 	-DCMAKE_BUILD_TYPE=Release \
-	-DOCTARGS_ROOT_DIR=$(INSTALL_DIR) \
-	-DSTANDALONE_EXAMPLES_BUILD=True
+	-DOCTARGS_ROOT_DIR=$(INSTALL_DIR)
 
 CPPCHECK_OPTS=\
 	-i $(THIRDPARTY_DIR) \
@@ -165,6 +164,32 @@ run_examples_calc:
 	@echo "CALC HELP"
 	@echo "----------------------------"
 	@(cd $(EXEDIR) && ./$(EXENAME) --help)
+	@echo "----------------------------"
+
+examples_sum: install
+	$(MAKE) run_examples_sum EXEDIR=$(INSTALL_DIR)/bin EXENAME=octargs_sum
+
+run_examples_sum:
+	@echo "----------------------------"
+	@echo "SUM TEST 1"
+	@echo "----------------------------"
+	(cd $(EXEDIR) && ./$(EXENAME) 1 2 3 4 5 )
+	@echo "----------------------------"
+	(cd $(EXEDIR) && ./$(EXENAME) 5 -5 5 -5 5 )
+	@echo "----------------------------"
+	@echo "SUM STEPS"
+	@echo "----------------------------"
+	(cd $(EXEDIR) && ./$(EXENAME) 1 2 3 4 5 -3 )
+	@echo "----------------------------"
+	(cd $(EXEDIR) && LC_ALL=en_US.UTF-8 ./$(EXENAME) -s=tak 1 2 3 4 5 -3 || true)
+	@echo "----------------------------"
+	(cd $(EXEDIR) && LC_ALL=pl_PL.UTF-8 ./$(EXENAME) -s=tak 1 2 3 4 5 -3)
+	@echo "----------------------------"
+	@echo "SUM HELP"
+	@echo "----------------------------"
+	@(cd $(EXEDIR) && LC_ALL=en_US.UTF-8 ./$(EXENAME) --help)
+	@echo "----------------------------"
+	@(cd $(EXEDIR) && LC_ALL=pl_PL.UTF-8 ./$(EXENAME) --help)
 	@echo "----------------------------"
 
 examples_calc: install

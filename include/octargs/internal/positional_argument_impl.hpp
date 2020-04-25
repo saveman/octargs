@@ -22,7 +22,7 @@ public:
     using base_type = basic_argument_base_impl<basic_positional_argument_impl<char_type, values_storage_type>,
         char_type, values_storage_type>;
 
-    using dictionary_type = parser_dictionary<char_type>;
+    using dictionary_type = dictionary<char_type>;
     using string_type = std::basic_string<char_type>;
     using string_vector_type = std::vector<string_type>;
 
@@ -45,6 +45,11 @@ public:
     void set_allowed_values(const string_vector_type& values)
     {
         base_type::set_allowed_values_internal(values);
+    }
+
+    void set_value_name(const string_type& name)
+    {
+        base_type::set_value_name_internal(name);
     }
 
     void set_min_count(std::size_t count)

@@ -89,7 +89,7 @@ public:
     void set_storage(std::vector<data_type> storage_helper_wrapped_type::*member_ptr)
     {
         set_store_function([member_ptr](values_storage_type& storage, const data_type& value) {
-            (storage.*member_ptr).push_back(value);
+            (storage.*member_ptr).emplace_back(value);
         });
     }
 
@@ -108,7 +108,7 @@ public:
     using values_storage_type = values_storage_T;
 
     using string_type = std::basic_string<char_type>;
-    using dictionary_type = parser_dictionary<char_type>;
+    using dictionary_type = dictionary<char_type>;
 
     void parse(
         values_storage_type& storage, const dictionary_type& dictionary, const string_type& value_str) const final
@@ -140,7 +140,7 @@ public:
     using char_type = char_T;
 
     using string_type = std::basic_string<char_type>;
-    using dictionary_type = parser_dictionary<char_type>;
+    using dictionary_type = dictionary<char_type>;
 
     void parse(const dictionary_type& dictionary, const string_type& value_str) const final
     {

@@ -21,7 +21,7 @@ public:
     using base_type = basic_argument_base_impl<basic_exclusive_argument_impl<char_type, values_storage_type>, char_type,
         values_storage_type>;
 
-    using dictionary_type = parser_dictionary<char_type>;
+    using dictionary_type = dictionary<char_type>;
     using string_type = std::basic_string<char_type>;
     using string_vector_type = std::vector<string_type>;
 

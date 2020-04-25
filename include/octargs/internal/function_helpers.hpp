@@ -4,7 +4,7 @@
 #include <functional>
 #include <string>
 
-#include "../parser_dictionary.hpp"
+#include "../dictionary.hpp"
 
 namespace oct
 {
@@ -21,7 +21,7 @@ public:
     using data_type = data_T;
 
     using string_type = std::basic_string<char_type>;
-    using dictionary_type = parser_dictionary<char_type>;
+    using dictionary_type = dictionary<char_type>;
 
     using function_type = std::function<data_type(const dictionary_type& dictionary, const string_type& value_str)>;
 

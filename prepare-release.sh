@@ -71,7 +71,6 @@ verify_install ()
     cmake \
         -DCMAKE_BUILD_TYPE=Release \
         -DOCTARGS_ROOT_DIR="${INSTALL_DIR}" \
-        -DSTANDALONE_EXAMPLES_BUILD=True \
         "${SOURCE_DIR}"
     cmake --build . -- all -j ${CPUCOUNT}
     popd

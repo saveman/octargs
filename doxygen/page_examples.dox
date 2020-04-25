@@ -1,0 +1,56 @@
+/**
+
+\page page_examples Examples
+
+\brief Example applications
+
+\tableofcontents
+
+
+\section section_example_head       Head utility (head)
+
+Basic version of 'head' shell utility.
+
+Features shown in the example:
+\li Misc. argument types.
+\li Manual parsing of argument values
+
+
+\section section_example_cat    Cat tool (cat)
+
+Basic version of 'cat' shell utility.
+
+Features shown in the example:
+\li Exclusive, valued, switch, positional arguments.
+\li Storing parsed values in provided storage variable including type checking.
+\li Usage (help automatic generation).
+
+
+\section section_example_calc   Calculator (calc)
+
+Performs basic math operations on specified values.
+
+Features shown in the example:
+\li Exclusive, valued, switch, positional arguments.
+\li Getting results with type (\c get_first_value_as()).
+\li Usage (help automatic generation).
+
+
+\section section_example_getfile    File get/download (getfile)
+
+Basic application that could get (download) local or remove (http) file.
+
+Features shown in the example:
+\li Misc. argument types.
+\li Subparsers - command based interface.
+
+
+\section section_example_sum        Simple sum calculator (sum)
+
+Calculates sum of given values.
+
+Features shown in the example:
+\li Custom dictionary usage.
+\li Parser customization (extra literals for boolean values, localization).
+
+*/

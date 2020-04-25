@@ -24,5 +24,6 @@ More details about using the application could be found here:
 \li \ref page_storing_parsers        "Parser with storage objects"
 \li \ref page_error_handling         "Error handling"
 \li \ref page_usage_documentation    "Automatic usage documentation"
+\li \ref page_examples               "Example applications"
 
 */

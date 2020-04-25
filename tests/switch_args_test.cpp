@@ -9,7 +9,7 @@ namespace args
 
 TEST(switch_args_test, test_happy_hapth)
 {
-    using dictionary_type = default_parser_dictionary<char>;
+    using dictionary_type = default_dictionary<char>;
 
     dictionary_type dictionary;
 

@@ -65,11 +65,11 @@ public:
         auto arg_values_iter = this->m_argument_values.find(arg_ptr);
         if (arg_values_iter != this->m_argument_values.end())
         {
-            arg_values_iter->second.push_back(value);
+            arg_values_iter->second.emplace_back(value);
         }
         else
         {
-            this->m_argument_values.insert(std::make_pair(arg_ptr, string_vector_type({ value })));
+            this->m_argument_values.emplace(arg_ptr, string_vector_type({ value }));
         }
     }
 

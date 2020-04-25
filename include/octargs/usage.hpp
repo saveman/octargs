@@ -14,7 +14,6 @@
 #include "internal/parser_data.hpp"
 #include "internal/results_data.hpp"
 #include "results.hpp"
-#include "usage_dictionary.hpp"
 
 namespace oct
 {
@@ -44,7 +43,6 @@ public:
         , m_description_indent(2)
         , m_multiline_indent(2)
         , m_arg_line_indent(1)
-        , m_dictionary(std::make_shared<default_usage_dictionary<char_type>>())
     {
         // noop
     }
@@ -70,11 +68,10 @@ private:
 
     using string_utils_type = internal::string_utils<char_type>;
 
-    using usage_dictionary_type = usage_dictionary<char_type>;
-    using usage_dictionary_ptr_type = std::shared_ptr<usage_dictionary_type>;
-
     using argument_group_type = internal::basic_argument_group_impl<char_type, values_storage_type>;
     using argument_group_ptr_type = std::shared_ptr<argument_group_type>;
+
+    using dictionary_type = dictionary<char_type>;
 
     struct arg_info
     {
@@ -101,6 +98,11 @@ private:
         POSITIONAL_ONLY,
     };
 
+    const dictionary_type& get_dictionary() const
+    {
+        return *m_data_ptr->m_dictionary;
+    }
+
     void print_group_arguments(ostream_type& os, const argument_group_type& group, const string_type& title,
         const string_type& description, print_arg_mode mode) const
     {
@@ -116,7 +118,7 @@ private:
                     continue;
                 }
 
-                infos.push_back(prepare_info(argument, false, false));
+                infos.emplace_back(prepare_info(argument, false, false));
             }
 
             /* standard named */
@@ -127,7 +129,7 @@ private:
                     continue;
                 }
 
-                infos.push_back(prepare_info(argument, false, false));
+                infos.emplace_back(prepare_info(argument, false, false));
             }
         }
 
@@ -141,7 +143,7 @@ private:
                     continue;
                 }
 
-                infos.push_back(prepare_info(argument, true, false));
+                infos.emplace_back(prepare_info(argument, true, false));
             }
         }
 
@@ -158,14 +160,14 @@ private:
     void print_default_named_arguments(ostream_type& os) const
     {
         print_group_arguments(os, m_data_ptr->m_default_argument_group,
-            m_dictionary->get_string(usage_dictionary_string_key::DEFAULT_NAMED_ARGUMENTS_GROUP_NAME), string_type(),
-            print_arg_mode::NAMED_ONLY);
+            get_dictionary().get_usage_literal(dictionary_type::usage_literal::DEFAULT_NAMED_ARGUMENTS_GROUP_NAME),
+            string_type(), print_arg_mode::NAMED_ONLY);
     }
 
     void print_default_positional_arguments(ostream_type& os) const
     {
         print_group_arguments(os, m_data_ptr->m_default_argument_group,
-            m_dictionary->get_string(usage_dictionary_string_key::DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME),
+            get_dictionary().get_usage_literal(dictionary_type::usage_literal::DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME),
             string_type(), print_arg_mode::POSITIONAL_ONLY);
     }
 
@@ -185,12 +187,13 @@ private:
 
     void print_usage_line(ostream_type& os) const
     {
-        os << m_dictionary->get_string(usage_dictionary_string_key::USAGE_LEAD) << ':';
+        os << get_dictionary().get_usage_literal(dictionary_type::usage_literal::LEAD) << ':';
 
         if (m_data_ptr->m_argument_repository->m_arguments.empty()
             && !m_data_ptr->m_argument_repository->m_subparsers_argument)
         {
-            os << ' ' << m_dictionary->get_string(usage_dictionary_string_key::USAGE_NO_ARGUMENTS) << std::endl;
+            os << ' ' << get_dictionary().get_usage_literal(dictionary_type::usage_literal::NO_ARGUMENTS_INFO)
+               << std::endl;
             return;
         }
 
@@ -246,10 +249,12 @@ private:
         const char optreq_open_char = any_required ? '<' : '[';
         const char optreq_close_char = any_required ? '>' : ']';
 
-        os << ' ' << optreq_open_char << "OPTIONS" << optreq_close_char;
+        os << ' ' << optreq_open_char
+           << get_dictionary().get_usage_literal(dictionary_type::usage_literal::HEADER_OPTIONS_NAME)
+           << optreq_close_char;
         if (multiple_allowed)
         {
-            os << "...";
+            os << get_dictionary().get_usage_literal(dictionary_type::usage_literal::HEADER_MULTIVALUE_MARKER);
         }
     }
 
@@ -268,10 +273,16 @@ private:
             const char optreq_open_char = is_required ? '<' : '[';
             const char optreq_close_char = is_required ? '>' : ']';
 
-            os << ' ' << optreq_open_char << argument->get_first_name() << optreq_close_char;
+            auto name = argument->get_value_name();
+            if (name.empty())
+            {
+                name = argument->get_first_name();
+            }
+
+            os << ' ' << optreq_open_char << name << optreq_close_char;
             if (multiple_allowed)
             {
-                os << "...";
+                os << get_dictionary().get_usage_literal(dictionary_type::usage_literal::HEADER_MULTIVALUE_MARKER);
             }
         }
     }
@@ -280,11 +291,19 @@ private:
     {
         if (m_data_ptr->m_argument_repository->m_subparsers_argument)
         {
-            os << ' ' << '<' << m_data_ptr->m_argument_repository->m_subparsers_argument->get_first_name() << '>';
+            auto& argument = m_data_ptr->m_argument_repository->m_subparsers_argument;
+
+            auto name = argument->get_value_name();
+            if (name.empty())
+            {
+                name = argument->get_first_name();
+            }
+
+            os << ' ' << '<' << name << '>';
 
             bool any_args = false;
 
-            for (auto& iter : m_data_ptr->m_argument_repository->m_subparsers_argument->get_parsers())
+            for (auto& iter : argument->get_parsers())
             {
                 auto subusage = iter.second.get_usage();
 
@@ -297,21 +316,10 @@ private:
 
             if (any_args)
             {
-                os << ' ' << '[' << "ARGS" << ']';
+                os << ' ' << '['
+                   << get_dictionary().get_usage_literal(dictionary_type::usage_literal::HEADER_SUBOPTIONS_NAME) << ']';
             }
         }
-    }
-
-    static bool is_short_name(const string_type& name)
-    {
-        auto len = name.size();
-        auto first_not_dash = name.find_first_not_of('-');
-        if (first_not_dash != string_type::npos)
-        {
-            len -= first_not_dash;
-        }
-
-        return (len <= 1);
     }
 
     void print_subparsers(ostream_type& os) const
@@ -381,12 +389,15 @@ private:
                     description += '[';
                     if (argument->get_min_count() == 1)
                     {
-                        description += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_REQUIRED);
+                        description
+                            += get_dictionary().get_usage_literal(dictionary_type::usage_literal::DECORATOR_REQUIRED);
                     }
                     else
                     {
-                        description += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_MIN_COUNT);
-                        description += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_VALUE_SEPARATOR);
+                        description
+                            += get_dictionary().get_usage_literal(dictionary_type::usage_literal::DECORATOR_MIN_COUNT);
+                        description += get_dictionary().get_usage_literal(
+                            dictionary_type::usage_literal::DECORATOR_VALUE_SEPARATOR);
                         description += string_utils_type::to_string(argument->get_min_count());
                     }
                     description += ']';
@@ -401,13 +412,15 @@ private:
                     description += '[';
                     if (argument->is_max_count_unlimited())
                     {
-                        description
-                            += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_MAX_COUNT_UNLIMITED);
+                        description += get_dictionary().get_usage_literal(
+                            dictionary_type::usage_literal::DECORATOR_MAX_COUNT_UNLIMITED);
                     }
                     else
                     {
-                        description += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_MAX_COUNT);
-                        description += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_VALUE_SEPARATOR);
+                        description
+                            += get_dictionary().get_usage_literal(dictionary_type::usage_literal::DECORATOR_MAX_COUNT);
+                        description += get_dictionary().get_usage_literal(
+                            dictionary_type::usage_literal::DECORATOR_VALUE_SEPARATOR);
                         description += string_utils_type::to_string(argument->get_max_count());
                     }
                     description += ']';
@@ -423,8 +436,9 @@ private:
                 }
                 bool first = true;
                 description += '[';
-                description += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_DEFAULT);
-                description += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_VALUE_SEPARATOR);
+                description += get_dictionary().get_usage_literal(dictionary_type::usage_literal::DECORATOR_DEFAULT);
+                description
+                    += get_dictionary().get_usage_literal(dictionary_type::usage_literal::DECORATOR_VALUE_SEPARATOR);
                 for (auto& value : default_values)
                 {
                     if (first)
@@ -450,8 +464,9 @@ private:
                 }
                 bool first = true;
                 description += '[';
-                description += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_ALLOWED);
-                description += m_dictionary->get_string(usage_dictionary_string_key::DECORATOR_VALUE_SEPARATOR);
+                description += get_dictionary().get_usage_literal(dictionary_type::usage_literal::DECORATOR_ALLOWED);
+                description
+                    += get_dictionary().get_usage_literal(dictionary_type::usage_literal::DECORATOR_VALUE_SEPARATOR);
                 for (auto& value : allowed_values)
                 {
                     if (first)
@@ -472,37 +487,51 @@ private:
         return description;
     }
 
+    void add_info_name(arg_info& info, const string_type& name, bool all_short, bool all_long) const
+    {
+        if (all_short)
+        {
+            info.m_short_names.emplace_back(name);
+        }
+        else if (all_long)
+        {
+            info.m_long_names.emplace_back(name);
+        }
+        else
+        {
+            if (get_dictionary().is_short_name(name))
+            {
+                info.m_short_names.emplace_back(name);
+            }
+            else
+            {
+                info.m_long_names.emplace_back(name);
+            }
+        }
+    }
+
     arg_info prepare_info(const const_argument_ptr_type& argument, bool all_short, bool all_long) const
     {
         arg_info info;
 
         info.m_is_named = argument->is_assignable_by_name();
 
-        for (auto& name : argument->get_names())
+        info.m_description = prepare_description(argument);
+        if (info.m_is_named || argument->get_value_name().empty())
         {
-            if (all_short)
+            info.m_value_name = argument->get_value_name();
+
+            for (auto& name : argument->get_names())
             {
-                info.m_short_names.emplace_back(name);
-            }
-            else if (all_long)
-            {
-                info.m_long_names.emplace_back(name);
-            }
-            else
-            {
-                if (is_short_name(name))
-                {
-                    info.m_short_names.emplace_back(name);
-                }
-                else
-                {
-                    info.m_long_names.emplace_back(name);
-                }
+                add_info_name(info, name, all_short, all_long);
             }
         }
+        else
+        {
+            auto name = argument->get_value_name();
 
-        info.m_description = prepare_description(argument);
-        info.m_value_name = argument->get_value_name();
+            add_info_name(info, name, all_short, all_long);
+        }
 
         return info;
     }
@@ -659,7 +688,6 @@ private:
     std::size_t m_description_indent;
     std::size_t m_multiline_indent;
     std::size_t m_arg_line_indent;
-    usage_dictionary_ptr_type m_dictionary;
 };
 
 } // namespace args

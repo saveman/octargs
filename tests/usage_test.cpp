@@ -199,7 +199,7 @@ TEST(parser_usage_test, test_subparsers)
     out_ostream << parser.get_usage();
 
     const std::vector<std::string> EXPECTED_RESULT_LINES = {
-        "Usage: [OPTIONS] <command> [ARGS]",
+        "Usage: [OPTIONS] <command> [SUBOPTS]",
         "",
         "ONELINER",
         "",

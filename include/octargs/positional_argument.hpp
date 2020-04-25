@@ -64,6 +64,12 @@ public:
         return this->cast_this_to_derived();
     }
 
+    basic_positional_argument& set_value_name(const string_type& name)
+    {
+        this->get_argument().set_value_name(name);
+        return this->cast_this_to_derived();
+    }
+
     basic_positional_argument& set_min_count(std::size_t count)
     {
         this->get_argument().set_min_count(count);

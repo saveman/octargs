@@ -45,7 +45,7 @@ template <typename char_T>
 void test_bool_converter_helper()
 {
     using char_type = char_T;
-    using dictionary_type = default_parser_dictionary<char_type>;
+    using dictionary_type = default_dictionary<char_type>;
 
     dictionary_type dictionary;
 
@@ -71,14 +71,14 @@ TEST(converter_test, test_bool_converter)
     test_bool_converter_helper<char>();
 
     basic_converter<char, bool> char_converter;
-    default_parser_dictionary<char> char_dictionary;
+    default_dictionary<char> char_dictionary;
 
     ASSERT_THROW(char_converter(char_dictionary, ""), conversion_error);
     ASSERT_THROW(char_converter(char_dictionary, "a"), conversion_error);
     ASSERT_THROW(char_converter(char_dictionary, " 1"), conversion_error);
 
     test_bool_converter_helper<wchar_t>();
-    default_parser_dictionary<wchar_t> wchart_dictionary;
+    default_dictionary<wchar_t> wchart_dictionary;
 
     basic_converter<wchar_t, bool> wchart_converter;
     ASSERT_THROW(wchart_converter(wchart_dictionary, L""), conversion_error);

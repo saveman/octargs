@@ -4,9 +4,9 @@
 #include <limits>
 #include <string>
 
+#include "dictionary.hpp"
 #include "exception.hpp"
 #include "internal/string_utils.hpp"
-#include "parser_dictionary.hpp"
 
 namespace oct
 {
@@ -57,7 +57,7 @@ public:
     using data_type = bool;
 
     using string_type = std::basic_string<char_type>;
-    using dictionary_type = parser_dictionary<char_type>;
+    using dictionary_type = dictionary<char_type>;
 
     data_type operator()(const dictionary_type& dictionary, const string_type& value_str) const
     {

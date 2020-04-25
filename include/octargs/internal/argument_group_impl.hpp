@@ -73,28 +73,28 @@ public:
     exclusive_argument_type add_exclusive(const string_vector_type& names)
     {
         auto argument_ptr = m_argument_repository->add_exclusive(names);
-        m_arguments.push_back(argument_ptr);
+        m_arguments.emplace_back(argument_ptr);
         return exclusive_argument_type(argument_ptr);
     }
 
     switch_argument_type add_switch(const string_vector_type& names)
     {
         auto argument_ptr = m_argument_repository->add_switch(names);
-        m_arguments.push_back(argument_ptr);
+        m_arguments.emplace_back(argument_ptr);
         return switch_argument_type(argument_ptr);
     }
 
     valued_argument_type add_valued(const string_vector_type& names)
     {
         auto argument_ptr = m_argument_repository->add_valued(names);
-        m_arguments.push_back(argument_ptr);
+        m_arguments.emplace_back(argument_ptr);
         return valued_argument_type(argument_ptr);
     }
 
     positional_argument_type add_positional(const string_type& name)
     {
         auto argument_ptr = m_argument_repository->add_positional(name);
-        m_arguments.push_back(argument_ptr);
+        m_arguments.emplace_back(argument_ptr);
         return positional_argument_type(argument_ptr);
     }
 

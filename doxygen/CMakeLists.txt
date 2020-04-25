@@ -13,8 +13,7 @@ if (DOXYGEN_FOUND)
     set(DOXYGEN_REPEAT_BRIEF            YES)
     set(DOXYGEN_ENUM_VALUES_PER_LINE    1)
     set(DOXYGEN_WARN_LOGFILE            "${CMAKE_CURRENT_BINARY_DIR}/doxygen-warnings.txt")
-
-    set(DOXYGEN_EXAMPLE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/examples")
+    set(DOXYGEN_EXAMPLE_PATH            "${CMAKE_CURRENT_SOURCE_DIR}/examples")
 
     doxygen_add_docs(doxygen
         ${CMAKE_CURRENT_SOURCE_DIR}

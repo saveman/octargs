@@ -38,17 +38,16 @@ set(${PROJECT_NAME}_HEADERS
     octargs/argument_group.hpp
     octargs/argument_table.hpp
     octargs/converter.hpp
+    octargs/dictionary.hpp
     octargs/exception.hpp
     octargs/exclusive_argument.hpp
     octargs/octargs.hpp
-    octargs/parser_dictionary.hpp
     octargs/parser_error.hpp
     octargs/parser.hpp
     octargs/positional_argument.hpp
     octargs/results.hpp
     octargs/subparser_argument.hpp
     octargs/switch_argument.hpp
-    octargs/usage_dictionary.hpp
     octargs/usage.hpp
     octargs/valued_argument.hpp
 )

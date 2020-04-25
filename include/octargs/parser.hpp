@@ -7,8 +7,8 @@
 
 #include "argument_group.hpp"
 #include "argument_table.hpp"
+#include "dictionary.hpp"
 #include "exception.hpp"
-#include "parser_dictionary.hpp"
 #include "parser_error.hpp"
 #include "results.hpp"
 #include "usage.hpp"
@@ -38,8 +38,8 @@ public:
     using string_type = std::basic_string<char_type>;
     using string_vector_type = std::vector<string_type>;
 
-    using dictionary_type = parser_dictionary<char_type>;
-    using dictionary_const_ptr_type = std::shared_ptr<const dictionary_type>;
+    using dictionary_type = dictionary<char_type>;
+    using const_dictionary_ptr_type = std::shared_ptr<const dictionary_type>;
 
     using argument_group_type = basic_argument_group<char_type, values_storage_type>;
 
@@ -60,8 +60,8 @@ public:
         // noop
     }
 
-    explicit basic_parser_base(const dictionary_const_ptr_type& dictionary)
-        : m_data_ptr(dictionary)
+    explicit basic_parser_base(const const_dictionary_ptr_type& dictionary)
+        : m_data_ptr(std::make_shared<parser_data_type>(dictionary))
     {
         // noop
     }
@@ -168,7 +168,8 @@ private:
 
         for (auto& subparser_item : m_data_ptr->m_argument_repository->m_subparsers_argument->get_parsers())
         {
-            auto new_prefix = prefix + subparser_item.first + char_type(' ');
+            auto new_prefix
+                = prefix + subparser_item.first + m_data_ptr->m_dictionary->get_subparser_separator_literal();
 
             subparser_item.second.fill_results_data_names(new_prefix, results_data_ptr);
         }
@@ -418,15 +419,17 @@ private:
     {
         auto& input_value = input_iterator.peek_next();
 
-        auto equal_char_pos = input_value.find(m_data_ptr->m_dictionary->get_equal_literal());
-        if (equal_char_pos == string_type::npos)
+        auto& value_separator = m_data_ptr->m_dictionary->get_value_separator_literal();
+
+        auto value_separator_pos = input_value.find(value_separator);
+        if (value_separator_pos == string_type::npos)
         {
             return parse_named_argument(results_data_ptr, storage_helper, input_iterator, input_value);
         }
         else
         {
-            auto name_str = input_value.substr(0, equal_char_pos);
-            auto value_str = input_value.substr(equal_char_pos + 1);
+            auto name_str = input_value.substr(0, value_separator_pos);
+            auto value_str = input_value.substr(value_separator_pos + value_separator.size());
 
             return parse_named_argument(results_data_ptr, storage_helper, input_iterator, name_str, value_str);
         }
@@ -515,8 +518,8 @@ public:
 
     using base_type = basic_parser_base<basic_parser<char_T, values_storage_T>, char_T, values_storage_T>;
 
-    using dictionary_type = parser_dictionary<char_type>;
-    using dictionary_const_ptr_type = std::shared_ptr<const dictionary_type>;
+    using dictionary_type = dictionary<char_type>;
+    using const_dictionary_ptr_type = std::shared_ptr<const dictionary_type>;
 
     using argument_table_type = basic_argument_table<char_type>;
 
@@ -528,7 +531,7 @@ public:
         // noop
     }
 
-    explicit basic_parser(const dictionary_const_ptr_type& dictionary)
+    explicit basic_parser(const const_dictionary_ptr_type& dictionary)
         : base_type(dictionary)
     {
         // noop
@@ -570,8 +573,8 @@ public:
 
     using base_type = basic_parser_base<basic_parser<char_T, void>, char_T, void>;
 
-    using dictionary_type = parser_dictionary<char_type>;
-    using dictionary_const_ptr_type = std::shared_ptr<const dictionary_type>;
+    using dictionary_type = dictionary<char_type>;
+    using const_dictionary_ptr_type = std::shared_ptr<const dictionary_type>;
 
     using argument_table_type = basic_argument_table<char_type>;
 
@@ -583,7 +586,7 @@ public:
         // noop
     }
 
-    explicit basic_parser(const dictionary_const_ptr_type& dictionary)
+    explicit basic_parser(const const_dictionary_ptr_type& dictionary)
         : base_type(dictionary)
     {
         // noop

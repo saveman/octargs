@@ -28,7 +28,7 @@ public:
     using char_type = char_T;
     using values_storage_type = values_storage_T;
 
-    using dictionary_type = parser_dictionary<char_type>;
+    using dictionary_type = dictionary<char_type>;
     using const_dictionary_ptr_type = std::shared_ptr<const dictionary_type>;
 
     using string_type = std::basic_string<char_type>;
@@ -202,10 +202,19 @@ private:
             {
                 throw invalid_argument_name_ex<char_type>("argument name must not contain whitespace characters", name);
             }
-            if (c == m_dictionary->get_equal_literal())
-            {
-                throw invalid_argument_name_ex<char_type>("argument name must not contain equal characters", name);
-            }
+        }
+
+        auto& value_separator = m_dictionary->get_value_separator_literal();
+        if (name.find(value_separator) != string_type::npos)
+        {
+            throw invalid_argument_name_ex<char_type>("argument name must not contain value separator literal", name);
+        }
+
+        auto& subparser_separator = m_dictionary->get_subparser_separator_literal();
+        if (name.find(subparser_separator) != string_type::npos)
+        {
+            throw invalid_argument_name_ex<char_type>(
+                "argument name must not contain subparser separator literal", name);
         }
     }
 

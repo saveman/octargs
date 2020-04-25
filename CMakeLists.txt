@@ -43,6 +43,7 @@ add_subdirectory(doxygen)
 add_subdirectory(include)
 
 if (BUILD_EXAMPLES)
+    set(BUILTIN_EXAMPLES_BUILD ON CACHE BOOL "" FORCE)
     add_subdirectory(examples)
 endif()
 

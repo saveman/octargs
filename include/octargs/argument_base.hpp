@@ -86,7 +86,7 @@ public:
     derived_type& set_storage(std::vector<data_type> storage_helper_wrapped_type::*member_ptr)
     {
         return set_store_function([member_ptr](values_storage_type& storage, const data_type& value) {
-            (storage.*member_ptr).push_back(value);
+            (storage.*member_ptr).emplace_back(value);
         });
     }
 
