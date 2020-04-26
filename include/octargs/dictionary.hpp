@@ -279,8 +279,11 @@ template <typename char_T>
 class custom_dictionary : public dictionary<char_T>
 {
 public:
-    static constexpr bool WITH_DEFAULTS = true;
-    static constexpr bool NO_DEFAULTS = false;
+    enum class init_mode
+    {
+        WITH_DEFAULTS,
+        NO_DEFAULTS
+    };
 
     using base_type = dictionary<char_T>;
 
@@ -289,10 +292,10 @@ public:
     using string_vector_type = typename base_type::string_vector_type;
     using usage_literal = typename base_type::usage_literal;
 
-    explicit custom_dictionary(bool use_defaults)
+    explicit custom_dictionary(init_mode init_mode)
         : m_name_prefix(0)
     {
-        if (use_defaults)
+        if (init_mode == init_mode::WITH_DEFAULTS)
         {
             using default_dict_type = default_dictionary<char_type>;
 

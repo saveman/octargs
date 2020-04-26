@@ -140,6 +140,23 @@ TEST(switch_args_test, test_unlimited_values)
     ASSERT_EQ(COUNT, results.get_count("--arg"));
 }
 
+TEST(switch_args_test, test_min_max_count)
+{
+    parser parser;
+    parser.add_switch({ "--arg" }).set_min_count(2).set_max_count(3);
+
+    ASSERT_THROW(parser.parse(argument_table("appname", {})), parser_error);
+    ASSERT_THROW(parser.parse(argument_table("appname", { "--arg" })), parser_error);
+
+    auto results2 = parser.parse(argument_table("appname", { "--arg", "--arg" }));
+    ASSERT_EQ(std::size_t(2), results2.get_count("--arg"));
+
+    auto results3 = parser.parse(argument_table("appname", { "--arg", "--arg", "--arg" }));
+    ASSERT_EQ(std::size_t(3), results3.get_count("--arg"));
+
+    ASSERT_THROW(parser.parse(argument_table("appname", { "--arg", "--arg", "--arg", "--arg" })), parser_error);
+}
+
 TEST(switch_args_test, test_default_values)
 {
     argument_table args_empty("appname", {});

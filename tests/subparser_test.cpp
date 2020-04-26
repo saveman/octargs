@@ -141,6 +141,7 @@ TEST(subparser_test, test_errors)
     auto subparsers = parser3.add_subparsers("commands");
     subparsers.add_parser("add");
     subparsers.add_parser("mul");
+    ASSERT_THROW(subparsers.add_parser("mul"), invalid_parser_name);
 
     argument_table args1("appname", {});
     ASSERT_THROW(parser3.parse(args1), parser_error);

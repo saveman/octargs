@@ -65,13 +65,35 @@ public:
         return values[0];
     }
 
+    const string_type& get_first_value(const string_type& arg_name, const string_type& default_value) const
+    {
+        auto& values = get_values(arg_name);
+        if (values.size() == 0)
+        {
+            return default_value;
+        }
+        return values[0];
+    }
+
     const string_vector_type& get_values(const string_type& arg_name) const
     {
         return m_results_data_ptr->get_values(arg_name);
     }
 
     template <typename data_T, typename converter_T = basic_converter<char_type, data_T>>
-    data_T get_first_value_as(const string_type& arg_name, const data_T& default_value = data_T()) const
+    data_T get_first_value_as(const string_type& arg_name) const
+    {
+        using data_type = data_T;
+        using converter_type = converter_T;
+        using helper = internal::convert_function_helper<char_type, data_type>;
+
+        auto& value = get_first_value(arg_name);
+        auto convert_func = helper::prepare(converter_type());
+        return convert_func(*m_dictionary_ptr, value);
+    }
+
+    template <typename data_T, typename converter_T = basic_converter<char_type, data_T>>
+    data_T get_first_value_as(const string_type& arg_name, const data_T& default_value) const
     {
         using data_type = data_T;
         using converter_type = converter_T;
@@ -84,9 +106,9 @@ public:
         }
         else
         {
+            auto& value = values[0];
             auto convert_func = helper::prepare(converter_type());
-
-            return convert_func(*m_dictionary_ptr, values[0]);
+            return convert_func(*m_dictionary_ptr, value);
         }
     }
 

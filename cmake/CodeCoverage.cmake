@@ -365,11 +365,17 @@ endfunction() # setup_target_for_coverage_gcovr_xml
 # )
 function(setup_target_for_coverage_gcovr_html)
 
-    set(options NONE)
+    set(options SORT_UNCOVERED SORT_PERCENTAGE)
     set(oneValueArgs BASE_DIRECTORY NAME)
     set(multiValueArgs EXCLUDE EXECUTABLE EXECUTABLE_ARGS DEPENDENCIES)
     cmake_parse_arguments(Coverage "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
+    if(Coverage_SORT_UNCOVERED)
+        set(GCOVR_EXTRA_ARGS ${GCOVR_EXTRA_ARGS} -u)
+    endif()
+    if(Coverage_SORT_PERCENTAGE)
+        set(GCOVR_EXTRA_ARGS ${GCOVR_EXTRA_ARGS} -p)
+    endif()
     if(NOT GCOVR_PATH)
         message(FATAL_ERROR "gcovr not found! Aborting...")
     endif() # NOT GCOVR_PATH
@@ -407,7 +413,7 @@ function(setup_target_for_coverage_gcovr_html)
         COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/${Coverage_NAME}
 
         # Running gcovr
-        COMMAND ${GCOVR_PATH} --html --html-details
+        COMMAND ${GCOVR_PATH} --html --html-details ${GCOVR_EXTRA_ARGS}
             -r ${BASEDIR} ${GCOVR_EXCLUDE_ARGS}
             --object-directory=${PROJECT_BINARY_DIR}
             -o ${Coverage_NAME}/index.html

@@ -112,14 +112,19 @@ TEST(parser_test, test_custom_type)
 
     auto results0 = parser.parse(argument_table("appname", {}));
     ASSERT_EQ(std::size_t(0), results0.get_count("--format"));
-    auto format0 = results0.get_first_value_as<format_code, format_code_converter>("--format", format_code::UNKNOWN);
-    ASSERT_EQ(format_code::UNKNOWN, format0);
+    ASSERT_THROW(results0.get_first_value("--format"), std::logic_error);
+    ASSERT_EQ("aaa", (results0.get_first_value("--format", "aaa")));
+    ASSERT_THROW((results0.get_first_value_as<format_code, format_code_converter>("--format")), std::logic_error);
+    ASSERT_EQ(format_code::UNKNOWN,
+        (results0.get_first_value_as<format_code, format_code_converter>("--format", format_code::UNKNOWN)));
 
     auto results1 = parser.parse(argument_table("appname", { "--format=hex" }));
     ASSERT_EQ(std::size_t(1), results1.get_count("--format"));
     ASSERT_EQ(std::string("hex"), results1.get_first_value("--format"));
-    auto format1 = results1.get_first_value_as<format_code, format_code_converter>("--format");
-    ASSERT_EQ(format_code::HEX, format1);
+    ASSERT_EQ(std::string("hex"), results1.get_first_value("--format", "dec"));
+    ASSERT_EQ(format_code::HEX, (results1.get_first_value_as<format_code, format_code_converter>("--format")));
+    ASSERT_EQ(format_code::HEX,
+        (results1.get_first_value_as<format_code, format_code_converter>("--format", format_code::DEC)));
 
     auto results2 = parser.parse(argument_table("appname", { "--format=dec" }));
     ASSERT_EQ(std::size_t(1), results2.get_count("--format"));

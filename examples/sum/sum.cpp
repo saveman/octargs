@@ -93,7 +93,7 @@ class sum_app
         using base_type = oct::args::custom_dictionary<parser_type::char_type>;
 
         dictionary(const locale_map_type& locale)
-            : base_type(base_type::WITH_DEFAULTS)
+            : base_type(base_type::init_mode::WITH_DEFAULTS)
         {
             if (locale.count(locale_key::SWITCH_ENABLED_LITERAL))
             {

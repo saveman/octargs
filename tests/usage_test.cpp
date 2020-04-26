@@ -241,7 +241,7 @@ TEST(parser_usage_test, test_group)
     auto group2 = parser.add_group("Group 2");
     group2.set_description("This is a group with single line description");
     group2.add_valued({ "--other" }).set_value_name("value").set_description("other value");
-    group2.add_positional("VALUES").set_max_count(2).set_description("Some values");
+    group2.add_positional("VALUES").set_max_count(2).set_description("Some values").set_value_name("VALS");
     auto group3 = parser.add_group("Group 3");
     group3.set_description("This is a group\nwith multiline description.\nSo it is split.");
     group3.add_valued({ "--another" }).set_value_name("value").set_description("another value");
@@ -251,7 +251,7 @@ TEST(parser_usage_test, test_group)
     out_ostream << parser.get_usage();
 
     const std::vector<std::string> EXPECTED_RESULT_LINES = {
-        "Usage: <OPTIONS>... <PATTERN> [VALUES]...",
+        "Usage: <OPTIONS>... <PATTERN> [VALS]...",
         "",
         "ONELINER",
         "",
@@ -277,7 +277,7 @@ TEST(parser_usage_test, test_group)
         "Group 2:",
         "  This is a group with single line description",
         "  --other=value  other value",
-        "  VALUES         Some values",
+        "  VALS           Some values",
         "                   [max: 2]",
         "",
         "Group 3:",
@@ -285,6 +285,65 @@ TEST(parser_usage_test, test_group)
         "  with multiline description.",
         "  So it is split.",
         "  --another=value  another value",
+        "",
+        "FOOTER",
+    };
+    std::ostringstream expected_stream;
+    for (auto& line : EXPECTED_RESULT_LINES)
+    {
+        expected_stream << line << std::endl;
+    }
+
+    ASSERT_EQ(expected_stream.str(), out_ostream.str());
+}
+
+TEST(parser_usage_test, test_custom_dictionary)
+{
+    using dictionary_type = custom_dictionary<char>;
+
+    auto dictionary = std::make_shared<dictionary_type>(dictionary_type::init_mode::WITH_DEFAULTS);
+    dictionary->set_usage_literal(dictionary_type::usage_literal::LEAD, "Użycie");
+    dictionary->set_usage_literal(dictionary_type::usage_literal::DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME, "Wartości");
+    dictionary->set_usage_literal(dictionary_type::usage_literal::DEFAULT_NAMED_ARGUMENTS_GROUP_NAME, "Opcje");
+    dictionary->set_usage_literal(dictionary_type::usage_literal::DECORATOR_MAX_COUNT_UNLIMITED, "nielimitowany");
+
+    parser parser(dictionary);
+    parser.set_usage_oneliner("ONELINER");
+    parser.set_usage_header("HEADER");
+    parser.set_usage_footer("FOOTER");
+    parser.add_switch({ "-n" }).set_description("the n!");
+    parser.add_valued({ "-p" })
+        .set_description("the p!")
+        .set_min_count(1)
+        .set_max_count(3)
+        .set_default_values({ "a", "b" })
+        .set_allowed_values({ "a", "b", "c", "de", "ef" });
+    parser.add_positional("PATTERN").set_description("Pattern to find").set_min_count(1);
+    parser.add_positional("FILES").set_description("Files to process").set_max_count_unlimited();
+
+    std::ostringstream out_ostream;
+
+    out_ostream << parser.get_usage();
+
+    const std::vector<std::string> EXPECTED_RESULT_LINES = {
+        "Użycie: <OPTIONS>... <PATTERN> [FILES]...",
+        "",
+        "ONELINER",
+        "",
+        "HEADER",
+        "",
+        "Opcje:",
+        "  -n  the n!",
+        "  -p  the p!",
+        "        [max: 3]",
+        "        [default: a, b]",
+        "        [allowed: a, b, c, de, ef]",
+        "",
+        "Wartości:",
+        "  PATTERN  Pattern to find",
+        "             [required]",
+        "  FILES    Files to process",
+        "             [nielimitowany]",
         "",
         "FOOTER",
     };

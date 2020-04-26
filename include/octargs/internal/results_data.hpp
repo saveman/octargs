@@ -117,13 +117,13 @@ public:
         m_names_repository.emplace(name, tag);
     }
 
-private:
     static const string_vector_type& get_empty_values()
     {
         static const string_vector_type EMPTY_VALUES;
         return EMPTY_VALUES;
     }
 
+private:
     string_type m_app_name;
     std::map<string_type, const_argument_tag_ptr_type> m_names_repository;
     std::map<const_argument_tag_ptr_type, string_vector_type> m_argument_values;

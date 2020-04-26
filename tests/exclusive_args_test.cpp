@@ -58,6 +58,23 @@ TEST(exclusive_args_test, test_one_given)
     ASSERT_EQ(std::size_t(0), results.get_count("files"));
 }
 
+TEST(exclusive_args_test, test_set_type)
+{
+    argument_table args("appname", { "--version" });
+
+    parser parser;
+    parser.add_exclusive({ "--help" });
+    parser.add_exclusive({ "--version" }).set_type<bool>();
+    parser.add_switch({ "--verbose" });
+    parser.add_positional("files").set_max_count_unlimited();
+
+    auto results = parser.parse(args);
+    ASSERT_EQ(std::size_t(0), results.get_count("--help"));
+    ASSERT_EQ(std::size_t(1), results.get_count("--version"));
+    ASSERT_EQ(std::size_t(0), results.get_count("--verbose"));
+    ASSERT_EQ(std::size_t(0), results.get_count("files"));
+}
+
 TEST(exclusive_args_test, test_two_given)
 {
     argument_table args("appname", { "--version", "--help" });
@@ -123,8 +140,6 @@ TEST(exclusive_args_test, test_subparsers)
     EXPECT_THROW(parser.parse(argument_table("appname", { "--help", "sub", "--verbose" })), parser_error);
     EXPECT_THROW(parser.parse(argument_table("appname", { "add", "--help", "--verbose" })), parser_error);
     EXPECT_THROW(parser.parse(argument_table("appname", { "sub", "--help", "--verbose" })), parser_error);
-
-    // TODO
 }
 
 } // namespace args

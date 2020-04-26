@@ -29,6 +29,7 @@ if (ENABLE_COVERAGE AND NOT WIN32)
     #
     setup_target_for_coverage_gcovr_html(
         NAME ctest_coverage                             # New target name
+        SORT_PERCENTAGE
         EXECUTABLE ctest -j ${PROCESSOR_COUNT}          # Executable in PROJECT_BINARY_DIR
         # DEPENDENCIES ${PROJECT_NAME}::${PROJECT_NAME} # Dependencies to build first
         # BASE_DIRECTORY "./"                           # Base directory for report
