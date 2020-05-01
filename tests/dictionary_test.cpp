@@ -75,5 +75,30 @@ TEST(dictionary_test, test_no_defaults)
     ASSERT_THROW(dict->get_usage_literal(dictionary_type::usage_literal::DECORATOR_REQUIRED), invalid_dictionary_key);
 }
 
+TEST(dictionary_test, test_subparser_dictionary)
+{
+    using dictionary_type = custom_dictionary<char>;
+
+    auto dict = std::make_shared<dictionary_type>(dictionary_type::init_mode::WITH_DEFAULTS);
+
+    dict->set_switch_enabled_literal("tak");
+    dict->add_true_literal("tak");
+
+    parser parser(dict);
+    parser.add_switch({ "--bool" });
+
+    auto subparsers = parser.add_subparsers("command");
+    auto cmd1_parser = subparsers.add_parser("cmd1");
+    cmd1_parser.add_switch({ "--switch" });
+
+    auto results = parser.parse(argument_table("app", { "--bool", "cmd1", "--switch" }));
+
+    ASSERT_EQ(std::string("tak"), results.get_first_value("--bool"));
+    ASSERT_EQ(true, results.get_first_value_as<bool>("--bool"));
+    ASSERT_EQ(std::string("cmd1"), results.get_first_value("command"));
+    ASSERT_EQ(std::string("tak"), results.get_first_value("cmd1 --switch"));
+    ASSERT_EQ(true, results.get_first_value_as<bool>("cmd1 --switch"));
+}
+
 } // namespace args
 } // namespace oct

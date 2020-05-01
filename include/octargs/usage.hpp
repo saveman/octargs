@@ -332,16 +332,16 @@ private:
             std::size_t longest_name_len = 0;
             for (auto& iter : m_data_ptr->m_argument_repository->m_subparsers_argument->get_parsers())
             {
-                longest_name_len = std::max(longest_name_len, iter.first.size());
+                longest_name_len = std::max(longest_name_len, iter.first.get().size());
             }
 
             for (auto& iter : m_data_ptr->m_argument_repository->m_subparsers_argument->get_parsers())
             {
                 auto subusage = iter.second.get_usage();
 
-                auto this_name_len = iter.first.size();
+                auto this_name_len = iter.first.get().size();
 
-                os << "  " << iter.first << string_type(longest_name_len - this_name_len, ' ') << "  "
+                os << "  " << iter.first.get() << string_type(longest_name_len - this_name_len, ' ') << "  "
                    << subusage.m_data_ptr->m_usage_oneliner << std::endl;
             }
         }
@@ -499,7 +499,7 @@ private:
         }
         else
         {
-            if (get_dictionary().is_short_name(name))
+            if (is_short_name(name))
             {
                 info.m_short_names.emplace_back(name);
             }
@@ -544,7 +544,12 @@ private:
         }
     }
 
-    static void add_short_names(arg_info_vector& infos)
+    string_type get_value_separator() const
+    {
+        return m_data_ptr->m_dictionary->get_value_separator_literal();
+    }
+
+    void add_short_names(arg_info_vector& infos) const
     {
         for (auto& info : infos)
         {
@@ -559,7 +564,7 @@ private:
             }
             if (info.m_long_names.empty() && !info.m_value_name.empty())
             {
-                info.m_text += '=';
+                info.m_text += get_value_separator();
                 info.m_text += info.m_value_name;
             }
         }
@@ -593,7 +598,7 @@ private:
         }
     }
 
-    static void add_long_names(arg_info_vector& infos)
+    void add_long_names(arg_info_vector& infos) const
     {
         for (auto& info : infos)
         {
@@ -608,7 +613,7 @@ private:
             }
             if (!info.m_long_names.empty() && !info.m_value_name.empty())
             {
-                info.m_text += '=';
+                info.m_text += get_value_separator();
                 info.m_text += info.m_value_name;
             }
         }
@@ -681,6 +686,32 @@ private:
         add_layout_chars(infos, false);
         add_indent(infos, m_description_indent);
         add_description(infos);
+    }
+
+    bool is_short_name(const string_type& name) const
+    {
+        auto& long_name_prefix = m_data_ptr->m_dictionary->get_long_name_prefix();
+        if (!long_name_prefix.empty())
+        {
+            if (name.find(long_name_prefix) == 0)
+            {
+                // match found with long prefix
+                return false;
+            }
+        }
+
+        auto& short_name_prefix = m_data_ptr->m_dictionary->get_short_name_prefix();
+        if (!short_name_prefix.empty())
+        {
+            if (name.find(short_name_prefix) == 0)
+            {
+                // match found with short prefix
+                return true;
+            }
+        }
+
+        // no match, so assume it is long name
+        return false;
     }
 
     const const_parser_data_ptr_type m_data_ptr;

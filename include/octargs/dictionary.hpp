@@ -60,21 +60,10 @@ public:
     virtual const string_type& get_value_separator_literal() const = 0;
     virtual const string_type& get_subparser_separator_literal() const = 0;
 
-    virtual bool is_short_name(const string_type& name) const = 0;
+    virtual const string_type& get_short_name_prefix() const = 0;
+    virtual const string_type& get_long_name_prefix() const = 0;
+
     virtual const string_type& get_usage_literal(usage_literal key) const = 0;
-
-protected:
-    static bool is_short_name(const string_type& name, char_type prefix_char)
-    {
-        auto len = name.size();
-        auto first_not_dash = name.find_first_not_of(prefix_char);
-        if (first_not_dash != string_type::npos)
-        {
-            len -= first_not_dash;
-        }
-
-        return (len <= 1);
-    }
 };
 
 /// \brief Parser literals dictionary
@@ -93,8 +82,6 @@ template <>
 class default_dictionary<char> : public dictionary<char>
 {
 public:
-    static constexpr char_type DEFAULT_NAME_PREFIX = '-';
-
     using base_type = dictionary<char>;
 
     // cppcheck-suppress functionStatic
@@ -141,9 +128,17 @@ public:
     }
 
     // cppcheck-suppress functionStatic
-    bool is_short_name(const string_type& name) const override
+    const string_type& get_short_name_prefix() const override
     {
-        return base_type::is_short_name(name, DEFAULT_NAME_PREFIX);
+        static const string_type SEPARATOR("-");
+        return SEPARATOR;
+    }
+
+    // cppcheck-suppress functionStatic
+    const string_type& get_long_name_prefix() const override
+    {
+        static const string_type SEPARATOR("--");
+        return SEPARATOR;
     }
 
     // cppcheck-suppress functionStatic
@@ -187,8 +182,6 @@ template <>
 class default_dictionary<wchar_t> : public dictionary<wchar_t>
 {
 public:
-    static constexpr char_type DEFAULT_NAME_PREFIX = L'-';
-
     using base_type = dictionary<wchar_t>;
 
     // cppcheck-suppress functionStatic
@@ -235,9 +228,17 @@ public:
     }
 
     // cppcheck-suppress functionStatic
-    bool is_short_name(const string_type& name) const override
+    const string_type& get_short_name_prefix() const override
     {
-        return base_type::is_short_name(name, DEFAULT_NAME_PREFIX);
+        static const string_type SEPARATOR(L"-");
+        return SEPARATOR;
+    }
+
+    // cppcheck-suppress functionStatic
+    const string_type& get_long_name_prefix() const override
+    {
+        static const string_type SEPARATOR(L"--");
+        return SEPARATOR;
     }
 
     // cppcheck-suppress functionStatic
@@ -293,7 +294,6 @@ public:
     using usage_literal = typename base_type::usage_literal;
 
     explicit custom_dictionary(init_mode init_mode)
-        : m_name_prefix(0)
     {
         if (init_mode == init_mode::WITH_DEFAULTS)
         {
@@ -301,13 +301,14 @@ public:
 
             default_dict_type default_dict;
 
-            m_name_prefix = default_dict_type::DEFAULT_NAME_PREFIX;
             m_switch_enabled_literal = default_dict.get_switch_enabled_literal();
             m_true_literals = default_dict.get_true_literals();
             m_false_literals = default_dict.get_false_literals();
             m_value_separator_literal = default_dict.get_value_separator_literal();
             m_subparser_separator_literal = default_dict.get_subparser_separator_literal();
             m_usage_literals = default_dict.get_usage_literals_map();
+            m_short_name_prefix = default_dict.get_short_name_prefix();
+            m_long_name_prefix = default_dict.get_long_name_prefix();
         }
     }
 
@@ -361,13 +362,24 @@ public:
         return m_subparser_separator_literal;
     }
 
-    virtual bool is_short_name(const string_type& name) const override
+    void set_short_name_prefix(const string_type& prefix)
     {
-        if (m_name_prefix == 0)
-        {
-            return false;
-        }
-        return base_type::is_short_name(name, m_name_prefix);
+        m_short_name_prefix = prefix;
+    }
+
+    const string_type& get_short_name_prefix() const override
+    {
+        return m_short_name_prefix;
+    }
+
+    void set_long_name_prefix(const string_type& prefix)
+    {
+        m_long_name_prefix = prefix;
+    }
+
+    const string_type& get_long_name_prefix() const override
+    {
+        return m_long_name_prefix;
     }
 
     void set_usage_literal(usage_literal key, const string_type& value)
@@ -388,13 +400,14 @@ public:
 private:
     using usage_string_map = std::map<usage_literal, string_type>;
 
-    char_type m_name_prefix;
     string_type m_switch_enabled_literal;
     string_vector_type m_true_literals;
     string_vector_type m_false_literals;
     string_type m_value_separator_literal;
     string_type m_subparser_separator_literal;
     usage_string_map m_usage_literals;
+    string_type m_short_name_prefix;
+    string_type m_long_name_prefix;
 };
 
 } // namespace args

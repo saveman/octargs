@@ -6,6 +6,7 @@
 
 #include "../exception.hpp"
 #include "argument_base_impl.hpp"
+#include "name.hpp"
 
 namespace oct
 {
@@ -34,9 +35,17 @@ public:
     using string_vector_type = std::vector<string_type>;
 
     using parser_type = basic_parser<char_type, values_storage_type>;
+    using const_dictionary_ptr_type = typename parser_type::const_dictionary_ptr_type;
 
-    explicit basic_subparser_argument_impl(const string_vector_type& names)
+    using name_type = name<char_type>;
+    using name_less_type = name_less<char_type>;
+
+    using parsers_map_type = std::map<name_type, parser_type, name_less_type>;
+
+    explicit basic_subparser_argument_impl(
+        const const_dictionary_ptr_type& dictionary_ptr, const string_vector_type& names)
         : base_type(0, names)
+        , m_dictionary_ptr(dictionary_ptr)
     {
         base_type::set_min_count(1);
     }
@@ -48,7 +57,7 @@ public:
             throw invalid_parser_name_ex<char_type>("Duplicated parser name", name);
         }
 
-        auto result = m_subparsers.emplace(name, parser_type());
+        auto result = m_subparsers.emplace(name, parser_type(m_dictionary_ptr));
         if (!result.second)
         {
             throw std::runtime_error("Cannot emplace new parser");
@@ -72,13 +81,14 @@ public:
         return iter->second;
     }
 
-    const std::map<string_type, parser_type>& get_parsers() const
+    const parsers_map_type& get_parsers() const
     {
         return m_subparsers;
     }
 
 private:
-    std::map<string_type, parser_type> m_subparsers;
+    const_dictionary_ptr_type m_dictionary_ptr;
+    parsers_map_type m_subparsers;
 };
 
 } // namespace internal

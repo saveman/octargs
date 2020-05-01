@@ -1,4 +1,4 @@
-CURRENT_DIR:=$(PWD)
+ CURRENT_DIR:=$(PWD)
 
 SOURCE_DIR:=$(CURRENT_DIR)
 SOURCE_EXAMPLES_DIR:=$(SOURCE_DIR)/examples
@@ -130,13 +130,32 @@ run_examples_head:
 	@(cd $(EXEDIR) && ./$(EXENAME) -n=5 -h $(SOURCE_DIR)/LICENSE $(SOURCE_DIR)/README.md - - < $(SOURCE_DIR)/LICENSE)
 	@echo "----------------------------"
 	@echo "----------------------------"
-	@echo "HEAD  HELP"
+	@echo "HEAD HELP"
 	@echo "----------------------------"
 	@(cd $(EXEDIR) && ./$(EXENAME) --help)
 	@echo "----------------------------"
 
 examples_head: install
 	$(MAKE) run_examples_head EXEDIR=$(INSTALL_DIR)/bin EXENAME=octargs_head
+
+run_examples_win_head:
+	@echo "----------------------------"
+	@echo "WIN HEAD TEST 1"
+	@echo "----------------------------"
+	head -n 5 -v $(SOURCE_DIR)/LICENSE $(SOURCE_DIR)/README.md - - < $(SOURCE_DIR)/LICENSE
+	@echo "----------------------------"
+	(cd $(EXEDIR) && ./$(EXENAME) /N:5 /H $(SOURCE_DIR)/LICENSE $(SOURCE_DIR)/README.md - - < $(SOURCE_DIR)/LICENSE)
+	@echo "----------------------------"
+	(cd $(EXEDIR) && ./$(EXENAME) /N:5 /H $(SOURCE_DIR)/LICENSE $(SOURCE_DIR)/README.md - - < $(SOURCE_DIR)/LICENSE)
+	@echo "----------------------------"
+	@echo "----------------------------"
+	@echo "WIN HEAD HELP"
+	@echo "----------------------------"
+	(cd $(EXEDIR) && ./$(EXENAME) /?)
+	@echo "----------------------------"
+
+examples_win_head: install
+	$(MAKE) run_examples_win_head EXEDIR=$(INSTALL_DIR)/bin EXENAME=octargs_win_head
 
 run_examples_calc:
 	@echo "----------------------------"

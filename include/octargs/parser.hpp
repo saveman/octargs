@@ -24,6 +24,7 @@ namespace args
 
 /// \brief Arguments parser
 ///
+/// \tparam derived_T           derived (parser) type
 /// \tparam char_T              char type (as in std::basic_string)
 /// \tparam values_storage_T    type of class uses as a storage for parsed values
 template <typename derived_T, typename char_T, typename values_storage_T>
@@ -133,16 +134,13 @@ protected:
 
         argument_table_iterator exclusive_input_iterator(arg_table);
 
-        if (parse_exclusive_recursively(results_data_ptr, storage_helper, exclusive_input_iterator))
-        {
-            return results_type(m_data_ptr->m_dictionary, results_data_ptr);
-        }
-        else
+        if (!parse_exclusive_recursively(results_data_ptr, storage_helper, exclusive_input_iterator))
         {
             argument_table_iterator regular_input_iterator(arg_table);
 
-            return parse_regular(results_data_ptr, storage_helper, regular_input_iterator);
+            parse_regular(results_data_ptr, storage_helper, regular_input_iterator);
         }
+        return results_type(m_data_ptr->m_dictionary, results_data_ptr);
     }
 
 private:
@@ -158,7 +156,7 @@ private:
     {
         for (auto& iter : m_data_ptr->m_argument_repository->m_names_repository)
         {
-            results_data_ptr->add_name(prefix + iter.first, iter.second);
+            results_data_ptr->add_name(prefix + iter.first.get(), iter.second);
         }
 
         if (!m_data_ptr->m_argument_repository->m_subparsers_argument)
@@ -169,7 +167,7 @@ private:
         for (auto& subparser_item : m_data_ptr->m_argument_repository->m_subparsers_argument->get_parsers())
         {
             auto new_prefix
-                = prefix + subparser_item.first + m_data_ptr->m_dictionary->get_subparser_separator_literal();
+                = prefix + subparser_item.first.get() + m_data_ptr->m_dictionary->get_subparser_separator_literal();
 
             subparser_item.second.fill_results_data_names(new_prefix, results_data_ptr);
         }
@@ -247,7 +245,7 @@ private:
         }
     }
 
-    results_type parse_regular(const results_data_ptr_type& results_data_ptr, storage_helper_type& storage_helper,
+    void parse_regular(const results_data_ptr_type& results_data_ptr, storage_helper_type& storage_helper,
         argument_table_iterator& input_iterator) const
     {
         parse_named_arguments(storage_helper, results_data_ptr, input_iterator);
@@ -257,7 +255,7 @@ private:
             parse_default_values(results_data_ptr, storage_helper);
             check_values_count(results_data_ptr);
 
-            return parse_subparsers_argument(storage_helper, results_data_ptr, input_iterator);
+            parse_subparsers_argument(storage_helper, results_data_ptr, input_iterator);
         }
         else
         {
@@ -271,8 +269,6 @@ private:
 
             parse_default_values(results_data_ptr, storage_helper);
             check_values_count(results_data_ptr);
-
-            return results_type(m_data_ptr->m_dictionary, results_data_ptr);
         }
     }
 
@@ -447,8 +443,8 @@ private:
         }
     }
 
-    results_type parse_subparsers_argument(storage_helper_type& storage_helper,
-        const results_data_ptr_type& results_data_ptr, argument_table_iterator& input_iterator) const
+    void parse_subparsers_argument(storage_helper_type& storage_helper, const results_data_ptr_type& results_data_ptr,
+        argument_table_iterator& input_iterator) const
     {
         auto& name = m_data_ptr->m_argument_repository->m_subparsers_argument->get_first_name();
 
@@ -468,7 +464,7 @@ private:
 
         parse_argument_value(results_data_ptr, storage_helper, argument, argument->get_first_name(), value_str);
 
-        return subparser.parse_regular(results_data_ptr, storage_helper, input_iterator);
+        subparser.parse_regular(results_data_ptr, storage_helper, input_iterator);
     }
 
     void parse_positional_arguments(storage_helper_type& storage_helper, const results_data_ptr_type& results_data_ptr,
@@ -563,7 +559,6 @@ private:
 /// \brief Arguments parser
 ///
 /// \tparam char_T              char type (as in std::basic_string)
-/// \tparam values_storage_T    type of class uses as a storage for parsed values
 template <typename char_T>
 class basic_parser<char_T, void> : public basic_parser_base<basic_parser<char_T, void>, char_T, void>
 {

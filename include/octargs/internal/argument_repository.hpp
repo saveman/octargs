@@ -9,6 +9,7 @@
 
 #include "argument.hpp"
 #include "exclusive_argument_impl.hpp"
+#include "name.hpp"
 #include "positional_argument_impl.hpp"
 #include "subparser_argument_impl.hpp"
 #include "switch_argument_impl.hpp"
@@ -36,6 +37,9 @@ public:
 
     using argument_type = basic_argument<char_type, values_storage_type>;
     using const_argument_ptr_type = std::shared_ptr<const argument_type>;
+
+    using name_type = name<char_type>;
+    using name_less_type = name_less<char_type>;
 
     using exclusive_argument_type = basic_exclusive_argument_impl<char_type, values_storage_type>;
     using exclusive_argument_ptr_type = std::shared_ptr<exclusive_argument_type>;
@@ -126,7 +130,7 @@ public:
             throw subparser_positional_conflict("positional arguments already registered");
         }
 
-        auto new_argument = std::make_shared<subparser_argument_type>(names);
+        auto new_argument = std::make_shared<subparser_argument_type>(m_dictionary, names);
 
         add_to_names_repository(new_argument);
         m_subparsers_argument = new_argument;
@@ -238,7 +242,7 @@ public:
     const_dictionary_ptr_type m_dictionary;
     std::vector<const_argument_ptr_type> m_arguments;
     const_subparser_argument_ptr_type m_subparsers_argument;
-    std::map<string_type, const_argument_ptr_type> m_names_repository;
+    std::map<name_type, const_argument_ptr_type, name_less_type> m_names_repository;
 };
 
 } // namespace internal
