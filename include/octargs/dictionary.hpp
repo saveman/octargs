@@ -53,6 +53,8 @@ public:
 
     virtual ~dictionary() = default;
 
+    virtual bool is_case_sensitive() const = 0;
+
     virtual const string_type& get_switch_enabled_literal() const = 0;
     virtual const string_vector_type& get_true_literals() const = 0;
     virtual const string_vector_type& get_false_literals() const = 0;
@@ -83,6 +85,12 @@ class default_dictionary<char> : public dictionary<char>
 {
 public:
     using base_type = dictionary<char>;
+
+    // cppcheck-suppress functionStatic
+    bool is_case_sensitive() const override
+    {
+        return true;
+    }
 
     // cppcheck-suppress functionStatic
     const string_type& get_switch_enabled_literal() const override
@@ -183,6 +191,12 @@ class default_dictionary<wchar_t> : public dictionary<wchar_t>
 {
 public:
     using base_type = dictionary<wchar_t>;
+
+    // cppcheck-suppress functionStatic
+    bool is_case_sensitive() const override
+    {
+        return true;
+    }
 
     // cppcheck-suppress functionStatic
     const string_type& get_switch_enabled_literal() const override
@@ -294,6 +308,7 @@ public:
     using usage_literal = typename base_type::usage_literal;
 
     explicit custom_dictionary(init_mode init_mode)
+        : m_case_sensitive(true)
     {
         if (init_mode == init_mode::WITH_DEFAULTS)
         {
@@ -301,6 +316,7 @@ public:
 
             default_dict_type default_dict;
 
+            m_case_sensitive = default_dict.is_case_sensitive();
             m_switch_enabled_literal = default_dict.get_switch_enabled_literal();
             m_true_literals = default_dict.get_true_literals();
             m_false_literals = default_dict.get_false_literals();
@@ -310,6 +326,16 @@ public:
             m_short_name_prefix = default_dict.get_short_name_prefix();
             m_long_name_prefix = default_dict.get_long_name_prefix();
         }
+    }
+
+    void set_case_sensitive(bool case_sensitive)
+    {
+        m_case_sensitive = case_sensitive;
+    }
+
+    bool is_case_sensitive() const override
+    {
+        return m_case_sensitive;
     }
 
     void set_switch_enabled_literal(const string_type& literal)
@@ -400,6 +426,7 @@ public:
 private:
     using usage_string_map = std::map<usage_literal, string_type>;
 
+    bool m_case_sensitive;
     string_type m_switch_enabled_literal;
     string_vector_type m_true_literals;
     string_vector_type m_false_literals;

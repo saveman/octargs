@@ -10,6 +10,10 @@ namespace args
 namespace internal
 {
 
+// forward
+template <typename char_T, typename values_storage_T>
+class basic_parser_data;
+
 template <typename derived_T, typename char_T, typename values_storage_T>
 class basic_argument_base_impl : public basic_argument<char_T, values_storage_T>
 {
@@ -25,6 +29,10 @@ public:
 
     using handler_type = basic_argument_handler<char_type, values_storage_type>;
     using const_handler_ptr_type = std::shared_ptr<const handler_type>;
+
+    using parser_data_type = basic_parser_data<char_type, values_storage_type>;
+    using parser_data_ptr_type = std::shared_ptr<parser_data_type>;
+    using parser_data_weak_ptr_type = std::weak_ptr<parser_data_type>;
 
     const string_type& get_first_name() const final
     {
@@ -106,6 +114,16 @@ public:
         m_handler_ptr = handler_ptr;
     }
 
+    parser_data_ptr_type get_parser_data() const
+    {
+        auto ptr = m_parser_data_ptr.lock();
+        if (!ptr)
+        {
+            throw std::logic_error("Argument referencing already freed parser");
+        }
+        return ptr;
+    }
+
 protected:
     enum flags : std::uint32_t
     {
@@ -115,8 +133,12 @@ protected:
         FLAG_IS_ACCEPTING_SEPARATE_VALUE = (1 << 3),
     };
 
-    explicit basic_argument_base_impl(std::uint32_t flags, const string_vector_type& names)
+    static const std::uint32_t ZERO_FLAGS = 0;
+
+    explicit basic_argument_base_impl(
+        parser_data_weak_ptr_type parser_data_ptr, std::uint32_t flags, const string_vector_type& names)
         : base_type()
+        , m_parser_data_ptr(parser_data_ptr)
         , m_flags(flags)
         , m_names(names)
         , m_description()
@@ -160,6 +182,8 @@ protected:
     }
 
 private:
+    /// (Weak) Pointer to owning parser data.
+    parser_data_weak_ptr_type m_parser_data_ptr;
     /// Flags
     std::uint32_t m_flags;
     /// Names.

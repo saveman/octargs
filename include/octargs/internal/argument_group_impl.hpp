@@ -22,6 +22,9 @@ namespace internal
 {
 
 template <typename char_T, typename values_storage_T>
+class basic_parser_data;
+
+template <typename char_T, typename values_storage_T>
 class basic_argument_group_impl
 {
 public:
@@ -42,16 +45,17 @@ public:
     using argument_repository_type = basic_argument_repository<char_type, values_storage_type>;
     using argument_repository_ptr_type = std::shared_ptr<argument_repository_type>;
 
-    basic_argument_group_impl(argument_repository_ptr_type argument_repository, const string_type& name)
-        : m_argument_repository(argument_repository)
+    using parser_data_type = basic_parser_data<char_type, values_storage_type>;
+    using parser_data_ptr_type = std::shared_ptr<parser_data_type>;
+    using parser_data_weak_ptr_type = std::weak_ptr<parser_data_type>;
+
+    basic_argument_group_impl(parser_data_weak_ptr_type parser_data_ptr, const string_type& name)
+        : m_parser_data_ptr(parser_data_ptr)
         , m_name(name)
         , m_description()
         , m_arguments()
     {
-        if (!m_argument_repository)
-        {
-            throw std::invalid_argument("argument_repository");
-        }
+        // noop
     }
 
     const string_type& get_name() const
@@ -72,28 +76,28 @@ public:
 
     exclusive_argument_type add_exclusive(const string_vector_type& names)
     {
-        auto argument_ptr = m_argument_repository->add_exclusive(names);
+        auto argument_ptr = get_parser_data()->add_exclusive(names);
         m_arguments.emplace_back(argument_ptr);
         return exclusive_argument_type(argument_ptr);
     }
 
     switch_argument_type add_switch(const string_vector_type& names)
     {
-        auto argument_ptr = m_argument_repository->add_switch(names);
+        auto argument_ptr = get_parser_data()->add_switch(names);
         m_arguments.emplace_back(argument_ptr);
         return switch_argument_type(argument_ptr);
     }
 
     valued_argument_type add_valued(const string_vector_type& names)
     {
-        auto argument_ptr = m_argument_repository->add_valued(names);
+        auto argument_ptr = get_parser_data()->add_valued(names);
         m_arguments.emplace_back(argument_ptr);
         return valued_argument_type(argument_ptr);
     }
 
     positional_argument_type add_positional(const string_type& name)
     {
-        auto argument_ptr = m_argument_repository->add_positional(name);
+        auto argument_ptr = get_parser_data()->add_positional(name);
         m_arguments.emplace_back(argument_ptr);
         return positional_argument_type(argument_ptr);
     }
@@ -104,7 +108,17 @@ public:
     }
 
 private:
-    argument_repository_ptr_type m_argument_repository;
+    parser_data_ptr_type get_parser_data() const
+    {
+        auto ptr = m_parser_data_ptr.lock();
+        if (!ptr)
+        {
+            throw std::logic_error("Argument group referencing already freed parser");
+        }
+        return ptr;
+    }
+
+    parser_data_weak_ptr_type m_parser_data_ptr;
     string_type m_name;
     string_type m_description;
     std::vector<const_argument_ptr_type> m_arguments;

@@ -24,8 +24,11 @@ public:
     using string_type = std::basic_string<char_type>;
     using string_vector_type = std::vector<string_type>;
 
-    explicit basic_valued_argument_impl(const string_vector_type& names)
-        : base_type(base_type::FLAG_IS_ASSIGNABLE_BY_NAME | base_type::FLAG_IS_ACCEPTING_IMMEDIATE_VALUE
+    using parser_data_weak_ptr_type = typename base_type::parser_data_weak_ptr_type;
+
+    explicit basic_valued_argument_impl(parser_data_weak_ptr_type parser_data_ptr, const string_vector_type& names)
+        : base_type(parser_data_ptr,
+            base_type::FLAG_IS_ASSIGNABLE_BY_NAME | base_type::FLAG_IS_ACCEPTING_IMMEDIATE_VALUE
                 | base_type::FLAG_IS_ACCEPTING_SEPARATE_VALUE,
             names)
     {

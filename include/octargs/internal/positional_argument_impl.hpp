@@ -26,8 +26,10 @@ public:
     using string_type = std::basic_string<char_type>;
     using string_vector_type = std::vector<string_type>;
 
-    explicit basic_positional_argument_impl(const string_vector_type& names)
-        : base_type(0, names)
+    using parser_data_weak_ptr_type = typename base_type::parser_data_weak_ptr_type;
+
+    explicit basic_positional_argument_impl(parser_data_weak_ptr_type parser_data_ptr, const string_vector_type& names)
+        : base_type(parser_data_ptr, base_type::ZERO_FLAGS, names)
     {
         // noop
     }

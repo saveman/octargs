@@ -117,7 +117,7 @@ public:
     using char_type = char_T;
     using string_type = std::basic_string<char_type>;
 
-    string_less(bool case_sensitive = true)
+    string_less(bool case_sensitive)
         : m_case_sensitive(case_sensitive)
     {
         // noop
@@ -131,8 +131,71 @@ public:
         }
         else
         {
-            // TODO
-            return str1 < str2;
+            std::size_t len1 = str1.size();
+            std::size_t len2 = str2.size();
+            for (std::size_t i = 0; (i < len1) && (i < len2); ++i)
+            {
+                if (to_lower(str1[i]) < to_lower(str2[i]))
+                {
+                    return true;
+                }
+                if (to_lower(str1[i]) > to_lower(str2[i]))
+                {
+                    return false;
+                }
+            }
+            if (len1 < len2)
+            {
+                return true;
+            }
+            if (len1 > len2)
+            {
+                return false;
+            }
+            return false;
+        }
+    }
+
+private:
+    bool m_case_sensitive;
+};
+
+template <typename char_T>
+class string_equal
+{
+public:
+    using char_type = char_T;
+    using string_type = std::basic_string<char_type>;
+
+    string_equal(bool case_sensitive)
+        : m_case_sensitive(case_sensitive)
+    {
+        // noop
+    }
+
+    bool operator()(const string_type& str1, const string_type& str2) const
+    {
+        if (m_case_sensitive)
+        {
+            return str1 == str2;
+        }
+        else
+        {
+            std::size_t len1 = str1.size();
+            std::size_t len2 = str2.size();
+            if (len1 != len2)
+            {
+                return false;
+            }
+
+            for (std::size_t i = 0; i < len1; ++i)
+            {
+                if (to_lower(str1[i]) != to_lower(str2[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 

@@ -21,6 +21,16 @@ inline bool is_space(wchar_t c)
     return std::iswspace(static_cast<wint_t>(c));
 }
 
+inline char to_lower(char c)
+{
+    return std::tolower(static_cast<unsigned char>(c));
+}
+
+inline wchar_t to_lower(wchar_t c)
+{
+    return std::towlower(c);
+}
+
 } // namespace internal
 } // namespace args
 } // namespace oct

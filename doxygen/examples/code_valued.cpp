@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
         default_lines = results.get_first_value("--lines");
     }
 
-    // TODO
+    // TODO application logic
 
     return 0;
 }

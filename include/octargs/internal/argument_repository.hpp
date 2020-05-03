@@ -9,8 +9,9 @@
 
 #include "argument.hpp"
 #include "exclusive_argument_impl.hpp"
-#include "name.hpp"
+#include "name_checker.hpp"
 #include "positional_argument_impl.hpp"
+#include "string_utils.hpp"
 #include "subparser_argument_impl.hpp"
 #include "switch_argument_impl.hpp"
 #include "valued_argument_impl.hpp"
@@ -21,6 +22,9 @@ namespace args
 {
 namespace internal
 {
+
+template <typename char_T, typename values_storage_T>
+class basic_parser_data;
 
 template <typename char_T, typename values_storage_T>
 class basic_argument_repository
@@ -34,12 +38,10 @@ public:
 
     using string_type = std::basic_string<char_type>;
     using string_vector_type = std::vector<string_type>;
+    using string_less_type = string_less<char_type>;
 
     using argument_type = basic_argument<char_type, values_storage_type>;
     using const_argument_ptr_type = std::shared_ptr<const argument_type>;
-
-    using name_type = name<char_type>;
-    using name_less_type = name_less<char_type>;
 
     using exclusive_argument_type = basic_exclusive_argument_impl<char_type, values_storage_type>;
     using exclusive_argument_ptr_type = std::shared_ptr<exclusive_argument_type>;
@@ -53,20 +55,24 @@ public:
     using subparser_argument_ptr_type = std::shared_ptr<subparser_argument_type>;
     using const_subparser_argument_ptr_type = std::shared_ptr<const subparser_argument_type>;
 
+    using parser_data_type = basic_parser_data<char_type, values_storage_type>;
+    using parser_data_weak_ptr_type = std::weak_ptr<parser_data_type>;
+
     basic_argument_repository(const_dictionary_ptr_type dictionary)
-        : m_dictionary(dictionary)
+        : m_dictionary(check_dictionary(dictionary))
         , m_arguments()
         , m_subparsers_argument()
-        , m_names_repository()
+        , m_names_repository(string_less_type(dictionary->is_case_sensitive()))
     {
         // noop
     }
 
-    exclusive_argument_ptr_type add_exclusive(const string_vector_type& names)
+    exclusive_argument_ptr_type add_exclusive(
+        parser_data_weak_ptr_type parser_data_ptr, const string_vector_type& names)
     {
         check_names(names);
 
-        auto new_argument = std::make_shared<exclusive_argument_type>(names);
+        auto new_argument = std::make_shared<exclusive_argument_type>(parser_data_ptr, names);
 
         add_to_names_repository(new_argument);
         m_arguments.emplace_back(new_argument);
@@ -74,11 +80,11 @@ public:
         return new_argument;
     }
 
-    switch_argument_ptr_type add_switch(const string_vector_type& names)
+    switch_argument_ptr_type add_switch(parser_data_weak_ptr_type parser_data_ptr, const string_vector_type& names)
     {
         check_names(names);
 
-        auto new_argument = std::make_shared<switch_argument_type>(names);
+        auto new_argument = std::make_shared<switch_argument_type>(parser_data_ptr, names);
 
         add_to_names_repository(new_argument);
         m_arguments.emplace_back(new_argument);
@@ -86,11 +92,11 @@ public:
         return new_argument;
     }
 
-    valued_argument_ptr_type add_valued(const string_vector_type& names)
+    valued_argument_ptr_type add_valued(parser_data_weak_ptr_type parser_data_ptr, const string_vector_type& names)
     {
         check_names(names);
 
-        auto new_argument = std::make_shared<valued_argument_type>(names);
+        auto new_argument = std::make_shared<valued_argument_type>(parser_data_ptr, names);
 
         add_to_names_repository(new_argument);
         m_arguments.emplace_back(new_argument);
@@ -98,7 +104,7 @@ public:
         return new_argument;
     }
 
-    positional_argument_ptr_type add_positional(const string_type& name)
+    positional_argument_ptr_type add_positional(parser_data_weak_ptr_type parser_data_ptr, const string_type& name)
     {
         auto names = { name };
 
@@ -108,7 +114,7 @@ public:
             throw subparser_positional_conflict("subparser argument already registered");
         }
 
-        auto new_argument = std::make_shared<positional_argument_type>(names);
+        auto new_argument = std::make_shared<positional_argument_type>(parser_data_ptr, names);
 
         add_to_names_repository(new_argument);
         m_arguments.emplace_back(new_argument);
@@ -116,7 +122,7 @@ public:
         return new_argument;
     }
 
-    subparser_argument_ptr_type add_subparsers(const string_type& name)
+    subparser_argument_ptr_type add_subparsers(parser_data_weak_ptr_type parser_data_ptr, const string_type& name)
     {
         auto names = { name };
 
@@ -130,7 +136,7 @@ public:
             throw subparser_positional_conflict("positional arguments already registered");
         }
 
-        auto new_argument = std::make_shared<subparser_argument_type>(m_dictionary, names);
+        auto new_argument = std::make_shared<subparser_argument_type>(parser_data_ptr, names);
 
         add_to_names_repository(new_argument);
         m_subparsers_argument = new_argument;
@@ -139,6 +145,15 @@ public:
     }
 
 private:
+    static const const_dictionary_ptr_type& check_dictionary(const const_dictionary_ptr_type& dictionary)
+    {
+        if (!dictionary)
+        {
+            throw std::invalid_argument("dictionary");
+        }
+        return dictionary;
+    }
+
     bool has_positional_arguments() const
     {
         for (auto& argument : m_arguments)
@@ -174,75 +189,20 @@ private:
     void check_names(const string_vector_type& names)
     {
         auto name_count = names.size();
-
         if (name_count < 1)
         {
             throw invalid_argument_name_ex<char_type>("no names given", string_type());
         }
 
-        ensure_names_characters_valid(names);
-        ensure_no_duplicated_names(names);
+        name_checker<char_type>::ensure_names_valid(names, m_dictionary);
         ensure_names_not_registered(names);
-    }
-
-    void ensure_names_characters_valid(const string_vector_type& names) const
-    {
-        for (const auto& name : names)
-        {
-            ensure_name_characters_valid(name);
-        }
-    }
-
-    void ensure_name_characters_valid(const string_type& name) const
-    {
-        if (name.empty())
-        {
-            throw invalid_argument_name_ex<char_type>("argument name must not be empty", name);
-        }
-
-        for (auto c : name)
-        {
-            if (is_space(c))
-            {
-                throw invalid_argument_name_ex<char_type>("argument name must not contain whitespace characters", name);
-            }
-        }
-
-        auto& value_separator = m_dictionary->get_value_separator_literal();
-        if (name.find(value_separator) != string_type::npos)
-        {
-            throw invalid_argument_name_ex<char_type>("argument name must not contain value separator literal", name);
-        }
-
-        auto& subparser_separator = m_dictionary->get_subparser_separator_literal();
-        if (name.find(subparser_separator) != string_type::npos)
-        {
-            throw invalid_argument_name_ex<char_type>(
-                "argument name must not contain subparser separator literal", name);
-        }
-    }
-
-    static void ensure_no_duplicated_names(const string_vector_type& names)
-    {
-        auto name_count = names.size();
-
-        for (std::size_t i = 0; i < name_count; ++i)
-        {
-            for (std::size_t j = i + 1; j < name_count; ++j)
-            {
-                if (names[i] == names[j])
-                {
-                    throw invalid_argument_name_ex<char_type>("duplicated name", names[i]);
-                }
-            }
-        }
     }
 
 public:
     const_dictionary_ptr_type m_dictionary;
     std::vector<const_argument_ptr_type> m_arguments;
     const_subparser_argument_ptr_type m_subparsers_argument;
-    std::map<name_type, const_argument_ptr_type, name_less_type> m_names_repository;
+    std::map<string_type, const_argument_ptr_type, string_less_type> m_names_repository;
 };
 
 } // namespace internal

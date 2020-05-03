@@ -187,6 +187,7 @@ public:
             using dictionary_type = oct::args::custom_dictionary<parser_type::char_type>;
 
             auto dictionary = std::make_shared<dictionary_type>(dictionary_type::init_mode::WITH_DEFAULTS);
+            dictionary->set_case_sensitive(false);
             dictionary->set_short_name_prefix("");
             dictionary->set_long_name_prefix("/");
             dictionary->set_value_separator_literal(":");

@@ -116,5 +116,85 @@ TEST(string_utils_test, test_stox_uint)
     test_stox<unsigned int>();
 }
 
+TEST(string_utils_test, test_string_less_char)
+{
+    internal::string_less<char> comparator_case(true);
+
+    ASSERT_TRUE(comparator_case("aaa", "aab"));
+    ASSERT_FALSE(comparator_case("aab", "aaa"));
+    ASSERT_FALSE(comparator_case("aaa", "aaa"));
+    ASSERT_TRUE(comparator_case("aaa", "aaaa"));
+    ASSERT_FALSE(comparator_case("aaaa", "aaa"));
+
+    internal::string_less<char> comparator_nocase(false);
+
+    ASSERT_TRUE(comparator_nocase("aaa", "AaB"));
+    ASSERT_FALSE(comparator_nocase("AAB", "aaa"));
+    ASSERT_FALSE(comparator_nocase("aaa", "AaA"));
+    ASSERT_TRUE(comparator_case("AAA", "aaaa"));
+    ASSERT_FALSE(comparator_case("aaAA", "Aaa"));
+}
+
+TEST(string_utils_test, test_string_less_wchart)
+{
+    internal::string_less<wchar_t> comparator_case(true);
+
+    ASSERT_TRUE(comparator_case(L"aaa", L"aab"));
+    ASSERT_FALSE(comparator_case(L"aab", L"aaa"));
+    ASSERT_FALSE(comparator_case(L"aaa", L"aaa"));
+    ASSERT_TRUE(comparator_case(L"aaa", L"aaaa"));
+    ASSERT_FALSE(comparator_case(L"aaaa", L"aaa"));
+
+    internal::string_less<wchar_t> comparator_nocase(false);
+
+    ASSERT_TRUE(comparator_nocase(L"aaa", L"AaB"));
+    ASSERT_FALSE(comparator_nocase(L"AAB", L"aaa"));
+    ASSERT_FALSE(comparator_nocase(L"aaa", L"AaA"));
+    ASSERT_TRUE(comparator_case(L"AAA", L"aaaa"));
+    ASSERT_FALSE(comparator_case(L"aaAA", L"Aaa"));
+}
+
+TEST(string_utils_test, test_string_equal_char)
+{
+    internal::string_equal<char> comparator_case(true);
+
+    ASSERT_TRUE(comparator_case("aaa", "aaa"));
+    ASSERT_FALSE(comparator_case("aaa", "AAA"));
+    ASSERT_FALSE(comparator_case("aab", "aaa"));
+    ASSERT_FALSE(comparator_case("aaa", "aa"));
+    ASSERT_FALSE(comparator_case("aaa", "aaaa"));
+    ASSERT_FALSE(comparator_case("aaaa", "aaa"));
+
+    internal::string_equal<char> comparator_nocase(false);
+
+    ASSERT_TRUE(comparator_nocase("aaa", "aaa"));
+    ASSERT_TRUE(comparator_nocase("aaA", "AAa"));
+    ASSERT_FALSE(comparator_nocase("AAB", "aaa"));
+    ASSERT_FALSE(comparator_nocase("aaa", "Aa"));
+    ASSERT_FALSE(comparator_case("AAA", "aaaa"));
+    ASSERT_FALSE(comparator_case("aaAA", "Aaa"));
+}
+
+TEST(string_utils_test, test_string_equal_wchart)
+{
+    internal::string_equal<wchar_t> comparator_case(true);
+
+    ASSERT_TRUE(comparator_case(L"aaa", L"aaa"));
+    ASSERT_FALSE(comparator_case(L"aaa", L"AAA"));
+    ASSERT_FALSE(comparator_case(L"aab", L"aaa"));
+    ASSERT_FALSE(comparator_case(L"aaa", L"aa"));
+    ASSERT_FALSE(comparator_case(L"aaa", L"aaaa"));
+    ASSERT_FALSE(comparator_case(L"aaaa", L"aaa"));
+
+    internal::string_equal<wchar_t> comparator_nocase(false);
+
+    ASSERT_TRUE(comparator_nocase(L"aaa", L"aaa"));
+    ASSERT_TRUE(comparator_nocase(L"aaA", L"AAa"));
+    ASSERT_FALSE(comparator_nocase(L"AAB", L"aaa"));
+    ASSERT_FALSE(comparator_nocase(L"aaa", L"Aa"));
+    ASSERT_FALSE(comparator_case(L"AAA", L"aaaa"));
+    ASSERT_FALSE(comparator_case(L"aaAA", L"Aaa"));
+}
+
 } // namespace args
 } // namespace oct

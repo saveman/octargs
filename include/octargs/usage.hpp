@@ -159,14 +159,14 @@ private:
 
     void print_default_named_arguments(ostream_type& os) const
     {
-        print_group_arguments(os, m_data_ptr->m_default_argument_group,
+        print_group_arguments(os, m_data_ptr->get_default_argument_group(),
             get_dictionary().get_usage_literal(dictionary_type::usage_literal::DEFAULT_NAMED_ARGUMENTS_GROUP_NAME),
             string_type(), print_arg_mode::NAMED_ONLY);
     }
 
     void print_default_positional_arguments(ostream_type& os) const
     {
-        print_group_arguments(os, m_data_ptr->m_default_argument_group,
+        print_group_arguments(os, m_data_ptr->get_default_argument_group(),
             get_dictionary().get_usage_literal(dictionary_type::usage_literal::DEFAULT_POSITIONAL_ARGUMENTS_GROUP_NAME),
             string_type(), print_arg_mode::POSITIONAL_ONLY);
     }
@@ -303,9 +303,9 @@ private:
 
             bool any_args = false;
 
-            for (auto& iter : argument->get_parsers())
+            for (auto& iter : m_data_ptr->get_subparsers())
             {
-                auto subusage = iter.second.get_usage();
+                auto subusage = basic_parser_usage(iter.second);
 
                 if (subusage.has_args())
                 {
@@ -330,19 +330,17 @@ private:
             os << m_data_ptr->m_argument_repository->m_subparsers_argument->get_first_name() << ':' << std::endl;
 
             std::size_t longest_name_len = 0;
-            for (auto& iter : m_data_ptr->m_argument_repository->m_subparsers_argument->get_parsers())
+            for (auto& iter : m_data_ptr->get_subparsers())
             {
-                longest_name_len = std::max(longest_name_len, iter.first.get().size());
+                longest_name_len = std::max(longest_name_len, iter.first.size());
             }
 
-            for (auto& iter : m_data_ptr->m_argument_repository->m_subparsers_argument->get_parsers())
+            for (auto& iter : m_data_ptr->get_subparsers())
             {
-                auto subusage = iter.second.get_usage();
+                auto this_name_len = iter.first.size();
 
-                auto this_name_len = iter.first.get().size();
-
-                os << "  " << iter.first.get() << string_type(longest_name_len - this_name_len, ' ') << "  "
-                   << subusage.m_data_ptr->m_usage_oneliner << std::endl;
+                os << "  " << iter.first << string_type(longest_name_len - this_name_len, ' ') << "  "
+                   << iter.second->m_usage_oneliner << std::endl;
             }
         }
     }

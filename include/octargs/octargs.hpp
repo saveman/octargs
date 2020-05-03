@@ -5,8 +5,10 @@
 #include "parser.hpp"
 #include "results.hpp"
 
+/// \brief OCTAEDR Software
 namespace oct
 {
+/// \brief Argument parsing library
 namespace args
 {
 

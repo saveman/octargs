@@ -61,14 +61,17 @@ public:
 
     data_type operator()(const dictionary_type& dictionary, const string_type& value_str) const
     {
+        auto comparator = std::bind(
+            internal::string_equal<char_type>(dictionary.is_case_sensitive()), value_str, std::placeholders::_1);
+
         const auto& true_literals = dictionary.get_true_literals();
-        if (std::find(true_literals.begin(), true_literals.end(), value_str) != true_literals.end())
+        if (std::find_if(true_literals.begin(), true_literals.end(), comparator) != true_literals.end())
         {
             return true;
         }
 
         const auto& false_literals = dictionary.get_false_literals();
-        if (std::find(false_literals.begin(), false_literals.end(), value_str) != false_literals.end())
+        if (std::find_if(false_literals.begin(), false_literals.end(), comparator) != false_literals.end())
         {
             return false;
         }

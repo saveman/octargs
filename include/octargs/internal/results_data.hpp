@@ -3,8 +3,9 @@
 
 #include <map>
 
+#include "../dictionary.hpp"
 #include "../exception.hpp"
-#include "name.hpp"
+#include "string_utils.hpp"
 
 namespace oct
 {
@@ -21,16 +22,17 @@ public:
 
     using string_type = std::basic_string<char_type>;
     using string_vector_type = std::vector<string_type>;
+    using string_less_type = string_less<char_type>;
 
-    using name_type = name<char_type>;
-    using name_less_type = name_less<char_type>;
     using argument_tag_type = basic_argument_tag;
     using const_argument_tag_ptr_type = std::shared_ptr<const argument_tag_type>;
 
-    // TODO: pass dictionary / case sensitive flag to setup comparator
-    basic_results_data()
+    using dictionary_type = dictionary<char_type>;
+    using const_dictionary_ptr_type = std::shared_ptr<const dictionary_type>;
+
+    basic_results_data(bool case_sensitive)
         : m_app_name()
-        , m_names_repository()
+        , m_names_repository(case_sensitive)
         , m_argument_values()
     {
         // noop
@@ -129,7 +131,7 @@ public:
 
 private:
     string_type m_app_name;
-    std::map<name_type, const_argument_tag_ptr_type, name_less_type> m_names_repository;
+    std::map<string_type, const_argument_tag_ptr_type, string_less_type> m_names_repository;
     std::map<const_argument_tag_ptr_type, string_vector_type> m_argument_values;
 };
 
