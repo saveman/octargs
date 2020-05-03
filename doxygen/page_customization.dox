@@ -1,0 +1,57 @@
+/**
+
+\page page_customization Customization
+
+\brief Customizing parser using dictionary
+
+\tableofcontents
+
+
+\section section_dictionary_concept Dictionary concept
+
+The dictionary object is used by parser to obtain some literals used to interpret the data,
+prepare proper results and usage information. That includes:
+\li Value that should be set in results when a switch argument is specified in input.
+\li Values that represent valid values for valued arguments of bool type (e.g. "true", "false", "0").
+\li Separator between argument key and value (e.g. "=" for "--key=value").
+\li Separator for keys in results objects if subparsers are used (e.g. if the separator is ' ',
+    subparser "info" was requested by user and an argument "--verbose" was specified then the key
+    in results object will be "info --verbose").
+\li Short and long argument name prefixes to properly format usage information.
+\li A set of usage literals so the prepared documentation suits the application developer.
+
+
+\section section_default_dictionary Default dictionary
+
+Default dictionaries were defined for char and wchar_t types so if the library user does not have
+specific requirements these should be enough for most unix-like command line applications.
+
+It is not even needed to create the dictionaries manually as proper objects will be instantiated
+automatically.
+
+
+\section section_custom_dictionary Custom dictionary
+
+In case the application have some specific requirements (e.g. wants to have case-insensitive arguments,
+different prefixes, localization) it is possible to create custom dictionary objects.
+
+There are two possibilities
+\li As the dictionary is an interface class it could be implemented in an application specific class
+    from scratch and an instance of such class could be provided on parser construction.
+\li Or a custom_dictionary object could be constructed and required setters called to provide values
+    suitable for the application. The custom_dictionary could also take the default values from
+    the default_dictionary class to minimize the implementation effort needed.
+
+
+\section section_dictionary_example Dictionary usage example
+
+To customize the dictionary the proper object must be created and passed to parser
+on construction.
+
+\snippet code_dictionary.cpp Snippet
+
+Full code:
+
+\include code_dictionary.cpp
+
+*/

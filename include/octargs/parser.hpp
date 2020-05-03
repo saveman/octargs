@@ -9,6 +9,7 @@
 #include "argument_table.hpp"
 #include "dictionary.hpp"
 #include "exception.hpp"
+#include "names.hpp"
 #include "parser_error.hpp"
 #include "results.hpp"
 #include "usage.hpp"
@@ -21,7 +22,7 @@ namespace oct
 namespace args
 {
 
-/// \brief Arguments parser
+/// \brief Arguments parser base
 ///
 /// \tparam derived_T           derived (parser) type
 /// \tparam char_T              char type (as in std::basic_string)
@@ -82,27 +83,27 @@ public:
         return m_data_ptr->add_group(name);
     }
 
-    exclusive_argument_type add_exclusive(const string_vector_type& names)
+    exclusive_argument_type add_exclusive(const multi_name_wrapper<char_type>& names)
     {
         return m_data_ptr->get_default_argument_group().add_exclusive(names);
     }
 
-    switch_argument_type add_switch(const string_vector_type& names)
+    switch_argument_type add_switch(const multi_name_wrapper<char_type>& names)
     {
         return m_data_ptr->get_default_argument_group().add_switch(names);
     }
 
-    valued_argument_type add_valued(const string_vector_type& names)
+    valued_argument_type add_valued(const multi_name_wrapper<char_type>& names)
     {
         return m_data_ptr->get_default_argument_group().add_valued(names);
     }
 
-    positional_argument_type add_positional(const string_type& name)
+    positional_argument_type add_positional(const single_name_wrapper<char_type>& name)
     {
         return m_data_ptr->get_default_argument_group().add_positional(name);
     }
 
-    subparser_argument_type add_subparsers(const string_type& name)
+    subparser_argument_type add_subparsers(const single_name_wrapper<char_type>& name)
     {
         return subparser_argument_type(m_data_ptr->add_subparsers(name));
     }

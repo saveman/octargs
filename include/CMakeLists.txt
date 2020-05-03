@@ -43,6 +43,7 @@ set(${PROJECT_NAME}_HEADERS
     octargs/dictionary.hpp
     octargs/exception.hpp
     octargs/exclusive_argument.hpp
+    octargs/names.hpp
     octargs/octargs.hpp
     octargs/parser_error.hpp
     octargs/parser.hpp

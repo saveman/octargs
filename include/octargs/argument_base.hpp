@@ -18,7 +18,7 @@ namespace args
 /// - check   - used to check if the data after conversion is valid
 /// - store   - used to store the data
 ///
-/// \tparam derived_TT          derived argument class template type
+/// \tparam derived_TT          derived argument template class
 /// \tparam char_T              char type (as in std::basic_string)
 /// \tparam values_storage_T    type of object to store parsed values
 /// \tparam data_T              argument value data type
@@ -123,7 +123,7 @@ private:
 
 /// \brief Argument base type handling (limited, void type specialization)
 ///
-/// \tparam derived_TT          derived argument class template type
+/// \tparam derived_TT          derived argument template class
 /// \tparam char_T              char type (as in std::basic_string)
 /// \tparam values_storage_T    type of object to store parsed values
 template <template <typename, typename, typename> class derived_TT, typename char_T, typename values_storage_T>
@@ -146,8 +146,11 @@ protected:
 
 /// \brief Argument base
 ///
-/// \tparam derived_T   derived argument class
-/// \tparam char_T      char type (as in std::basic_string)
+/// \tparam derived_TT          derived argument template class
+/// \tparam argument_TT         argument implementation template class
+/// \tparam char_T              char type (as in std::basic_string)
+/// \tparam values_storage_T    type of class uses as a storage for parsed values
+/// \tparam data_T              type of represented value
 template <template <typename, typename, typename> class derived_TT, template <typename, typename> class argument_TT,
     typename char_T, typename values_storage_T, typename data_T>
 class basic_argument_base : public basic_typed_argument_base<derived_TT, char_T, values_storage_T, data_T>

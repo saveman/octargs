@@ -2,6 +2,7 @@
 #define OCTARGS_ARGUMENT_GROUP_HPP_
 
 #include "internal/argument_group_impl.hpp"
+#include "names.hpp"
 
 namespace oct
 {
@@ -13,9 +14,8 @@ namespace args
 /// This class allows grouping arguments. It is used currently only for documentation
 /// purpose (usage automatic documentation).
 ///
-/// \tparam derived_T   derived type
-/// \tparam char_T      char type (as in std::basic_string)
-
+/// \tparam char_T              char type (as in std::basic_string)
+/// \tparam values_storage_T    type of object to store parsed values
 template <typename char_T, typename values_storage_T>
 class basic_argument_group
 {
@@ -49,22 +49,22 @@ public:
         return *this;
     }
 
-    exclusive_argument_type add_exclusive(const string_vector_type& names)
+    exclusive_argument_type add_exclusive(const multi_name_wrapper<char_type>& names)
     {
         return m_argument_group->add_exclusive(names);
     }
 
-    switch_argument_type add_switch(const string_vector_type& names)
+    switch_argument_type add_switch(const multi_name_wrapper<char_type>& names)
     {
         return m_argument_group->add_switch(names);
     }
 
-    valued_argument_type add_valued(const string_vector_type& names)
+    valued_argument_type add_valued(const multi_name_wrapper<char_type>& names)
     {
         return m_argument_group->add_valued(names);
     }
 
-    positional_argument_type add_positional(const string_type& name)
+    positional_argument_type add_positional(const single_name_wrapper<char_type>& name)
     {
         return m_argument_group->add_positional(name);
     }

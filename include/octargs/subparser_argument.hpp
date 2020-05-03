@@ -20,6 +20,7 @@ class basic_parser;
 ///
 /// \tparam char_T              char type (as in std::basic_string)
 /// \tparam values_storage_T    type of class uses as a storage for parsed values
+/// \tparam data_T              argument value data type
 template <typename char_T, typename values_storage_T, typename data_T = void>
 class basic_subparser_argument : public basic_argument_base<basic_subparser_argument,
                                      internal::basic_subparser_argument_impl, char_T, values_storage_T, data_T>

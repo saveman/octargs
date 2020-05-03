@@ -8,8 +8,8 @@ int main(int argc, char* argv[])
 
     parser arg_parser;
     //! [Snippet]
-    arg_parser.add_switch({ "--verbose" });
-    arg_parser.add_switch({ "--dry-run" });
+    arg_parser.add_switch("--verbose");
+    arg_parser.add_switch("--dry-run");
     //! [Snippet]
 
     auto results = arg_parser.parse(argc, argv);

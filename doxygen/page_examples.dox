@@ -53,4 +53,12 @@ Features shown in the example:
 \li Custom dictionary usage.
 \li Parser customization (extra literals for boolean values, localization).
 
+
+\section section_example_win_head       Windows head utility (win_head)
+
+Basic version of 'head' shell utility with Windows-like command line arguments parsing.
+
+Features shown in the example:
+\li Custom parser dictionary (case insensitive, different prefixes and separators).
+
 */

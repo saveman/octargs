@@ -17,6 +17,7 @@ function(add_gtest_test)
     target_sources(${ADD_TEST_ARGS_NAME}
         PRIVATE
             ${ADD_TEST_ARGS_SOURCES}
+            helpers.hpp
     )
     target_include_directories(${ADD_TEST_ARGS_NAME}
         PRIVATE

@@ -54,6 +54,8 @@ private:
 };
 
 /// \brief Exception thrown when parsing cannot be performed.
+///
+/// \tparam char_T      char type (as in std::basic_string)
 template <typename char_T>
 class parser_error_ex : public parser_error
 {

@@ -123,6 +123,12 @@ public:
         m_names_repository.emplace(name, tag);
     }
 
+    static const string_vector_type& get_empty_value()
+    {
+        static const string_type EMPTY_VALUE;
+        return EMPTY_VALUE;
+    }
+
     static const string_vector_type& get_empty_values()
     {
         static const string_vector_type EMPTY_VALUES;

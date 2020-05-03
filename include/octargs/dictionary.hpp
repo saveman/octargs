@@ -58,17 +58,16 @@ public:
     virtual const string_type& get_switch_enabled_literal() const = 0;
     virtual const string_vector_type& get_true_literals() const = 0;
     virtual const string_vector_type& get_false_literals() const = 0;
-
     virtual const string_type& get_value_separator_literal() const = 0;
+
     virtual const string_type& get_subparser_separator_literal() const = 0;
 
     virtual const string_type& get_short_name_prefix() const = 0;
     virtual const string_type& get_long_name_prefix() const = 0;
-
     virtual const string_type& get_usage_literal(usage_literal key) const = 0;
 };
 
-/// \brief Parser literals dictionary
+/// \brief Default implementation of parser literals dictionary
 ///
 /// \tparam char_T              char type (as in std::basic_string)
 template <typename char_T>
@@ -78,8 +77,7 @@ public:
     default_dictionary() = delete;
 };
 
-/// \brief Parser literals dictionary (specialization for char type)
-///
+/// \brief Default implementation of parser literals dictionary (char specialization)
 template <>
 class default_dictionary<char> : public dictionary<char>
 {
@@ -184,8 +182,7 @@ public:
     }
 };
 
-/// \brief Parser literals dictionary (specialization for wchar_t type)
-///
+/// \brief Default implementation of parser literals dictionary (wchar_t specialization)
 template <>
 class default_dictionary<wchar_t> : public dictionary<wchar_t>
 {
@@ -290,6 +287,12 @@ public:
     }
 };
 
+/// \brief Custom parser literals dictionary
+///
+/// Allows providing customized literals for the parser with minimial
+/// implementation effort.
+///
+/// \tparam char_T              char type (as in std::basic_string)
 template <typename char_T>
 class custom_dictionary : public dictionary<char_T>
 {

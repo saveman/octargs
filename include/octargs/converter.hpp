@@ -88,7 +88,6 @@ public:
 /// \tparam char_T      char type (as in std::basic_string)
 /// \tparam data_T      data type (integer)
 /// \tparam convert_T   conversion function used to perform conversion
-///
 template <typename char_T, typename data_T, data_T (*convert_F)(const std::basic_string<char_T>&, std::size_t*, int)>
 class basic_integer_converter
 {
@@ -127,7 +126,6 @@ public:
 /// \tparam char_T      char type (as in std::basic_string)
 /// \tparam data_T      data type (floating)
 /// \tparam convert_T   conversion function used to perform conversion
-///
 template <typename char_T, typename data_T, data_T (*convert_F)(const std::basic_string<char_T>&, std::size_t*)>
 class basic_floating_point_converter
 {

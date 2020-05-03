@@ -230,14 +230,15 @@ TEST(parser_usage_test, test_group)
     parser.set_usage_oneliner("ONELINER");
     parser.set_usage_header("HEADER");
     parser.set_usage_footer("FOOTER");
-    auto group1 = parser.add_group("Group 1");
-    group1.add_switch({ "--verbose" }).set_description("an option");
-    parser.add_switch({ "-n" }).set_description("the n!");
-    parser.add_valued({ "-k" }).set_description("the k!");
-    parser.add_switch({ "-a", "-b" }).set_description("the ab!");
-    parser.add_valued({ "-x", "--thex" }).set_description("the\nmulti\nline!").set_min_count(1);
-    parser.add_switch({ "--ala", "--tola" }).set_description("alatola check my name");
+    parser.add_switch("--debug").set_description("debug output");
     parser.add_positional("PATTERN").set_description("Pattern to find").set_min_count(1);
+    auto group1 = parser.add_group("Group 1");
+    group1.add_switch("--verbose").set_description("an option");
+    group1.add_switch({ "-n" }).set_description("the n!");
+    group1.add_valued("-k").set_description("the k!");
+    group1.add_switch({ "-a", "-b" }).set_description("the ab!");
+    group1.add_valued({ "-x", "--thex" }).set_description("the\nmulti\nline!").set_min_count(1);
+    group1.add_switch({ "--ala", "--tola" }).set_description("alatola check my name");
     auto group2 = parser.add_group("Group 2");
     group2.set_description("This is a group with single line description");
     group2.add_valued({ "--other" }).set_value_name("value").set_description("other value");
@@ -258,6 +259,14 @@ TEST(parser_usage_test, test_group)
         "HEADER",
         "",
         "Optional arguments:",
+        "  --debug  debug output",
+        "",
+        "Positional arguments:",
+        "  PATTERN  Pattern to find",
+        "             [required]",
+        "",
+        "Group 1:",
+        "         --verbose      an option",
         "  -n                    the n!",
         "  -k                    the k!",
         "  -a, -b                the ab!",
@@ -266,13 +275,6 @@ TEST(parser_usage_test, test_group)
         "                          line!",
         "                          [required]",
         "         --ala, --tola  alatola check my name",
-        "",
-        "Positional arguments:",
-        "  PATTERN  Pattern to find",
-        "             [required]",
-        "",
-        "Group 1:",
-        "  --verbose  an option",
         "",
         "Group 2:",
         "  This is a group with single line description",
