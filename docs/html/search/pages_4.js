@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['usage_20documentation',['Usage documentation',['../page_usage_documentation.html',1,'']]]
+  ['storing_20parsers',['Storing parsers',['../page_storing_parsers.html',1,'']]]
 ];

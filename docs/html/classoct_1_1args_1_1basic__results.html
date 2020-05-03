@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">octargs-doxygen
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.4.0</span>
    </div>
   </td>
  </tr>
@@ -97,12 +97,18 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>results_data_type</b
 <tr class="memitem:aee292855fc0ef315e95b6258ae00cf59"><td class="memItemLeft" align="right" valign="top"><a id="aee292855fc0ef315e95b6258ae00cf59"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>const_results_data_ptr_type</b> = std::shared_ptr&lt; const results_data_type &gt;</td></tr>
 <tr class="separator:aee292855fc0ef315e95b6258ae00cf59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2420fbb841a9cd2da79b7a4ce7adfffa"><td class="memItemLeft" align="right" valign="top"><a id="a2420fbb841a9cd2da79b7a4ce7adfffa"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>dictionary_type</b> = <a class="el" href="classoct_1_1args_1_1dictionary.html">dictionary</a>&lt; char_type &gt;</td></tr>
+<tr class="separator:a2420fbb841a9cd2da79b7a4ce7adfffa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05614e101b1d773fe4b607feee76812c"><td class="memItemLeft" align="right" valign="top"><a id="a05614e101b1d773fe4b607feee76812c"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>const_dictionary_ptr_type</b> = std::shared_ptr&lt; const <a class="el" href="classoct_1_1args_1_1dictionary.html">dictionary_type</a> &gt;</td></tr>
+<tr class="separator:a05614e101b1d773fe4b607feee76812c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a338a7e8a7342317029bb7a6b5f59a5c8"><td class="memItemLeft" align="right" valign="top"><a id="a338a7e8a7342317029bb7a6b5f59a5c8"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>basic_results</b> (const_results_data_ptr_type results_data_ptr)</td></tr>
-<tr class="separator:a338a7e8a7342317029bb7a6b5f59a5c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad50acd1b9f107a790c18bd008a57a948"><td class="memItemLeft" align="right" valign="top"><a id="ad50acd1b9f107a790c18bd008a57a948"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>basic_results</b> (const_dictionary_ptr_type dictionary_ptr, const_results_data_ptr_type results_data_ptr)</td></tr>
+<tr class="separator:ad50acd1b9f107a790c18bd008a57a948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a025b7b818b5cc61e9e72cf6ef88ae25a"><td class="memItemLeft" align="right" valign="top"><a id="a025b7b818b5cc61e9e72cf6ef88ae25a"></a>
 const string_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_app_name</b> () const</td></tr>
 <tr class="separator:a025b7b818b5cc61e9e72cf6ef88ae25a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -115,13 +121,20 @@ std::size_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_count</b> 
 <tr class="memitem:a5d79a580cfe434dc9f884c5d784c4ed6"><td class="memItemLeft" align="right" valign="top"><a id="a5d79a580cfe434dc9f884c5d784c4ed6"></a>
 const string_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_first_value</b> (const string_type &amp;arg_name) const</td></tr>
 <tr class="separator:a5d79a580cfe434dc9f884c5d784c4ed6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a089f24f81c41046c6652f8fae3eb61a5"><td class="memItemLeft" align="right" valign="top"><a id="a089f24f81c41046c6652f8fae3eb61a5"></a>
+const string_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_first_value</b> (const string_type &amp;arg_name, const string_type &amp;default_value) const</td></tr>
+<tr class="separator:a089f24f81c41046c6652f8fae3eb61a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa50770b03519d459b9dffab4b5e4270b"><td class="memItemLeft" align="right" valign="top"><a id="aa50770b03519d459b9dffab4b5e4270b"></a>
 const string_vector_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_values</b> (const string_type &amp;arg_name) const</td></tr>
 <tr class="separator:aa50770b03519d459b9dffab4b5e4270b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac69ef8dfed840c3e6b7b11bd7a5d3168"><td class="memTemplParams" colspan="2"><a id="ac69ef8dfed840c3e6b7b11bd7a5d3168"></a>
+<tr class="memitem:ad47aca6528d126cd8a8305edde735e1f"><td class="memTemplParams" colspan="2"><a id="ad47aca6528d126cd8a8305edde735e1f"></a>
 template&lt;typename data_T , typename converter_T  = basic_converter&lt;char_type, data_T&gt;&gt; </td></tr>
-<tr class="memitem:ac69ef8dfed840c3e6b7b11bd7a5d3168"><td class="memTemplItemLeft" align="right" valign="top">data_T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>get_first_value_as</b> (const string_type &amp;arg_name, const data_T &amp;default_value=data_T()) const</td></tr>
-<tr class="separator:ac69ef8dfed840c3e6b7b11bd7a5d3168"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad47aca6528d126cd8a8305edde735e1f"><td class="memTemplItemLeft" align="right" valign="top">data_T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>get_first_value_as</b> (const string_type &amp;arg_name) const</td></tr>
+<tr class="separator:ad47aca6528d126cd8a8305edde735e1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78d125941fccca0f7ff113cf4c30ad07"><td class="memTemplParams" colspan="2"><a id="a78d125941fccca0f7ff113cf4c30ad07"></a>
+template&lt;typename data_T , typename converter_T  = basic_converter&lt;char_type, data_T&gt;&gt; </td></tr>
+<tr class="memitem:a78d125941fccca0f7ff113cf4c30ad07"><td class="memTemplItemLeft" align="right" valign="top">data_T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>get_first_value_as</b> (const string_type &amp;arg_name, const data_T &amp;default_value) const</td></tr>
+<tr class="separator:a78d125941fccca0f7ff113cf4c30ad07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5bff9daaac82a7eef490627fa2ec3c40"><td class="memTemplParams" colspan="2"><a id="a5bff9daaac82a7eef490627fa2ec3c40"></a>
 template&lt;typename data_T , typename converter_T  = basic_converter&lt;char_type, data_T&gt;&gt; </td></tr>
 <tr class="memitem:a5bff9daaac82a7eef490627fa2ec3c40"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; data_T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>get_values_as</b> (const string_type &amp;arg_name) const</td></tr>

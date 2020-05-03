@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classoct_1_1args_1_1default__usage__dictionary.html" title="Usage terms dictionary. " alt="" coords="5,5,196,47"/>
+<area shape="rect" id="node1" href="$classoct_1_1args_1_1basic__typed__argument__base.html" title="oct::args::basic_typed\l_argument_base\&lt; basic\l_positional_argument, char\l_T, values_storage_T, data_T \&gt;" alt="" coords="5,20,213,91"/>
+<area shape="rect" id="node2" href="$classoct_1_1args_1_1basic__argument__base.html" title="oct::args::basic_argument\l_base\&lt; basic_positional\l_argument, internal::basic\l_positional_argument_impl,\l char_T, values_storage_T,\l data_T \&gt;" alt="" coords="261,5,443,105"/>
+<area shape="rect" id="node3" href="$classoct_1_1args_1_1basic__positional__argument.html" title="Positional argument. " alt="" coords="491,27,672,83"/>
 </map>

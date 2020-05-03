@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">octargs-doxygen
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.4.0</span>
    </div>
   </td>
  </tr>
@@ -98,7 +98,7 @@ Defining the parser type</h2>
 <div class="fragment"><div class="line"><span class="keyword">using</span> my_parser = storing_parser&lt;data_storage&gt;;</div></div><!-- fragment --><h2><a class="anchor" id="section_help_setting_arg_type"></a>
 Settings arguments type and storage</h2>
 <p>Next step is to tell the arguments where to store the values (and implicitly: what is the type of the argument).</p>
-<div class="fragment"><div class="line">        my_parser <a class="code" href="namespaceoct_1_1args.html#a58057531e0f1dd3cbfb7201dbba2588b">parser</a>;</div><div class="line"></div><div class="line">        parser.add_exclusive({ <span class="stringliteral">&quot;--help&quot;</span> }).set_type_and_storage(&amp;data_storage::m_help_requested);</div><div class="line">        parser.add_switch({ <span class="stringliteral">&quot;--verbose&quot;</span> }).set_type_and_storage(&amp;data_storage::m_verbose);</div><div class="line">        parser.add_valued({ <span class="stringliteral">&quot;--lines&quot;</span> }).set_type_and_storage(&amp;data_storage::m_lines);</div><div class="line">        parser.add_valued({ <span class="stringliteral">&quot;--header&quot;</span> }).set_type_and_storage(&amp;data_storage::m_header);</div><div class="line">        parser.add_positional(<span class="stringliteral">&quot;files&quot;</span>).set_max_count_unlimited().set_type_and_storage(&amp;data_storage::m_files);</div></div><!-- fragment --><h2><a class="anchor" id="section_help_parsing_storage"></a>
+<div class="fragment"><div class="line">        my_parser <a class="code" href="namespaceoct_1_1args.html#a308b9c26c72b6fa5b2ca07a67c479df4">parser</a>;</div><div class="line"></div><div class="line">        parser.add_exclusive({ <span class="stringliteral">&quot;--help&quot;</span> }).set_type_and_storage(&amp;data_storage::m_help_requested);</div><div class="line">        parser.add_switch({ <span class="stringliteral">&quot;--verbose&quot;</span> }).set_type_and_storage(&amp;data_storage::m_verbose);</div><div class="line">        parser.add_valued({ <span class="stringliteral">&quot;--lines&quot;</span> }).set_type_and_storage(&amp;data_storage::m_lines);</div><div class="line">        parser.add_valued({ <span class="stringliteral">&quot;--header&quot;</span> }).set_type_and_storage(&amp;data_storage::m_header);</div><div class="line">        parser.add_positional(<span class="stringliteral">&quot;files&quot;</span>).set_max_count_unlimited().set_type_and_storage(&amp;data_storage::m_files);</div></div><!-- fragment --><h2><a class="anchor" id="section_help_parsing_storage"></a>
 Parsing and storing the results</h2>
 <p>With the parser prepared as described above the usage is very simple:</p>
 <div class="fragment"><div class="line">        data_storage data;</div><div class="line">        parser.parse(argc, argv, data);</div></div><!-- fragment --><p> And if there were no errors the data object is now filled with the values and ready to use! </p>
