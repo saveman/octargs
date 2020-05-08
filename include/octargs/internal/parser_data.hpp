@@ -9,6 +9,7 @@
 #include "../argument_group.hpp"
 #include "argument.hpp"
 #include "argument_repository.hpp"
+#include "memory.hpp"
 
 namespace oct
 {
@@ -18,7 +19,7 @@ namespace internal
 {
 
 template <typename char_T, typename values_storage_T>
-class basic_parser_data : public std::enable_shared_from_this<basic_parser_data<char_T, values_storage_T>>
+class basic_parser_data : public enable_shared_from_this<basic_parser_data<char_T, values_storage_T>>
 {
 public:
     using char_type = char_T;

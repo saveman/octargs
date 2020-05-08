@@ -1,3 +1,5 @@
+project(octargs-examples)
+
 cmake_minimum_required(VERSION 3.13)
 
 if (NOT BUILTIN_EXAMPLES_BUILD)
