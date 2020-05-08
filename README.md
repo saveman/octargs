@@ -26,7 +26,7 @@ OCTARGS is a C++ library for parsing command line arguments.
 - Automatic usage documentation.
 - Support for char and wchar_t character types (and more with a limited effort).
 
-# Documenentation
+# Documentation
 
 Project [documentation](https://saveman.github.io/octargs/) is generated using [Doxygen](http://www.doxygen.nl/) and hosted on GitHub pages.
 
