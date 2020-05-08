@@ -310,10 +310,10 @@ public:
     using string_vector_type = typename base_type::string_vector_type;
     using usage_literal = typename base_type::usage_literal;
 
-    explicit custom_dictionary(init_mode init_mode)
+    explicit custom_dictionary(init_mode requested_init_mode)
         : m_case_sensitive(true)
     {
-        if (init_mode == init_mode::WITH_DEFAULTS)
+        if (requested_init_mode == init_mode::WITH_DEFAULTS)
         {
             using default_dict_type = default_dictionary<char_type>;
 

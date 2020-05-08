@@ -24,6 +24,7 @@ set(${PROJECT_NAME}_HEADERS_INTERNAL
     octargs/internal/char_utils.hpp
     octargs/internal/exclusive_argument_impl.hpp
     octargs/internal/function_helpers.hpp
+    octargs/internal/memory.hpp
     octargs/internal/name_checker.hpp
     octargs/internal/parser_data.hpp
     octargs/internal/parser_engine.hpp
