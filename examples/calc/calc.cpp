@@ -209,8 +209,8 @@ public:
             arg_parser.add_valued({ "-o", "--oper", "--operation" })
                 .set_description("operation to perform")
                 .set_min_count(1)
-                .set_default_value("sum")
-                .set_allowed_values({ "sum", "mul", "min", "max" });
+                .set_allowed_values({ "sum", "mul", "min", "max" })
+                .set_default_value("sum");
             arg_parser.add_valued({ "-t", "--type" })
                 .set_description("operand type")
                 .set_min_count(1)
@@ -234,7 +234,7 @@ public:
 
             auto operation = results.get_first_value_as<operation_code, operation_code_converter>("-o");
             auto data_type = results.get_first_value_as<data_type_code, data_type_code_converter>("-t");
-            auto show_steps = results.get_first_value_as<bool>("-s");
+            auto show_steps = results.has_value("-s");
 
             switch (data_type)
             {
