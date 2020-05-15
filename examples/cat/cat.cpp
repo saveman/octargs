@@ -186,11 +186,6 @@ public:
             std::cerr << "Run " << m_input_args.get_app_name() << " --help to see usage information" << std::endl;
             return EXIT_FAILURE;
         }
-        catch (const std::exception& exc)
-        {
-            std::cerr << "FATAL ERROR: " << exc.what() << std::endl;
-            return EXIT_FAILURE;
-        }
 
         return EXIT_SUCCESS;
     }
@@ -203,5 +198,18 @@ private:
 
 int main(int argc, char* argv[])
 {
-    return oct_args_examples::cat_app(argc, argv).run();
+    try
+    {
+        return oct_args_examples::cat_app(argc, argv).run();
+    }
+    catch (const std::exception& exc)
+    {
+        std::cerr << "FATAL ERROR: " << exc.what() << std::endl;
+        return EXIT_FAILURE;
+    }
+    catch (...)
+    {
+        std::cerr << "FATAL ERROR: unknown error occurred" << std::endl;
+        return EXIT_FAILURE;
+    }
 }
