@@ -34,10 +34,10 @@ public:
     using storage_helper_type = storage_handler_helper<char_type, values_storage_type>;
 
     using parser_data_type = basic_parser_data<char_type, values_storage_type>;
-    using const_parser_data_ptr_type = std::shared_ptr<const parser_data_type>;
+    using parser_data_ptr_type = std::shared_ptr<parser_data_type>;
 
     basic_parser_engine(const argument_table_type& arg_table, storage_helper_type& storage_helper,
-        const const_parser_data_ptr_type& root_parser_data_ptr)
+        const parser_data_ptr_type& root_parser_data_ptr)
         : m_arg_table(arg_table)
         , m_storage_helper(storage_helper)
         , m_root_parser_data_ptr(root_parser_data_ptr)
@@ -68,7 +68,7 @@ private:
     using const_argument_ptr_type = std::shared_ptr<const argument_type>;
 
     static void fill_results_data_names(const results_data_ptr_type& results_data_ptr,
-        const const_parser_data_ptr_type& parser_data_ptr, const string_type& prefix)
+        const parser_data_ptr_type& parser_data_ptr, const string_type& prefix)
     {
         for (auto& iter : parser_data_ptr->m_argument_repository->m_names_repository)
         {
@@ -90,7 +90,7 @@ private:
     }
 
     static results_data_ptr_type prepare_results_data(
-        const const_parser_data_ptr_type& root_parser_data_ptr, const string_type& app_name)
+        const parser_data_ptr_type& root_parser_data_ptr, const string_type& app_name)
     {
         auto results_data_ptr
             = std::make_shared<results_data_type>(root_parser_data_ptr->m_dictionary->is_case_sensitive());
@@ -102,7 +102,7 @@ private:
     }
 
     bool parse_exclusive_recursively(
-        const const_parser_data_ptr_type& parser_data_ptr, argument_table_iterator& input_iterator) const
+        const parser_data_ptr_type& parser_data_ptr, argument_table_iterator& input_iterator) const
     {
         if (input_iterator.get_remaining_count() == 0)
         {
@@ -161,7 +161,7 @@ private:
         }
     }
 
-    void parse_regular(const const_parser_data_ptr_type& parser_data_ptr, argument_table_iterator& input_iterator) const
+    void parse_regular(const parser_data_ptr_type& parser_data_ptr, argument_table_iterator& input_iterator) const
     {
         parse_named_arguments(parser_data_ptr, input_iterator);
         if (parser_data_ptr->m_argument_repository->m_subparsers_argument)
@@ -187,8 +187,8 @@ private:
         }
     }
 
-    void parse_argument_value(const const_parser_data_ptr_type& parser_data_ptr,
-        const const_argument_ptr_type& argument, const string_type& arg_name, const string_type& value_str) const
+    void parse_argument_value(const parser_data_ptr_type& parser_data_ptr, const const_argument_ptr_type& argument,
+        const string_type& arg_name, const string_type& value_str) const
     {
         if (m_results_data_ptr->value_count(argument) >= argument->get_max_count())
         {
@@ -227,8 +227,7 @@ private:
         m_results_data_ptr->append_value(argument, value_str);
     }
 
-    void parse_default_value(
-        const const_parser_data_ptr_type& parser_data_ptr, const const_argument_ptr_type& argument) const
+    void parse_default_value(const parser_data_ptr_type& parser_data_ptr, const const_argument_ptr_type& argument) const
     {
         if (m_results_data_ptr->value_count(argument) > 0)
         {
@@ -248,7 +247,7 @@ private:
         }
     }
 
-    void parse_default_values(const const_parser_data_ptr_type& parser_data_ptr) const
+    void parse_default_values(const parser_data_ptr_type& parser_data_ptr) const
     {
         for (auto& argument : parser_data_ptr->m_argument_repository->m_arguments)
         {
@@ -256,8 +255,8 @@ private:
         }
     }
 
-    bool parse_named_argument(const const_parser_data_ptr_type& parser_data_ptr,
-        argument_table_iterator& input_iterator, const string_type& arg_name) const
+    bool parse_named_argument(const parser_data_ptr_type& parser_data_ptr, argument_table_iterator& input_iterator,
+        const string_type& arg_name) const
     {
         auto arg_iter = parser_data_ptr->m_argument_repository->m_names_repository.find(arg_name);
         if (arg_iter == parser_data_ptr->m_argument_repository->m_names_repository.end())
@@ -298,8 +297,8 @@ private:
         return true;
     }
 
-    bool parse_named_argument(const const_parser_data_ptr_type& parser_data_ptr,
-        argument_table_iterator& input_iterator, const string_type& arg_name, const string_type& arg_value) const
+    bool parse_named_argument(const parser_data_ptr_type& parser_data_ptr, argument_table_iterator& input_iterator,
+        const string_type& arg_name, const string_type& arg_value) const
     {
         auto arg_iter = parser_data_ptr->m_argument_repository->m_names_repository.find(arg_name);
         if (arg_iter == parser_data_ptr->m_argument_repository->m_names_repository.end())
@@ -328,7 +327,7 @@ private:
     }
 
     bool parse_named_argument(
-        const const_parser_data_ptr_type& parser_data_ptr, argument_table_iterator& input_iterator) const
+        const parser_data_ptr_type& parser_data_ptr, argument_table_iterator& input_iterator) const
     {
         auto& input_value = input_iterator.peek_next();
 
@@ -349,7 +348,7 @@ private:
     }
 
     void parse_named_arguments(
-        const const_parser_data_ptr_type& parser_data_ptr, argument_table_iterator& input_iterator) const
+        const parser_data_ptr_type& parser_data_ptr, argument_table_iterator& input_iterator) const
     {
         while (input_iterator.has_more())
         {
@@ -361,7 +360,7 @@ private:
     }
 
     void parse_subparsers_argument(
-        const const_parser_data_ptr_type& parser_data_ptr, argument_table_iterator& input_iterator) const
+        const parser_data_ptr_type& parser_data_ptr, argument_table_iterator& input_iterator) const
     {
         auto& name = parser_data_ptr->m_argument_repository->m_subparsers_argument->get_first_name();
 
@@ -384,7 +383,7 @@ private:
     }
 
     void parse_positional_arguments(
-        const const_parser_data_ptr_type& parser_data_ptr, argument_table_iterator& input_iterator) const
+        const parser_data_ptr_type& parser_data_ptr, argument_table_iterator& input_iterator) const
     {
         for (auto& argument : parser_data_ptr->m_argument_repository->m_arguments)
         {
@@ -402,7 +401,7 @@ private:
         }
     }
 
-    void check_values_count(const const_parser_data_ptr_type& parser_data_ptr) const
+    void check_values_count(const parser_data_ptr_type& parser_data_ptr) const
     {
         for (auto& argument : parser_data_ptr->m_argument_repository->m_arguments)
         {
@@ -416,7 +415,7 @@ private:
 
     const argument_table_type& m_arg_table;
     storage_helper_type& m_storage_helper;
-    const const_parser_data_ptr_type& m_root_parser_data_ptr;
+    const parser_data_ptr_type& m_root_parser_data_ptr;
 
     results_data_ptr_type m_results_data_ptr;
 };
