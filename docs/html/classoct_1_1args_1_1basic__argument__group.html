@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">octargs-doxygen
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.4.0</span>
    </div>
   </td>
  </tr>
@@ -91,68 +91,56 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>string_type</b> = st
 <tr class="memitem:a50a36cbbb9ce0aa244e36d6b8912ee26"><td class="memItemLeft" align="right" valign="top"><a id="a50a36cbbb9ce0aa244e36d6b8912ee26"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>string_vector_type</b> = std::vector&lt; string_type &gt;</td></tr>
 <tr class="separator:a50a36cbbb9ce0aa244e36d6b8912ee26"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1aa8f11c919de846f3be4f4de061639a"><td class="memItemLeft" align="right" valign="top"><a id="a1aa8f11c919de846f3be4f4de061639a"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>argument_type</b> = <a class="el" href="classoct_1_1args_1_1basic__argument.html">basic_argument</a>&lt; char_type, values_storage_type &gt;</td></tr>
-<tr class="separator:a1aa8f11c919de846f3be4f4de061639a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af725e6ba5abea6fce08445666e1a7690"><td class="memItemLeft" align="right" valign="top"><a id="af725e6ba5abea6fce08445666e1a7690"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>const_argument_ptr_type</b> = std::shared_ptr&lt; const <a class="el" href="classoct_1_1args_1_1basic__argument.html">argument_type</a> &gt;</td></tr>
-<tr class="separator:af725e6ba5abea6fce08445666e1a7690"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1de32fe0208c7f651a98bc36643d4e0f"><td class="memItemLeft" align="right" valign="top"><a id="a1de32fe0208c7f651a98bc36643d4e0f"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>argument_group_type</b> = internal::basic_argument_group_impl&lt; char_type, values_storage_type &gt;</td></tr>
+<tr class="separator:a1de32fe0208c7f651a98bc36643d4e0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aadd0928e52e749d9d82a66796210492b"><td class="memItemLeft" align="right" valign="top"><a id="aadd0928e52e749d9d82a66796210492b"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>argument_group_ptr_type</b> = std::shared_ptr&lt; argument_group_type &gt;</td></tr>
+<tr class="separator:aadd0928e52e749d9d82a66796210492b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01f310234ec1bdd10158be89d4e6f188"><td class="memItemLeft" align="right" valign="top"><a id="a01f310234ec1bdd10158be89d4e6f188"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>exclusive_argument_type</b> = <a class="el" href="classoct_1_1args_1_1basic__exclusive__argument.html">basic_exclusive_argument</a>&lt; char_type, values_storage_type &gt;</td></tr>
+<tr class="separator:a01f310234ec1bdd10158be89d4e6f188"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a872e5b3ecfa7b94f2e78114b104ad2db"><td class="memItemLeft" align="right" valign="top"><a id="a872e5b3ecfa7b94f2e78114b104ad2db"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>positional_argument_type</b> = <a class="el" href="classoct_1_1args_1_1basic__positional__argument.html">basic_positional_argument</a>&lt; char_type, values_storage_type &gt;</td></tr>
+<tr class="separator:a872e5b3ecfa7b94f2e78114b104ad2db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6843b769ec5288a85a149b42c8e286b0"><td class="memItemLeft" align="right" valign="top"><a id="a6843b769ec5288a85a149b42c8e286b0"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>switch_argument_type</b> = <a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">basic_switch_argument</a>&lt; char_type, values_storage_type &gt;</td></tr>
 <tr class="separator:a6843b769ec5288a85a149b42c8e286b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5582bf2270c16a880866eb9e42f3b0f6"><td class="memItemLeft" align="right" valign="top"><a id="a5582bf2270c16a880866eb9e42f3b0f6"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>valued_argument_type</b> = <a class="el" href="classoct_1_1args_1_1basic__valued__argument.html">basic_valued_argument</a>&lt; char_type, values_storage_type &gt;</td></tr>
 <tr class="separator:a5582bf2270c16a880866eb9e42f3b0f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a872e5b3ecfa7b94f2e78114b104ad2db"><td class="memItemLeft" align="right" valign="top"><a id="a872e5b3ecfa7b94f2e78114b104ad2db"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>positional_argument_type</b> = <a class="el" href="classoct_1_1args_1_1basic__positional__argument.html">basic_positional_argument</a>&lt; char_type, values_storage_type &gt;</td></tr>
-<tr class="separator:a872e5b3ecfa7b94f2e78114b104ad2db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a01f310234ec1bdd10158be89d4e6f188"><td class="memItemLeft" align="right" valign="top"><a id="a01f310234ec1bdd10158be89d4e6f188"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>exclusive_argument_type</b> = <a class="el" href="classoct_1_1args_1_1basic__exclusive__argument.html">basic_exclusive_argument</a>&lt; char_type, values_storage_type &gt;</td></tr>
-<tr class="separator:a01f310234ec1bdd10158be89d4e6f188"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a15bc496bece2383dacaf9442394a441c"><td class="memItemLeft" align="right" valign="top"><a id="a15bc496bece2383dacaf9442394a441c"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>argument_repository_type</b> = internal::basic_argument_repository&lt; char_type, values_storage_type &gt;</td></tr>
-<tr class="separator:a15bc496bece2383dacaf9442394a441c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a11d59dcfabec913c0c19058138e257b4"><td class="memItemLeft" align="right" valign="top"><a id="a11d59dcfabec913c0c19058138e257b4"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>basic_argument_group</b> (argument_repository_type &amp;argument_repository, const string_type &amp;name)</td></tr>
-<tr class="separator:a11d59dcfabec913c0c19058138e257b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abdec558963a4e53214be29f65633c3ea"><td class="memItemLeft" align="right" valign="top"><a id="abdec558963a4e53214be29f65633c3ea"></a>
-const string_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_name</b> () const</td></tr>
-<tr class="separator:abdec558963a4e53214be29f65633c3ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6964a08af7797ca5b0b84e35f370cb21"><td class="memItemLeft" align="right" valign="top"><a id="a6964a08af7797ca5b0b84e35f370cb21"></a>
-const string_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_description</b> () const</td></tr>
-<tr class="separator:a6964a08af7797ca5b0b84e35f370cb21"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39161aab85badd8ca96e3b6d25e23836"><td class="memItemLeft" align="right" valign="top"><a id="a39161aab85badd8ca96e3b6d25e23836"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>basic_argument_group</b> (argument_group_ptr_type argument_group)</td></tr>
+<tr class="separator:a39161aab85badd8ca96e3b6d25e23836"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57bfa11020e4bc3dbb176493713a1893"><td class="memItemLeft" align="right" valign="top"><a id="a57bfa11020e4bc3dbb176493713a1893"></a>
 <a class="el" href="classoct_1_1args_1_1basic__argument__group.html">basic_argument_group</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_description</b> (const string_type &amp;description)</td></tr>
 <tr class="separator:a57bfa11020e4bc3dbb176493713a1893"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa4d46244f1d883b94658373e5051720a"><td class="memItemLeft" align="right" valign="top"><a id="aa4d46244f1d883b94658373e5051720a"></a>
-<a class="el" href="classoct_1_1args_1_1basic__exclusive__argument.html">exclusive_argument_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>add_exclusive</b> (const string_vector_type &amp;names)</td></tr>
-<tr class="separator:aa4d46244f1d883b94658373e5051720a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98fa6170e359684c74eaa82af94bbaa0"><td class="memItemLeft" align="right" valign="top"><a id="a98fa6170e359684c74eaa82af94bbaa0"></a>
-<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">switch_argument_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>add_switch</b> (const string_vector_type &amp;names)</td></tr>
-<tr class="separator:a98fa6170e359684c74eaa82af94bbaa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9062955b89bc6f14ac306530452d9f89"><td class="memItemLeft" align="right" valign="top"><a id="a9062955b89bc6f14ac306530452d9f89"></a>
-<a class="el" href="classoct_1_1args_1_1basic__valued__argument.html">valued_argument_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>add_valued</b> (const string_vector_type &amp;names)</td></tr>
-<tr class="separator:a9062955b89bc6f14ac306530452d9f89"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9af472a4e03742b3ee7a64fba4111922"><td class="memItemLeft" align="right" valign="top"><a id="a9af472a4e03742b3ee7a64fba4111922"></a>
-<a class="el" href="classoct_1_1args_1_1basic__positional__argument.html">positional_argument_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>add_positional</b> (const string_type &amp;name)</td></tr>
-<tr class="separator:a9af472a4e03742b3ee7a64fba4111922"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c117a8d6e22d41aa118bb3231c293c8"><td class="memItemLeft" align="right" valign="top"><a id="a3c117a8d6e22d41aa118bb3231c293c8"></a>
-const std::vector&lt; const_argument_ptr_type &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_arguments</b> () const</td></tr>
-<tr class="separator:a3c117a8d6e22d41aa118bb3231c293c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82b9641ebeb3f9adecd55164239f0bbc"><td class="memItemLeft" align="right" valign="top"><a id="a82b9641ebeb3f9adecd55164239f0bbc"></a>
+<a class="el" href="classoct_1_1args_1_1basic__exclusive__argument.html">exclusive_argument_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>add_exclusive</b> (const <a class="el" href="classoct_1_1args_1_1multi__name__wrapper.html">multi_name_wrapper</a>&lt; char_type &gt; &amp;names)</td></tr>
+<tr class="separator:a82b9641ebeb3f9adecd55164239f0bbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69df51914c8aa338d6e929e18b9a5c5f"><td class="memItemLeft" align="right" valign="top"><a id="a69df51914c8aa338d6e929e18b9a5c5f"></a>
+<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">switch_argument_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>add_switch</b> (const <a class="el" href="classoct_1_1args_1_1multi__name__wrapper.html">multi_name_wrapper</a>&lt; char_type &gt; &amp;names)</td></tr>
+<tr class="separator:a69df51914c8aa338d6e929e18b9a5c5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9310cec7058902e7dc4a9f232df08e13"><td class="memItemLeft" align="right" valign="top"><a id="a9310cec7058902e7dc4a9f232df08e13"></a>
+<a class="el" href="classoct_1_1args_1_1basic__valued__argument.html">valued_argument_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>add_valued</b> (const <a class="el" href="classoct_1_1args_1_1multi__name__wrapper.html">multi_name_wrapper</a>&lt; char_type &gt; &amp;names)</td></tr>
+<tr class="separator:a9310cec7058902e7dc4a9f232df08e13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac509927d7ca88e36f514d8444b7adf6e"><td class="memItemLeft" align="right" valign="top"><a id="ac509927d7ca88e36f514d8444b7adf6e"></a>
+<a class="el" href="classoct_1_1args_1_1basic__positional__argument.html">positional_argument_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>add_positional</b> (const <a class="el" href="namespaceoct_1_1args.html#a271b93d027e252c4d0da2d3d1ad5bcc0">single_name_wrapper</a>&lt; char_type &gt; &amp;name)</td></tr>
+<tr class="separator:ac509927d7ca88e36f514d8444b7adf6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename char_T, typename values_storage_T = internal::null_values_storage&gt;<br />
+<div class="textblock"><h3>template&lt;typename char_T, typename values_storage_T&gt;<br />
 class oct::args::basic_argument_group&lt; char_T, values_storage_T &gt;</h3>
 
 <p>Arguments group. </p>
 <p>This class allows grouping arguments. It is used currently only for documentation purpose (usage automatic documentation).</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">derived_T</td><td>derived type </td></tr>
     <tr><td class="paramname">char_T</td><td>char type (as in std::basic_string) </td></tr>
+    <tr><td class="paramname">values_storage_T</td><td>type of object to store parsed values </td></tr>
   </table>
   </dd>
 </dl>

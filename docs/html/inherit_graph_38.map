@@ -1,0 +1,12 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node2" href="$classoct_1_1args_1_1invalid__argument__name.html" title="Exception thrown when given argument name is invalid. " alt="" coords="144,5,267,47"/>
+<area shape="rect" id="node4" href="$classoct_1_1args_1_1invalid__dictionary__key.html" title="Exception thrown when unsupported key is used with dictionary. " alt="" coords="146,71,265,112"/>
+<area shape="rect" id="node5" href="$classoct_1_1args_1_1invalid__parser__name.html" title="Exception thrown when given parser name is invalid. " alt="" coords="146,136,265,177"/>
+<area shape="rect" id="node7" href="$classoct_1_1args_1_1missing__converter.html" title="Exception thrown when conversion function is missing. " alt="" coords="142,201,269,243"/>
+<area shape="rect" id="node9" href="$classoct_1_1args_1_1subparser__positional__conflict.html" title="Exception thrown when there is a conflict between positional and/or subparser arguments. " alt="" coords="136,267,275,308"/>
+<area shape="rect" id="node10" href="$classoct_1_1args_1_1unknown__argument.html" title="Exception thrown when unknown argument was requested. " alt="" coords="139,332,272,373"/>
+<area shape="rect" id="node3" href="$classoct_1_1args_1_1invalid__argument__name__ex.html" title="Exception thrown when given argument name is invalid. " alt="" coords="323,5,529,47"/>
+<area shape="rect" id="node6" href="$classoct_1_1args_1_1invalid__parser__name__ex.html" title="Exception thrown when given parser name is invalid. " alt="" coords="331,136,521,177"/>
+<area shape="rect" id="node8" href="$classoct_1_1args_1_1missing__converter__ex.html" title="Exception thrown when conversion function is missing. " alt="" coords="342,201,510,243"/>
+<area shape="rect" id="node11" href="$classoct_1_1args_1_1unknown__argument__ex.html" title="Exception thrown when unknown argument was requested. " alt="" coords="342,332,510,373"/>
+</map>

@@ -1,4 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classoct_1_1args_1_1basic__floating__point__converter.html" title="oct::args::basic_floating\l_point_converter\&lt; char\l_T, long double, std::stold \&gt;" alt="" coords="5,5,191,61"/>
-<area shape="rect" id="node2" href="$classoct_1_1args_1_1basic__converter_3_01char__T_00_01long_01double_01_4.html" title="Converter for long double type. " alt="" coords="239,13,412,54"/>
+<area shape="rect" id="node1" href="$classoct_1_1args_1_1basic__integer__converter.html" title="oct::args::basic_integer\l_converter\&lt; char_T, int,\l std::stoi \&gt;" alt="" coords="5,5,167,61"/>
+<area shape="rect" id="node2" href="$classoct_1_1args_1_1basic__converter_3_01char__T_00_01int_01_4.html" title="Converter for int type. " alt="" coords="215,13,388,54"/>
 </map>

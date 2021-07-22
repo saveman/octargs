@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">octargs-doxygen
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.4.0</span>
    </div>
   </td>
  </tr>
@@ -82,18 +82,21 @@ Public Types</h2></td></tr>
 <tr class="memitem:a23dd5f826cb416f358843c96268b2209"><td class="memItemLeft" align="right" valign="top"><a id="a23dd5f826cb416f358843c96268b2209"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>char_type</b> = char_T</td></tr>
 <tr class="separator:a23dd5f826cb416f358843c96268b2209"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a84cb10eae80fdbb1719678716cf189a9"><td class="memItemLeft" align="right" valign="top"><a id="a84cb10eae80fdbb1719678716cf189a9"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>data_type</b> = bool</td></tr>
+<tr class="separator:a84cb10eae80fdbb1719678716cf189a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61665a9205d143a32ae7c04614a58d7f"><td class="memItemLeft" align="right" valign="top"><a id="a61665a9205d143a32ae7c04614a58d7f"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>string_type</b> = std::basic_string&lt; char_type &gt;</td></tr>
 <tr class="separator:a61665a9205d143a32ae7c04614a58d7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab42b4764f3a68d9e5850424884a9de53"><td class="memItemLeft" align="right" valign="top"><a id="ab42b4764f3a68d9e5850424884a9de53"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>dictionary_type</b> = <a class="el" href="classoct_1_1args_1_1parser__dictionary.html">parser_dictionary</a>&lt; char_type &gt;</td></tr>
-<tr class="separator:ab42b4764f3a68d9e5850424884a9de53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a572ff439e87e7d7e22e655678d7be697"><td class="memItemLeft" align="right" valign="top"><a id="a572ff439e87e7d7e22e655678d7be697"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>dictionary_type</b> = <a class="el" href="classoct_1_1args_1_1dictionary.html">dictionary</a>&lt; char_type &gt;</td></tr>
+<tr class="separator:a572ff439e87e7d7e22e655678d7be697"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1e0990e1bc9cb90300a7efeae5a9bab2"><td class="memItemLeft" align="right" valign="top"><a id="a1e0990e1bc9cb90300a7efeae5a9bab2"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (const string_type &amp;value_str) const</td></tr>
-<tr class="separator:a1e0990e1bc9cb90300a7efeae5a9bab2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e30703b075421b7164ab0a612ce1d93"><td class="memItemLeft" align="right" valign="top"><a id="a4e30703b075421b7164ab0a612ce1d93"></a>
+data_type&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (const <a class="el" href="classoct_1_1args_1_1dictionary.html">dictionary_type</a> &amp;<a class="el" href="classoct_1_1args_1_1dictionary.html">dictionary</a>, const string_type &amp;value_str) const</td></tr>
+<tr class="separator:a4e30703b075421b7164ab0a612ce1d93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename char_T&gt;<br />

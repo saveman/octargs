@@ -1,3 +1,3 @@
-<map id="oct::args::basic_argument_base&lt; derived_T, char_T, values_storage_T &gt;" name="oct::args::basic_argument_base&lt; derived_T, char_T, values_storage_T &gt;">
-<area shape="rect" id="node2" href="$classoct_1_1args_1_1basic__argument.html" title="Argument interface. " alt="" coords="5,80,203,121"/>
+<map id="oct::args::basic_argument_base&lt; derived_TT, argument_TT, char_T, values_storage_T, data_T &gt;" name="oct::args::basic_argument_base&lt; derived_TT, argument_TT, char_T, values_storage_T, data_T &gt;">
+<area shape="rect" id="node2" href="$classoct_1_1args_1_1basic__typed__argument__base.html" title="Argument base type handling. " alt="" coords="5,5,195,76"/>
 </map>

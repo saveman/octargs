@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>octargs-doxygen: oct::args::basic_switch_argument&lt; char_T, values_storage_T &gt; Class Template Reference</title>
+<title>octargs-doxygen: oct::args::basic_switch_argument&lt; char_T, values_storage_T, data_T &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">octargs-doxygen
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.4.0</span>
    </div>
   </td>
  </tr>
@@ -68,7 +68,7 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classoct_1_1args_1_1basic__switch__argument-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">oct::args::basic_switch_argument&lt; char_T, values_storage_T &gt; Class Template Reference</div>  </div>
+<div class="title">oct::args::basic_switch_argument&lt; char_T, values_storage_T, data_T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -77,196 +77,193 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="switch__argument_8hpp_source.html">switch_argument.hpp</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for oct::args::basic_switch_argument&lt; char_T, values_storage_T &gt;:</div>
+Inheritance diagram for oct::args::basic_switch_argument&lt; char_T, values_storage_T, data_T &gt;:</div>
 <div class="dyncontent">
-<div class="center"><img src="classoct_1_1args_1_1basic__switch__argument__inherit__graph.png" border="0" usemap="#oct_1_1args_1_1basic__switch__argument_3_01char__T_00_01values__storage__T_01_4_inherit__map" alt="Inheritance graph"/></div>
-<map name="oct_1_1args_1_1basic__switch__argument_3_01char__T_00_01values__storage__T_01_4_inherit__map" id="oct_1_1args_1_1basic__switch__argument_3_01char__T_00_01values__storage__T_01_4_inherit__map">
-<area shape="rect" id="node2" href="classoct_1_1args_1_1basic__argument__base.html" title="oct::args::basic_argument\l_base\&lt; basic_switch_argument\l\&lt; char_T, values_storage_T\l \&gt;, char_T, values_storage_T \&gt;" alt="" coords="488,5,695,76"/>
-<area shape="rect" id="node3" href="classoct_1_1args_1_1basic__argument.html" title="Argument interface. " alt="" coords="243,20,440,61"/>
+<div class="center"><img src="classoct_1_1args_1_1basic__switch__argument__inherit__graph.png" border="0" usemap="#oct_1_1args_1_1basic__switch__argument_3_01char__T_00_01values__storage__T_00_01data__T_01_4_inherit__map" alt="Inheritance graph"/></div>
+<map name="oct_1_1args_1_1basic__switch__argument_3_01char__T_00_01values__storage__T_00_01data__T_01_4_inherit__map" id="oct_1_1args_1_1basic__switch__argument_3_01char__T_00_01values__storage__T_00_01data__T_01_4_inherit__map">
+<area shape="rect" id="node2" href="classoct_1_1args_1_1basic__argument__base.html" title="oct::args::basic_argument\l_base\&lt; basic_switch_argument,\l internal::basic_switch_argument\l_impl, char_T, values_storage_T,\l data_T \&gt;" alt="" coords="261,5,477,91"/>
+<area shape="rect" id="node3" href="classoct_1_1args_1_1basic__typed__argument__base.html" title="oct::args::basic_typed\l_argument_base\&lt; basic\l_switch_argument, char\l_T, values_storage_T, data_T \&gt;" alt="" coords="5,13,213,83"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
-Collaboration diagram for oct::args::basic_switch_argument&lt; char_T, values_storage_T &gt;:</div>
+Collaboration diagram for oct::args::basic_switch_argument&lt; char_T, values_storage_T, data_T &gt;:</div>
 <div class="dyncontent">
-<div class="center"><img src="classoct_1_1args_1_1basic__switch__argument__coll__graph.png" border="0" usemap="#oct_1_1args_1_1basic__switch__argument_3_01char__T_00_01values__storage__T_01_4_coll__map" alt="Collaboration graph"/></div>
-<map name="oct_1_1args_1_1basic__switch__argument_3_01char__T_00_01values__storage__T_01_4_coll__map" id="oct_1_1args_1_1basic__switch__argument_3_01char__T_00_01values__storage__T_01_4_coll__map">
-<area shape="rect" id="node2" href="classoct_1_1args_1_1basic__argument__base.html" title="oct::args::basic_argument\l_base\&lt; basic_switch_argument\l\&lt; char_T, values_storage_T\l \&gt;, char_T, values_storage_T \&gt;" alt="" coords="488,5,695,76"/>
-<area shape="rect" id="node3" href="classoct_1_1args_1_1basic__argument.html" title="Argument interface. " alt="" coords="243,20,440,61"/>
+<div class="center"><img src="classoct_1_1args_1_1basic__switch__argument__coll__graph.png" border="0" usemap="#oct_1_1args_1_1basic__switch__argument_3_01char__T_00_01values__storage__T_00_01data__T_01_4_coll__map" alt="Collaboration graph"/></div>
+<map name="oct_1_1args_1_1basic__switch__argument_3_01char__T_00_01values__storage__T_00_01data__T_01_4_coll__map" id="oct_1_1args_1_1basic__switch__argument_3_01char__T_00_01values__storage__T_00_01data__T_01_4_coll__map">
+<area shape="rect" id="node2" href="classoct_1_1args_1_1basic__argument__base.html" title="oct::args::basic_argument\l_base\&lt; basic_switch_argument,\l internal::basic_switch_argument\l_impl, char_T, values_storage_T,\l data_T \&gt;" alt="" coords="261,5,477,91"/>
+<area shape="rect" id="node3" href="classoct_1_1args_1_1basic__typed__argument__base.html" title="oct::args::basic_typed\l_argument_base\&lt; basic\l_switch_argument, char\l_T, values_storage_T, data_T \&gt;" alt="" coords="5,13,213,83"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:af0aaf4f6a1cdeaf346d41977d00646f0"><td class="memItemLeft" align="right" valign="top"><a id="af0aaf4f6a1cdeaf346d41977d00646f0"></a>
+<tr class="memitem:a3fd3858c9bc4a893b26af425f7b7da3b"><td class="memItemLeft" align="right" valign="top"><a id="a3fd3858c9bc4a893b26af425f7b7da3b"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>char_type</b> = char_T</td></tr>
-<tr class="separator:af0aaf4f6a1cdeaf346d41977d00646f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af8cf53c00f8742816fb050dcec103e83"><td class="memItemLeft" align="right" valign="top"><a id="af8cf53c00f8742816fb050dcec103e83"></a>
+<tr class="separator:a3fd3858c9bc4a893b26af425f7b7da3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad874f90d116c151dff0fcf3aef6478a2"><td class="memItemLeft" align="right" valign="top"><a id="ad874f90d116c151dff0fcf3aef6478a2"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>values_storage_type</b> = values_storage_T</td></tr>
-<tr class="separator:af8cf53c00f8742816fb050dcec103e83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21d05f2056dba6a70c21552326af9769"><td class="memItemLeft" align="right" valign="top"><a id="a21d05f2056dba6a70c21552326af9769"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>base_type</b> = <a class="el" href="classoct_1_1args_1_1basic__argument__base.html">basic_argument_base</a>&lt; <a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">basic_switch_argument</a>&lt; char_type, values_storage_type &gt;, char_type, values_storage_type &gt;</td></tr>
-<tr class="separator:a21d05f2056dba6a70c21552326af9769"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad1da42ffda94dbb1d68a98d21c7e9aa3"><td class="memItemLeft" align="right" valign="top"><a id="ad1da42ffda94dbb1d68a98d21c7e9aa3"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>dictionary_type</b> = <a class="el" href="classoct_1_1args_1_1parser__dictionary.html">parser_dictionary</a>&lt; char_type &gt;</td></tr>
-<tr class="separator:ad1da42ffda94dbb1d68a98d21c7e9aa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a016def86e8816dae613abf3be12c652c"><td class="memItemLeft" align="right" valign="top"><a id="a016def86e8816dae613abf3be12c652c"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>string_type</b> = std::basic_string&lt; char_type &gt;</td></tr>
-<tr class="separator:a016def86e8816dae613abf3be12c652c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a79ec1c458aa722ce585a15537cfabe"><td class="memItemLeft" align="right" valign="top"><a id="a5a79ec1c458aa722ce585a15537cfabe"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>string_vector_type</b> = std::vector&lt; string_type &gt;</td></tr>
-<tr class="separator:a5a79ec1c458aa722ce585a15537cfabe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_types_classoct_1_1args_1_1basic__argument__base"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classoct_1_1args_1_1basic__argument__base')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classoct_1_1args_1_1basic__argument__base.html">oct::args::basic_argument_base&lt; basic_switch_argument&lt; char_T, values_storage_T &gt;, char_T, values_storage_T &gt;</a></td></tr>
-<tr class="memitem:a18fb3cb1266e3fa9e7cf352428df2fb7 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a18fb3cb1266e3fa9e7cf352428df2fb7"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>derived_type</b> = <a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">basic_switch_argument</a>&lt; char_T, values_storage_T &gt;</td></tr>
-<tr class="separator:a18fb3cb1266e3fa9e7cf352428df2fb7 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6b4de3f0b24790e9e9ff54e3abe8dc94 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a6b4de3f0b24790e9e9ff54e3abe8dc94"></a>
+<tr class="separator:ad874f90d116c151dff0fcf3aef6478a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67dfc2f723b8a091a84d46b32b130bac"><td class="memItemLeft" align="right" valign="top"><a id="a67dfc2f723b8a091a84d46b32b130bac"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>data_type</b> = data_T</td></tr>
+<tr class="separator:a67dfc2f723b8a091a84d46b32b130bac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6780661105b9042b63b9f23494ea0059"><td class="memItemLeft" align="right" valign="top"><a id="a6780661105b9042b63b9f23494ea0059"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>base_type</b> = <a class="el" href="classoct_1_1args_1_1basic__argument__base.html">basic_argument_base</a>&lt; <a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">oct::args::basic_switch_argument</a>, internal::basic_switch_argument_impl, char_T, values_storage_T, data_T &gt;</td></tr>
+<tr class="separator:a6780661105b9042b63b9f23494ea0059"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6cd03d76254eb24dfa9283cb0d7e303"><td class="memItemLeft" align="right" valign="top"><a id="ab6cd03d76254eb24dfa9283cb0d7e303"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>argument_ptr_type</b> = typename base_type::argument_ptr_type</td></tr>
+<tr class="separator:ab6cd03d76254eb24dfa9283cb0d7e303"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_types_classoct_1_1args_1_1basic__argument__base"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classoct_1_1args_1_1basic__argument__base')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classoct_1_1args_1_1basic__argument__base.html">oct::args::basic_argument_base&lt; basic_switch_argument, internal::basic_switch_argument_impl, char_T, values_storage_T, data_T &gt;</a></td></tr>
+<tr class="memitem:a3e520ae515d8316e3d4515af1b103279 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a3e520ae515d8316e3d4515af1b103279"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>argument_type</b> = internal::basic_switch_argument_impl&lt; char_T, values_storage_T &gt;</td></tr>
+<tr class="separator:a3e520ae515d8316e3d4515af1b103279 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0dbdbd587eedf998103dd8e8c66d9243 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a0dbdbd587eedf998103dd8e8c66d9243"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>char_type</b> = char_T</td></tr>
-<tr class="separator:a6b4de3f0b24790e9e9ff54e3abe8dc94 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a674dc45ab81ea66437afac591e0261c2 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a674dc45ab81ea66437afac591e0261c2"></a>
+<tr class="separator:a0dbdbd587eedf998103dd8e8c66d9243 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03a4a51d3b20b4288cfc7e356b10ea02 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a03a4a51d3b20b4288cfc7e356b10ea02"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>values_storage_type</b> = values_storage_T</td></tr>
-<tr class="separator:a674dc45ab81ea66437afac591e0261c2 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a52d27d78640e9a5c2e321ab9f0f3d7ae inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a52d27d78640e9a5c2e321ab9f0f3d7ae"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>base_type</b> = <a class="el" href="classoct_1_1args_1_1basic__argument.html">basic_argument</a>&lt; char_type, values_storage_type &gt;</td></tr>
-<tr class="separator:a52d27d78640e9a5c2e321ab9f0f3d7ae inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d3deb1da8eaacd222a28b5a55a64544 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a6d3deb1da8eaacd222a28b5a55a64544"></a>
+<tr class="separator:a03a4a51d3b20b4288cfc7e356b10ea02 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7837d446841fbf0e12f6988a0b531b7 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="ad7837d446841fbf0e12f6988a0b531b7"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>data_type</b> = data_T</td></tr>
+<tr class="separator:ad7837d446841fbf0e12f6988a0b531b7 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa08ffa9df6a6e108f5cc8c4a0d6a18f4 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="aa08ffa9df6a6e108f5cc8c4a0d6a18f4"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>base_type</b> = <a class="el" href="classoct_1_1args_1_1basic__typed__argument__base.html">basic_typed_argument_base</a>&lt; <a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">basic_switch_argument</a>, char_T, values_storage_T, data_T &gt;</td></tr>
+<tr class="separator:aa08ffa9df6a6e108f5cc8c4a0d6a18f4 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6e39e254e5dc7fa63bcd14ed21d0cfd inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="ac6e39e254e5dc7fa63bcd14ed21d0cfd"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>derived_type</b> = typename <a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">base_type::derived_type</a></td></tr>
+<tr class="separator:ac6e39e254e5dc7fa63bcd14ed21d0cfd inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1878f3464603475cb4fe5089ecddfcdc inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a1878f3464603475cb4fe5089ecddfcdc"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>string_type</b> = std::basic_string&lt; char_type &gt;</td></tr>
-<tr class="separator:a6d3deb1da8eaacd222a28b5a55a64544 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71ce1806707ec37a9d7a13af14ada89c inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a71ce1806707ec37a9d7a13af14ada89c"></a>
+<tr class="separator:a1878f3464603475cb4fe5089ecddfcdc inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b7481b04dce480c85f76cce51e4d5fc inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a9b7481b04dce480c85f76cce51e4d5fc"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>string_vector_type</b> = std::vector&lt; string_type &gt;</td></tr>
-<tr class="separator:a71ce1806707ec37a9d7a13af14ada89c inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a768920a445c8566058f9166756eb542e inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a768920a445c8566058f9166756eb542e"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>handler_type</b> = internal::basic_argument_handler&lt; char_type, values_storage_type &gt;</td></tr>
-<tr class="separator:a768920a445c8566058f9166756eb542e inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1273e95e8818368fdc7d005c35a4cad4 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a1273e95e8818368fdc7d005c35a4cad4"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>const_handler_ptr_type</b> = std::shared_ptr&lt; const handler_type &gt;</td></tr>
-<tr class="separator:a1273e95e8818368fdc7d005c35a4cad4 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb4d81d7a83df54e6ae1e33177b0003c inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="abb4d81d7a83df54e6ae1e33177b0003c"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>type_handler_type</b> = <a class="el" href="classoct_1_1args_1_1basic__argument__type__handler.html">basic_argument_type_handler</a>&lt; data_T, char_type, values_storage_type &gt;</td></tr>
-<tr class="separator:abb4d81d7a83df54e6ae1e33177b0003c inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_types_classoct_1_1args_1_1basic__argument"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classoct_1_1args_1_1basic__argument')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classoct_1_1args_1_1basic__argument.html">oct::args::basic_argument&lt; char_T, values_storage_T &gt;</a></td></tr>
-<tr class="memitem:aa42be33c5796b2ce577204002d100749 inherit pub_types_classoct_1_1args_1_1basic__argument"><td class="memItemLeft" align="right" valign="top"><a id="aa42be33c5796b2ce577204002d100749"></a>
+<tr class="separator:a9b7481b04dce480c85f76cce51e4d5fc inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a019dd576081f026d8a643fce8a5bb0a2 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a019dd576081f026d8a643fce8a5bb0a2"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>argument_ptr_type</b> = std::shared_ptr&lt; argument_type &gt;</td></tr>
+<tr class="separator:a019dd576081f026d8a643fce8a5bb0a2 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a280a0b566c5d49086527665e033f865f inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a280a0b566c5d49086527665e033f865f"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>handler_ptr_type</b> = typename base_type::handler_ptr_type</td></tr>
+<tr class="separator:a280a0b566c5d49086527665e033f865f inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a390be6568e9ae7a8f705c54638c8ae65 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a390be6568e9ae7a8f705c54638c8ae65"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>casted_derived_type</b> = <a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">basic_switch_argument</a>&lt; char_type, values_storage_type, new_data_T &gt;</td></tr>
+<tr class="separator:a390be6568e9ae7a8f705c54638c8ae65 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90b7f6b5a9d01deb81ec8afe30809aa9 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a90b7f6b5a9d01deb81ec8afe30809aa9"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>storage_helper_wrapped_type</b> = typename base_type::storage_helper_wrapped_type</td></tr>
+<tr class="separator:a90b7f6b5a9d01deb81ec8afe30809aa9 inherit pub_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classoct_1_1args_1_1basic__typed__argument__base')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classoct_1_1args_1_1basic__typed__argument__base.html">oct::args::basic_typed_argument_base&lt; basic_switch_argument, char_T, values_storage_T, data_T &gt;</a></td></tr>
+<tr class="memitem:a3edd7d2890b9ae847e8a96db4712a6d1 inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a3edd7d2890b9ae847e8a96db4712a6d1"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>derived_type</b> = <a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">basic_switch_argument</a>&lt; char_T, values_storage_T, data_T &gt;</td></tr>
+<tr class="separator:a3edd7d2890b9ae847e8a96db4712a6d1 inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07ac894e9cbd9ac55988d628f353ecf3 inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a07ac894e9cbd9ac55988d628f353ecf3"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>char_type</b> = char_T</td></tr>
-<tr class="separator:aa42be33c5796b2ce577204002d100749 inherit pub_types_classoct_1_1args_1_1basic__argument"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fc72a83adacd76e8793be66047e0cad inherit pub_types_classoct_1_1args_1_1basic__argument"><td class="memItemLeft" align="right" valign="top"><a id="a7fc72a83adacd76e8793be66047e0cad"></a>
+<tr class="separator:a07ac894e9cbd9ac55988d628f353ecf3 inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae99107876b9e8194de63c92f4473463c inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="ae99107876b9e8194de63c92f4473463c"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>values_storage_type</b> = values_storage_T</td></tr>
-<tr class="separator:a7fc72a83adacd76e8793be66047e0cad inherit pub_types_classoct_1_1args_1_1basic__argument"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2cd2b0e2b083085e2f13ccaf0c3ab90 inherit pub_types_classoct_1_1args_1_1basic__argument"><td class="memItemLeft" align="right" valign="top"><a id="ab2cd2b0e2b083085e2f13ccaf0c3ab90"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>string_type</b> = std::basic_string&lt; char_type &gt;</td></tr>
-<tr class="separator:ab2cd2b0e2b083085e2f13ccaf0c3ab90 inherit pub_types_classoct_1_1args_1_1basic__argument"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa201da799620b788ccae19cba90d732b inherit pub_types_classoct_1_1args_1_1basic__argument"><td class="memItemLeft" align="right" valign="top"><a id="aa201da799620b788ccae19cba90d732b"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>string_vector_type</b> = std::vector&lt; string_type &gt;</td></tr>
-<tr class="separator:aa201da799620b788ccae19cba90d732b inherit pub_types_classoct_1_1args_1_1basic__argument"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62119bd85eb6a10ec95ac37acffa8c0d inherit pub_types_classoct_1_1args_1_1basic__argument"><td class="memItemLeft" align="right" valign="top"><a id="a62119bd85eb6a10ec95ac37acffa8c0d"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>handler_type</b> = internal::basic_argument_handler&lt; char_type, values_storage_type &gt;</td></tr>
-<tr class="separator:a62119bd85eb6a10ec95ac37acffa8c0d inherit pub_types_classoct_1_1args_1_1basic__argument"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6f7b6f70170b4662bff7d5cd0c2707be inherit pub_types_classoct_1_1args_1_1basic__argument"><td class="memItemLeft" align="right" valign="top"><a id="a6f7b6f70170b4662bff7d5cd0c2707be"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>const_handler_ptr_type</b> = std::shared_ptr&lt; const handler_type &gt;</td></tr>
-<tr class="separator:a6f7b6f70170b4662bff7d5cd0c2707be inherit pub_types_classoct_1_1args_1_1basic__argument"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:ae99107876b9e8194de63c92f4473463c inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adde2e76057382f87d3eaddf8199bf533 inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="adde2e76057382f87d3eaddf8199bf533"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>data_type</b> = data_T</td></tr>
+<tr class="separator:adde2e76057382f87d3eaddf8199bf533 inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a462a6a52a6fe1705e3a47eab75823529 inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a462a6a52a6fe1705e3a47eab75823529"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>handler_type</b> = internal::basic_argument_type_handler&lt; data_type, char_type, values_storage_type &gt;</td></tr>
+<tr class="separator:a462a6a52a6fe1705e3a47eab75823529 inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab224fec16d74c6cad3de92b537346d3d inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="ab224fec16d74c6cad3de92b537346d3d"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>handler_ptr_type</b> = std::shared_ptr&lt; handler_type &gt;</td></tr>
+<tr class="separator:ab224fec16d74c6cad3de92b537346d3d inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56c1a464a96365b78514bdf89aca9686 inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a56c1a464a96365b78514bdf89aca9686"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>convert_function_type</b> = typename handler_type::convert_function_type</td></tr>
+<tr class="separator:a56c1a464a96365b78514bdf89aca9686 inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af909142e6b4ebe79b06dd18706192734 inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="af909142e6b4ebe79b06dd18706192734"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>check_function_type</b> = typename handler_type::check_function_type</td></tr>
+<tr class="separator:af909142e6b4ebe79b06dd18706192734 inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2bb3e30bc3f058af3a5f8609fe00e5f inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="ad2bb3e30bc3f058af3a5f8609fe00e5f"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>store_function_type</b> = typename handler_type::store_function_type</td></tr>
+<tr class="separator:ad2bb3e30bc3f058af3a5f8609fe00e5f inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1868c259485225346ad38e5bcd0d114 inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="ae1868c259485225346ad38e5bcd0d114"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>storage_helper_wrapped_type</b> = typename internal::storage_helper&lt; values_storage_type &gt;::type</td></tr>
+<tr class="separator:ae1868c259485225346ad38e5bcd0d114 inherit pub_types_classoct_1_1args_1_1basic__typed__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac883700c144e7368f83d424a76df5686"><td class="memItemLeft" align="right" valign="top"><a id="ac883700c144e7368f83d424a76df5686"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>basic_switch_argument</b> (const string_vector_type &amp;names)</td></tr>
-<tr class="separator:ac883700c144e7368f83d424a76df5686"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace6fc48ec3bcd84189b22ccbb86f6204"><td class="memItemLeft" align="right" valign="top"><a id="ace6fc48ec3bcd84189b22ccbb86f6204"></a>
-<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">basic_switch_argument</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_default_values_count</b> (std::size_t count)</td></tr>
-<tr class="separator:ace6fc48ec3bcd84189b22ccbb86f6204"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a15eae230ad55aae9bffedc7c20d3a042"><td class="memItemLeft" align="right" valign="top"><a id="a15eae230ad55aae9bffedc7c20d3a042"></a>
+<tr class="memitem:ace211ca5d83ca69d1488379a406b4fc0"><td class="memItemLeft" align="right" valign="top"><a id="ace211ca5d83ca69d1488379a406b4fc0"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>basic_switch_argument</b> (const argument_ptr_type &amp;argument_ptr)</td></tr>
+<tr class="separator:ace211ca5d83ca69d1488379a406b4fc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcb31b764156433fea7de8b9554de644"><td class="memTemplParams" colspan="2"><a id="adcb31b764156433fea7de8b9554de644"></a>
+template&lt;typename handler_ptr_T &gt; </td></tr>
+<tr class="memitem:adcb31b764156433fea7de8b9554de644"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><b>basic_switch_argument</b> (const argument_ptr_type &amp;argument_ptr, const handler_ptr_T &amp;handler_ptr)</td></tr>
+<tr class="separator:adcb31b764156433fea7de8b9554de644"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf70bbc769ce26c425efd23600d6af43"><td class="memItemLeft" align="right" valign="top"><a id="acf70bbc769ce26c425efd23600d6af43"></a>
 <a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">basic_switch_argument</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_min_count</b> (std::size_t count)</td></tr>
-<tr class="separator:a15eae230ad55aae9bffedc7c20d3a042"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a70cb2dbaab7546126331bfab9ce4a23f"><td class="memItemLeft" align="right" valign="top"><a id="a70cb2dbaab7546126331bfab9ce4a23f"></a>
+<tr class="separator:acf70bbc769ce26c425efd23600d6af43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78cb647fa06d1017911c058a3b08fecf"><td class="memItemLeft" align="right" valign="top"><a id="a78cb647fa06d1017911c058a3b08fecf"></a>
 <a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">basic_switch_argument</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_max_count</b> (std::size_t count)</td></tr>
-<tr class="separator:a70cb2dbaab7546126331bfab9ce4a23f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a058f786532d80f346ba7060c496042dd"><td class="memItemLeft" align="right" valign="top"><a id="a058f786532d80f346ba7060c496042dd"></a>
+<tr class="separator:a78cb647fa06d1017911c058a3b08fecf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6643e2aa1047412a1bcfbc26e18a2b6"><td class="memItemLeft" align="right" valign="top"><a id="ac6643e2aa1047412a1bcfbc26e18a2b6"></a>
 <a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">basic_switch_argument</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_max_count_unlimited</b> ()</td></tr>
-<tr class="separator:a058f786532d80f346ba7060c496042dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classoct_1_1args_1_1basic__argument__base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classoct_1_1args_1_1basic__argument__base')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classoct_1_1args_1_1basic__argument__base.html">oct::args::basic_argument_base&lt; basic_switch_argument&lt; char_T, values_storage_T &gt;, char_T, values_storage_T &gt;</a></td></tr>
-<tr class="memitem:a6a0afaca9dd14541cba6d1cda2be09aa inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a6a0afaca9dd14541cba6d1cda2be09aa"></a>
-<a class="el" href="classoct_1_1args_1_1basic__argument__type__handler.html">type_handler_type</a>&lt; data_T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_type</b> ()</td></tr>
-<tr class="separator:a6a0afaca9dd14541cba6d1cda2be09aa inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3375104310b7b78456a91ce23c68701e inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a3375104310b7b78456a91ce23c68701e"></a>
-<a class="el" href="classoct_1_1args_1_1basic__argument__type__handler.html">type_handler_type</a>&lt; DATA &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_type_and_storage</b> (DATA values_storage_type::*member_ptr)</td></tr>
-<tr class="separator:a3375104310b7b78456a91ce23c68701e inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ed148544cac7777f50e4a82343e39f1 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a6ed148544cac7777f50e4a82343e39f1"></a>
-<a class="el" href="classoct_1_1args_1_1basic__argument__type__handler.html">type_handler_type</a>&lt; DATA &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_type_and_storage</b> (std::vector&lt; DATA &gt; values_storage_type::*member_ptr)</td></tr>
-<tr class="separator:a6ed148544cac7777f50e4a82343e39f1 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a087d7946fcd10d2655fc6560fbe50535 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a087d7946fcd10d2655fc6560fbe50535"></a>
+<tr class="separator:ac6643e2aa1047412a1bcfbc26e18a2b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classoct_1_1args_1_1basic__argument__base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classoct_1_1args_1_1basic__argument__base')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classoct_1_1args_1_1basic__argument__base.html">oct::args::basic_argument_base&lt; basic_switch_argument, internal::basic_switch_argument_impl, char_T, values_storage_T, data_T &gt;</a></td></tr>
+<tr class="memitem:ac4c450d25e232b9b595cb7f9f099a6aa inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="ac4c450d25e232b9b595cb7f9f099a6aa"></a>
 <a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">derived_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_description</b> (const string_type &amp;text)</td></tr>
-<tr class="separator:a087d7946fcd10d2655fc6560fbe50535 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79a712fe8b03310ba69133da4ffb18f4 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a79a712fe8b03310ba69133da4ffb18f4"></a>
-const string_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_first_name</b> () const final</td></tr>
-<tr class="separator:a79a712fe8b03310ba69133da4ffb18f4 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39ad3b88f4ed209198e1930aa3876857 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a39ad3b88f4ed209198e1930aa3876857"></a>
-const string_vector_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_names</b> () const final</td></tr>
-<tr class="separator:a39ad3b88f4ed209198e1930aa3876857 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb0c64733cd5460f09a280bb9348d378 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="afb0c64733cd5460f09a280bb9348d378"></a>
-const string_vector_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_default_values</b> () const final</td></tr>
-<tr class="separator:afb0c64733cd5460f09a280bb9348d378 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c6dd1481264d60cdcc9bfeb1decdca4 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a7c6dd1481264d60cdcc9bfeb1decdca4"></a>
-const string_vector_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_allowed_values</b> () const final</td></tr>
-<tr class="separator:a7c6dd1481264d60cdcc9bfeb1decdca4 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6421fe6e16bab7a21cf1e4bb3e838194 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a6421fe6e16bab7a21cf1e4bb3e838194"></a>
-std::size_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_min_count</b> () const final</td></tr>
-<tr class="separator:a6421fe6e16bab7a21cf1e4bb3e838194 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20caae71274b137de88ce70a52eb32f3 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a20caae71274b137de88ce70a52eb32f3"></a>
-std::size_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_max_count</b> () const final</td></tr>
-<tr class="separator:a20caae71274b137de88ce70a52eb32f3 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44b231422f5e668ffa73ec6b5cebc0b5 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a44b231422f5e668ffa73ec6b5cebc0b5"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_max_count_unlimited</b> () const final</td></tr>
-<tr class="separator:a44b231422f5e668ffa73ec6b5cebc0b5 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6fd91708437a429408e1eedf7782fb6a inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a6fd91708437a429408e1eedf7782fb6a"></a>
-const const_handler_ptr_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_handler</b> () const final</td></tr>
-<tr class="separator:a6fd91708437a429408e1eedf7782fb6a inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abffcbedee8dc457fbe0d3240cc2f6666 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="abffcbedee8dc457fbe0d3240cc2f6666"></a>
-const string_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_description</b> () const final</td></tr>
-<tr class="separator:abffcbedee8dc457fbe0d3240cc2f6666 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78910ffcd3727893b836f2bb3dbff225 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a78910ffcd3727893b836f2bb3dbff225"></a>
-const string_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_value_name</b> () const final</td></tr>
-<tr class="separator:a78910ffcd3727893b836f2bb3dbff225 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18baf784228c9b20a807a1c49c816972 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a18baf784228c9b20a807a1c49c816972"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_exclusive</b> () const final</td></tr>
-<tr class="separator:a18baf784228c9b20a807a1c49c816972 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0842d3fe83004c2f21804483ee474699 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a0842d3fe83004c2f21804483ee474699"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_assignable_by_name</b> () const final</td></tr>
-<tr class="separator:a0842d3fe83004c2f21804483ee474699 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a555fcde73f0b27c620ba3cf3a4984725 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a555fcde73f0b27c620ba3cf3a4984725"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_accepting_immediate_value</b> () const final</td></tr>
-<tr class="separator:a555fcde73f0b27c620ba3cf3a4984725 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7167e14459d3e2b3244196bbfe1e821c inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a7167e14459d3e2b3244196bbfe1e821c"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_accepting_separate_value</b> () const final</td></tr>
-<tr class="separator:a7167e14459d3e2b3244196bbfe1e821c inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:ac4c450d25e232b9b595cb7f9f099a6aa inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac44bb924a57d93d5fcb34e5cc6c5890f inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="ac44bb924a57d93d5fcb34e5cc6c5890f"></a>
+<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">casted_derived_type</a>&lt; new_data_T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>set_type</b> ()</td></tr>
+<tr class="separator:ac44bb924a57d93d5fcb34e5cc6c5890f inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac44bb924a57d93d5fcb34e5cc6c5890f inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="ac44bb924a57d93d5fcb34e5cc6c5890f"></a>
+<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">casted_derived_type</a>&lt; new_data_T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>set_type</b> ()</td></tr>
+<tr class="separator:ac44bb924a57d93d5fcb34e5cc6c5890f inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6596f74208c9a48a817a79625e46b63c inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a6596f74208c9a48a817a79625e46b63c"></a>
+<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">casted_derived_type</a>&lt; new_data_T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>set_type_and_storage</b> (new_data_T storage_helper_wrapped_type::*member_ptr)</td></tr>
+<tr class="separator:a6596f74208c9a48a817a79625e46b63c inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9565326221bd3a56963e16b01e3c2d41 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a9565326221bd3a56963e16b01e3c2d41"></a>
+<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">casted_derived_type</a>&lt; new_data_T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>set_type_and_storage</b> (std::vector&lt; new_data_T &gt; storage_helper_wrapped_type::*member_ptr)</td></tr>
+<tr class="separator:a9565326221bd3a56963e16b01e3c2d41 inherit pub_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classoct_1_1args_1_1basic__typed__argument__base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classoct_1_1args_1_1basic__typed__argument__base')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classoct_1_1args_1_1basic__typed__argument__base.html">oct::args::basic_typed_argument_base&lt; basic_switch_argument, char_T, values_storage_T, data_T &gt;</a></td></tr>
+<tr class="memitem:ad5c65852182f230a255e5b66eeeaa37f inherit pub_methods_classoct_1_1args_1_1basic__typed__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="ad5c65852182f230a255e5b66eeeaa37f"></a>
+<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">derived_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_convert_function</b> (const function_T &amp;func)</td></tr>
+<tr class="separator:ad5c65852182f230a255e5b66eeeaa37f inherit pub_methods_classoct_1_1args_1_1basic__typed__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5eb6ea661e1b2014b6b3cc06ac8e2f0b inherit pub_methods_classoct_1_1args_1_1basic__typed__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a5eb6ea661e1b2014b6b3cc06ac8e2f0b"></a>
+<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">derived_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_check_function</b> (const function_T &amp;func)</td></tr>
+<tr class="separator:a5eb6ea661e1b2014b6b3cc06ac8e2f0b inherit pub_methods_classoct_1_1args_1_1basic__typed__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a660da03876108420d69a63e47fca8d07 inherit pub_methods_classoct_1_1args_1_1basic__typed__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a660da03876108420d69a63e47fca8d07"></a>
+<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">derived_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_store_function</b> (const function_T &amp;func)</td></tr>
+<tr class="separator:a660da03876108420d69a63e47fca8d07 inherit pub_methods_classoct_1_1args_1_1basic__typed__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99b7b0d2a471818ac7f67fa49411432d inherit pub_methods_classoct_1_1args_1_1basic__typed__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a99b7b0d2a471818ac7f67fa49411432d"></a>
+<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">derived_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_storage</b> (data_type storage_helper_wrapped_type::*member_ptr)</td></tr>
+<tr class="separator:a99b7b0d2a471818ac7f67fa49411432d inherit pub_methods_classoct_1_1args_1_1basic__typed__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a520fafdb2d84f951b6c2d678dc0ea9a8 inherit pub_methods_classoct_1_1args_1_1basic__typed__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a520fafdb2d84f951b6c2d678dc0ea9a8"></a>
+<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">derived_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_storage</b> (std::vector&lt; data_type &gt; storage_helper_wrapped_type::*member_ptr)</td></tr>
+<tr class="separator:a520fafdb2d84f951b6c2d678dc0ea9a8 inherit pub_methods_classoct_1_1args_1_1basic__typed__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pro_types_classoct_1_1args_1_1basic__argument__base"><td colspan="2" onclick="javascript:toggleInherit('pro_types_classoct_1_1args_1_1basic__argument__base')"><img src="closed.png" alt="-"/>&#160;Protected Types inherited from <a class="el" href="classoct_1_1args_1_1basic__argument__base.html">oct::args::basic_argument_base&lt; basic_switch_argument&lt; char_T, values_storage_T &gt;, char_T, values_storage_T &gt;</a></td></tr>
-<tr class="memitem:a320a20a3087fe3c568eab64e65375010 inherit pro_types_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a320a20a3087fe3c568eab64e65375010"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>flags</b> </td></tr>
-<tr class="separator:a320a20a3087fe3c568eab64e65375010 inherit pro_types_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_methods_classoct_1_1args_1_1basic__argument__base"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classoct_1_1args_1_1basic__argument__base')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classoct_1_1args_1_1basic__argument__base.html">oct::args::basic_argument_base&lt; basic_switch_argument&lt; char_T, values_storage_T &gt;, char_T, values_storage_T &gt;</a></td></tr>
-<tr class="memitem:a2ff1879cbf497a9dcafd401e25038c53 inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a2ff1879cbf497a9dcafd401e25038c53"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>basic_argument_base</b> (std::uint32_t flags, const string_vector_type &amp;names)</td></tr>
-<tr class="separator:a2ff1879cbf497a9dcafd401e25038c53 inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aed823c017fc443268bdcc211728b246e inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="aed823c017fc443268bdcc211728b246e"></a>
-<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">derived_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_default_values_internal</b> (const string_vector_type &amp;values)</td></tr>
-<tr class="separator:aed823c017fc443268bdcc211728b246e inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba3fd1a7e4ae3da8b98936e7fbda9f00 inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="aba3fd1a7e4ae3da8b98936e7fbda9f00"></a>
-<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">derived_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_allowed_values_internal</b> (const string_vector_type &amp;values)</td></tr>
-<tr class="separator:aba3fd1a7e4ae3da8b98936e7fbda9f00 inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1856feb2f8554936ab950993c69ebaa7 inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a1856feb2f8554936ab950993c69ebaa7"></a>
-<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">derived_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_value_name_internal</b> (const string_type &amp;name)</td></tr>
-<tr class="separator:a1856feb2f8554936ab950993c69ebaa7 inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1fc7ac3b69a7f81c123973b59dbe27cb inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a1fc7ac3b69a7f81c123973b59dbe27cb"></a>
-<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">derived_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_min_count</b> (std::size_t count)</td></tr>
-<tr class="separator:a1fc7ac3b69a7f81c123973b59dbe27cb inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7dc1c14fce476f241938da91302e14b4 inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a7dc1c14fce476f241938da91302e14b4"></a>
-<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">derived_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_max_count</b> (std::size_t count)</td></tr>
-<tr class="separator:a7dc1c14fce476f241938da91302e14b4 inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c833a1898108eb886b1ce1e12305322 inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a7c833a1898108eb886b1ce1e12305322"></a>
-<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">derived_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>set_max_count_unlimited</b> ()</td></tr>
-<tr class="separator:a7c833a1898108eb886b1ce1e12305322 inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classoct_1_1args_1_1basic__argument__base"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classoct_1_1args_1_1basic__argument__base')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classoct_1_1args_1_1basic__argument__base.html">oct::args::basic_argument_base&lt; basic_switch_argument, internal::basic_switch_argument_impl, char_T, values_storage_T, data_T &gt;</a></td></tr>
+<tr class="memitem:a8b69e66a0ee6cd470b143b72af00640a inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a8b69e66a0ee6cd470b143b72af00640a"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>basic_argument_base</b> (const argument_ptr_type &amp;argument)</td></tr>
+<tr class="separator:a8b69e66a0ee6cd470b143b72af00640a inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4854d455f5c4bc896d3d26cb05285701 inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a4854d455f5c4bc896d3d26cb05285701"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>basic_argument_base</b> (const argument_ptr_type &amp;argument, const handler_ptr_T &amp;handler)</td></tr>
+<tr class="separator:a4854d455f5c4bc896d3d26cb05285701 inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef3d2d78abd94f4c4d8c927fb279e80d inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="aef3d2d78abd94f4c4d8c927fb279e80d"></a>
+argument_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_argument</b> ()</td></tr>
+<tr class="separator:aef3d2d78abd94f4c4d8c927fb279e80d inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9f19c08b23d275b60b6c3acc4e97a18 inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="ac9f19c08b23d275b60b6c3acc4e97a18"></a>
+<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">derived_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>cast_this_to_derived</b> ()</td></tr>
+<tr class="separator:ac9f19c08b23d275b60b6c3acc4e97a18 inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e76c6c09222331a1a748fdbf0487597 inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a4e76c6c09222331a1a748fdbf0487597"></a>
+new_derived_T&#160;</td><td class="memItemRight" valign="bottom"><b>set_type_internal</b> ()</td></tr>
+<tr class="separator:a4e76c6c09222331a1a748fdbf0487597 inherit pro_methods_classoct_1_1args_1_1basic__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classoct_1_1args_1_1basic__typed__argument__base"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classoct_1_1args_1_1basic__typed__argument__base')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classoct_1_1args_1_1basic__typed__argument__base.html">oct::args::basic_typed_argument_base&lt; basic_switch_argument, char_T, values_storage_T, data_T &gt;</a></td></tr>
+<tr class="memitem:a95a1a39df22e94262c380f177532f214 inherit pro_methods_classoct_1_1args_1_1basic__typed__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a95a1a39df22e94262c380f177532f214"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>basic_typed_argument_base</b> (const handler_ptr_type &amp;handler)</td></tr>
+<tr class="separator:a95a1a39df22e94262c380f177532f214 inherit pro_methods_classoct_1_1args_1_1basic__typed__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c68221db36e3712c3c9eeeec151c81c inherit pro_methods_classoct_1_1args_1_1basic__typed__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a3c68221db36e3712c3c9eeeec151c81c"></a>
+<a class="el" href="classoct_1_1args_1_1basic__switch__argument.html">derived_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>cast_this_to_derived</b> ()</td></tr>
+<tr class="separator:a3c68221db36e3712c3c9eeeec151c81c inherit pro_methods_classoct_1_1args_1_1basic__typed__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b9e3bdfa49ede54c08655f2bd121ba7 inherit pro_methods_classoct_1_1args_1_1basic__typed__argument__base"><td class="memItemLeft" align="right" valign="top"><a id="a9b9e3bdfa49ede54c08655f2bd121ba7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>reset_handler</b> ()</td></tr>
+<tr class="separator:a9b9e3bdfa49ede54c08655f2bd121ba7 inherit pro_methods_classoct_1_1args_1_1basic__typed__argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename char_T, typename values_storage_T = internal::null_values_storage&gt;<br />
-class oct::args::basic_switch_argument&lt; char_T, values_storage_T &gt;</h3>
+<div class="textblock"><h3>template&lt;typename char_T, typename values_storage_T, typename data_T = void&gt;<br />
+class oct::args::basic_switch_argument&lt; char_T, values_storage_T, data_T &gt;</h3>
 
 <p>Switch argument. </p>
 <p>Switch arguments are arguments that does not have value, they are mainly to enable or disable a feature. Example could be "--verbose" or "--dry-run".</p>
@@ -274,6 +271,7 @@ class oct::args::basic_switch_argument&lt; char_T, values_storage_T &gt;</h3>
   <table class="tparams">
     <tr><td class="paramname">char_T</td><td>char type (as in std::basic_string) </td></tr>
     <tr><td class="paramname">values_storage_T</td><td>type of class uses as a storage for parsed values </td></tr>
+    <tr><td class="paramname">data_T</td><td>argument value data type </td></tr>
   </table>
   </dd>
 </dl>

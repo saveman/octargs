@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['storing_20parsers',['Storing parsers',['../page_storing_parsers.html',1,'']]]
+  ['octargs_20_2d_20argument_20parsing_20library',['OCTARGS - Argument Parsing Library',['../index.html',1,'']]]
 ];
