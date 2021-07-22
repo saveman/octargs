@@ -17,6 +17,10 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(CTest)
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+
+set(PackagingTemplatesDir "${CMAKE_CURRENT_SOURCE_DIR}/packaging")
+string(REPLACE "/${CMAKE_LIBRARY_ARCHITECTURE}" "" CMAKE_INSTALL_LIBDIR_ARCHIND "${CMAKE_INSTALL_LIBDIR}")
 
 if (ENABLE_COVERAGE AND NOT WIN32)
     include(CodeCoverage)

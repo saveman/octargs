@@ -53,6 +53,13 @@ set(CPACK_DEBIAN_EXAMPLES_FILE_NAME         "${CPACK_PACKAGE_NAME}-examples_${CP
 
 set(CPACK_RPM_DEV_PACKAGE_NAME                  "${CPACK_PACKAGE_NAME}-devel")
 
+set(PKG_CONFIG_NAME "${LIB_NAME}")
+set(PKG_CONFIG_FILE_NAME "${CMAKE_CURRENT_BINARY_DIR}/${PKG_CONFIG_NAME}.pc")
+configure_file("${PackagingTemplatesDir}/pkgconfig.pc.in" "${PKG_CONFIG_FILE_NAME}" @ONLY)
+install(FILES "${PKG_CONFIG_FILE_NAME}"
+	DESTINATION "${CMAKE_INSTALL_LIBDIR_ARCHIND}/pkgconfig"
+	COMPONENT dev
+)
 
 include(CPack)
 
