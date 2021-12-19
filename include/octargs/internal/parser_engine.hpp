@@ -178,8 +178,18 @@ private:
 
             if (input_iterator.has_more())
             {
-                throw parser_error_ex<char_type>(
-                    parser_error_code::SYNTAX_ERROR, string_type(), input_iterator.peek_next());
+                if (parser_data_ptr->m_allow_unconsummed)
+                {
+                    while (input_iterator.has_more())
+                    {
+                        m_results_data_ptr->append_unconsummed_arg(input_iterator.take_next());
+                    }
+                }
+                else
+                {
+                    throw parser_error_ex<char_type>(
+                        parser_error_code::SYNTAX_ERROR, string_type(), input_iterator.peek_next());
+                }
             }
 
             parse_default_values(parser_data_ptr);

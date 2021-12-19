@@ -140,6 +140,7 @@ public:
     string_type m_usage_oneliner;
     string_type m_usage_header;
     string_type m_usage_footer;
+    bool m_allow_unconsummed;
 
     static std::shared_ptr<basic_parser_data> create(const const_dictionary_ptr_type& dictionary)
     {
@@ -165,6 +166,7 @@ private:
         , m_usage_oneliner()
         , m_usage_header()
         , m_usage_footer()
+        , m_allow_unconsummed(false)
         , m_default_argument_group_ptr()
         , m_subparsers(string_less<char_type>(dictionary->is_case_sensitive()))
     {

@@ -123,6 +123,16 @@ public:
         m_names_repository.emplace(name, tag);
     }
 
+    const string_vector_type& get_unconsummed_args() const
+    {
+        return m_unconsummed_args;
+    }
+
+    void append_unconsummed_arg(const string_type& value)
+    {
+        m_unconsummed_args.push_back(value);
+    }
+
     static const string_vector_type& get_empty_value()
     {
         static const string_type EMPTY_VALUE;
@@ -139,6 +149,7 @@ private:
     string_type m_app_name;
     std::map<string_type, const_argument_tag_ptr_type, string_less_type> m_names_repository;
     std::map<const_argument_tag_ptr_type, string_vector_type> m_argument_values;
+    string_vector_type m_unconsummed_args;
 };
 
 } // namespace internal

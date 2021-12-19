@@ -78,6 +78,12 @@ public:
         return cast_this_to_derived();
     }
 
+    derived_type& set_allow_unconsummed(bool allow_unconsummed)
+    {
+        m_data_ptr->m_allow_unconsummed = allow_unconsummed;
+        return cast_this_to_derived();
+    }
+
     argument_group_type add_group(const std::string& name)
     {
         return m_data_ptr->add_group(name);

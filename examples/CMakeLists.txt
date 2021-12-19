@@ -9,6 +9,7 @@ endif()
 
 add_subdirectory(calc)
 add_subdirectory(cat)
+add_subdirectory(extra_args)
 add_subdirectory(getfile)
 add_subdirectory(head)
 add_subdirectory(sum)

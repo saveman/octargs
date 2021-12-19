@@ -131,6 +131,11 @@ public:
         return data_vector;
     }
 
+    const string_vector_type& get_unconsummed_args() const
+    {
+        return m_results_data_ptr->get_unconsummed_args();
+    }
+
 private:
     const_dictionary_ptr_type m_dictionary_ptr;
     const_results_data_ptr_type m_results_data_ptr;
